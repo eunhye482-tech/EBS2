@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>황수영 영어 수능 마스터</title>
+    <style>
+        /* 기본 스타일 초기화 및 고급 폰트 적용 */
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        
+        :root {
+            --bg-color: #0A0E17; /* 깊은 네이비 배경 */
+            --card-bg: rgba(255, 255, 255, 0.03); /* 아주 옅은 투명 흰색 */
+            --border-color: rgba(255, 255, 255, 0.08);
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* 보라/블루 그라데이션 */
+            --accent-color: #00E5FF; /* 네온 민트 */
+            --text-main: #FFFFFF;
+            --text-sub: #A0AAB5;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent; /* 터치 하이라이트 제거 */
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px; /* 모바일 폭 제한 */
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            margin-top: 10px;
+        }
+
+        header h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin: 0;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .step-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        /* 공통 버튼 (Glassmorphism 적용) */
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 25px 10px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 버튼 누를 때 피드백 */
+        .btn:active {
+            transform: scale(0.96);
+            background-color: rgba(255,255,255,0.08);
+            border-color: var(--accent-color);
+        }
+
+        /* 유형 선택 버튼 전용 (2열) */
+        .type-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .type-btn {
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 20px 10px;
+            color: var(--text-sub);
+        }
+        
+        .type-btn:active {
+            color: var(--accent-color);
+        }
+
+        /* 강/세트 표시 배지 */
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--text-sub);
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        /* 뒤로가기 버튼 */
+        .back-btn {
+            position: absolute;
+            left: 0;
+            background: none;
+            border: none;
+            color: var(--text-sub);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        /* 화면 전환 처리 */
+        .page { display: none; opacity: 0; transition: opacity 0.3s ease; }
+        .active { display: block; opacity: 1; }
+
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <h1>황수영 ENGLISH</h1>
+    </header>
+
+    <div id="step1" class="page active">
+        <div class="step-header">
+            <div class="step-title">강의를 선택하세요</div>
+        </div>
+        <div class="btn-grid">
+            <script>
+                // 3, 4, 5, 6, 7, 11, 12, 13, 14, 15, 16, 17
+                const lessons = [3, 4, 5, 6, 7, 11, 12, 13, 14, 15, 16, 17];
+                lessons.forEach(l => {
+                    document.write(`
+                        <div class="btn" onclick="goStep2(${l})">
+                            <span class="badge">Lesson</span>
+                            ${l}강
+                        </div>
+                    `);
+                });
+            </script>
+        </div>
+    </div>
+
+    <div id="step2" class="page">
+        <div class="step-header">
+            <button class="back-btn" onclick="showPage('step1')">✕</button>
+            <div class="step-title"><span id="display-lesson" style="color:var(--accent-color)">3</span>강 - 세트 선택</div>
+        </div>
+        <div class="btn-grid">
+            <div class="btn" onclick="goStep3(1)"><span class="badge">Set</span>1</div>
+            <div class="btn" onclick="goStep3(2)"><span class="badge">Set</span>2</div>
+            <div class="btn" onclick="goStep3(3)"><span class="badge">Set</span>3</div>
+            <div class="btn" onclick="goStep3(4)"><span class="badge">Set</span>4</div>
+        </div>
+    </div>
+
+    <div id="step3" class="page">
+        <div class="step-header">
+            <button class="back-btn" onclick="showPage('step2')">✕</button>
+            <div class="step-title"><span id="display-info" style="color:var(--accent-color)">3강 / Set 1</span> 유형</div>
+        </div>
+        <div class="btn-grid type-grid" id="type-links">
+            </div>
+    </div>
+</div>
+
+<script>
+    let selectedLesson = 0;
+    let selectedSet = 0;
+
+    // 페이지 전환 함수
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        const targetPage = document.getElementById(pageId);
+        targetPage.classList.add('active');
+        // 스크롤 맨 위로 이동
+        window.scrollTo(0, 0);
+    }
+
+    // 1단계 -> 2단계: 강 선택
+    function goStep2(lesson) {
+        selectedLesson = lesson;
+        document.getElementById('display-lesson').innerText = lesson;
+        showPage('step2');
+    }
+
+    // 2단계 -> 3단계: 세트 선택 및 링크 생성
+    function goStep3(setNum) {
+        selectedSet = setNum;
+        document.getElementById('display-info').innerText = `${selectedLesson}강 / Set ${selectedSet}`;
+        
+        const types = [
+            {n:'주제찾기', f:'주제.html'}, {n:'문장삽입', f:'삽입.html'}, 
+            {n:'글의순서', f:'순서.html'}, {n:'어법성판단', f:'어법.html'}, 
+            {n:'어휘적절성', f:'어휘.html'}, {n:'빈칸추론', f:'빈칸.html'}
+        ];
+
+        const container = document.getElementById('type-links');
+        container.innerHTML = ''; // 초기화
+
+        types.forEach(t => {
+            // 실제 파일 경로 예시: 3/1/빈칸.html
+            const url = `${selectedLesson}/${selectedSet}/${t.f}`;
+            container.innerHTML += `<a href="${url}" class="btn type-btn">${t.n}</a>`;
+        });
+
+        showPage('step3');
+    }
+</script>
+
+</body>
+</html>
