@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 모의고사 - 온라인 글쓰기의 전략</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 나무 테두리 디자인 */
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* 빈티지 녹색 칠판 */
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 20px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        /* 지문 스타일 (전문 반영) */
+        .passage {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #ff9800;
+            word-break: break-word;
+        }
+
+        /* 질문 영역 */
+        .question-container { margin-bottom: 25px; }
+        .q-label { 
+            color: #ff9800; 
+            font-family: 'Nanum Pen Script', cursive; 
+            font-size: 2.2rem; 
+            margin-right: 8px; 
+        }
+        .q-text { 
+            color: #ffeb3b; 
+            font-size: 1.2rem; 
+            font-weight: 700; 
+            line-height: 1.4;
+        }
+
+        /* 오지선다 버튼 */
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            background: linear-gradient(to bottom, #fffde7, #fff59d);
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #fbc02d;
+            transition: all 0.1s;
+            text-align: left;
+            width: 100%;
+        }
+        .option-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #fbc02d; }
+        
+        .option-btn.correct { background: #a5d6a7 !important; box-shadow: 0 5px 0 #66bb6a; }
+        .option-btn.wrong { background: #ef9a9a !important; box-shadow: 0 5px 0 #ef5350; }
+
+        .opt-num {
+            background: #ff9800;
+            color: white;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 0.9rem; font-weight: bold;
+            margin-right: 12px; flex-shrink: 0;
+        }
+        .opt-txt { color: #432818; font-size: 1rem; font-weight: 600; }
+
+        /* 피드백 영역 */
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #ffeb3b;
+            animation: slideUp 0.4s ease;
+        }
+        .feedback-area.show { display: block; }
+        .result-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 8px; }
+        .result-desc { font-size: 0.95rem; color: #ddd; line-height: 1.5; }
+
+        .next-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 15px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #e65100;
+            cursor: pointer;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .blackboard::-webkit-scrollbar { width: 6px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="passage">
+                In academia, you are taught to write up your results thus: “I came up with a hypothesis, then I did this experiment, and then I did another experiment, then I tested my ideas some more, and so on until [dramatic fanfare] ta-da! I proved this.” If you wrote this way online, very few of your readers would make it to your dramatic conclusion, no matter how exciting or groundbreaking it was. Online, we don’t have the patience to wait for your big reveal at the end. Instead, you need to tell us up front: “I proved this! And here’s how I know it...” Your readership may still dwindle and trail off over the course of your writing, but at least the vast majority know what it is you’ve achieved from the very beginning. A few more of them may stay along for the ride if the opening line—the “hook,” in journalistic terms—is particularly interesting. If you grab their attention early, you can more likely convince more readers to stay for the whole story.
+            </div>
+
+            <div id="quiz-root">
+                <div class="question-container">
+                    <span class="q-label" id="q-label">Q1.</span>
+                    <span class="q-text" id="q-text">질문 로딩 중...</span>
+                </div>
+
+                <div class="options-list" id="options-list"></div>
+
+                <div id="feedback-box" class="feedback-area">
+                    <div id="result-text" class="result-title"></div>
+                    <div id="explanation" class="result-desc"></div>
+                    <button class="next-btn" onclick="goToNext()">다음 문제 풀기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            type: "주제",
+            q: "위 글의 주제로 가장 적절한 것은?",
+            options: [
+                "The evolution of hypothesis testing in modern science",
+                "Why academic writing is superior to online content",
+                "The importance of starting with the conclusion in online writing",
+                "How to increase the number of experiments in a research paper",
+                "The psychological benefits of dramatic reveals in storytelling"
+            ],
+            answer: 2,
+            expl: "정답: 3번. 이 글은 인내심이 부족한 온라인 독자들을 위해 결론을 먼저 제시하는 글쓰기 전략의 중요성을 다루고 있습니다."
+        },
+        {
+            type: "제목",
+            q: "위 글의 제목으로 가장 적절한 것은?",
+            options: [
+                "Academic Writing: A Guide to Dramatic Fanfares",
+                "Hook Your Readers: Why Conclusion Comes First Online",
+                "The Dwindling Readership of Printed Journals",
+                "Patience: The Key Virtue of All Modern Readers",
+                "From Experiments to Proof: A Step-by-Step Approach"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 온라인 독자의 시선을 끌기 위해 결론부터 말하고 '후크'를 활용해야 한다는 핵심을 담은 제목입니다."
+        },
+        {
+            type: "요지",
+            q: "위 글의 요지로 가장 적절한 것은?",
+            options: [
+                "학술적인 글쓰기 방식은 온라인에서도 여전히 가장 효과적인 전달 수단이다.",
+                "온라인 독자들은 실험의 과정보다 연구자의 인내심을 높게 평가한다.",
+                "결론을 앞에 배치하고 흥미로운 도입부를 써야 온라인 독자의 주의를 붙잡을 수 있다.",
+                "지나치게 자극적인 도입부는 오히려 글의 신뢰도를 떨어뜨리는 요인이 된다.",
+                "학계에서는 온라인 독자들의 특성을 고려하여 학술지 형식을 바꿔야 한다."
+            ],
+            answer: 2,
+            expl: "정답: 3번. 온라인 환경에서는 독자들이 결론을 기다려주지 않으므로 앞부분에서 성과를 밝히고 주의를 끌어야 한다는 것이 요지입니다."
+        },
+        {
+            type: "함축 의미",
+            q: "밑줄 친 'hook'이 글쓰기 문맥에서 의미하는 바로 가장 적절한 것은?",
+            options: [
+                "글의 끝부분에서 독자의 궁금증을 유발하는 반전 장치",
+                "복잡한 실험 데이터를 시각적으로 요약한 도표나 그래프",
+                "독자의 주의를 즉시 사로잡기 위한 흥미로운 첫 문장",
+                "학계에서 논문을 작성할 때 필수적으로 지켜야 하는 서식",
+                "온라인 독자들이 글을 읽지 못하게 방해하는 광고성 링크"
+            ],
+            answer: 2,
+            expl: "정답: 3번. 독자의 관심을 초기에 잡아두기 위한 매력적인 도입부 또는 첫 문장을 의미합니다."
+        },
+        {
+            type: "내용 일치",
+            q: "위 글의 내용과 일치하지 않는 것은?",
+            options: [
+                "학계에서는 대개 가설부터 실험, 결론 순으로 글을 쓰는 법을 가르친다.",
+                "온라인 독자들은 마지막에 나타날 극적인 결론을 참을성 있게 기다린다.",
+                "글의 초반에 성과를 밝히면 대다수의 독자가 무엇을 이뤄냈는지 알게 된다.",
+                "도입부가 흥미로울수록 독자들이 글 전체를 끝까지 읽을 확률이 높아진다.",
+                "온라인에서는 글이 진행될수록 독자 수가 점차 줄어들 수 있다."
+            ],
+            answer: 1,
+            expl: "정답: 2번. 지문에 따르면 온라인 독자들은 끝부분의 극적인 반전을 기다려줄 인내심이 없다(don't have the patience)고 했습니다."
+        }
+    ];
+
+    let currentStep = 0;
+
+    function renderQuiz() {
+        const quiz = questions[currentStep];
+        document.getElementById('q-label').innerText = `Q${currentStep + 1}. [${quiz.type}]`;
+        document.getElementById('q-text').innerText = quiz.q;
+        
+        const list = document.getElementById('options-list');
+        list.innerHTML = '';
+        document.getElementById('feedback-box').classList.remove('show');
+
+        quiz.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span class="opt-num">${i + 1}</span><span class="opt-txt">${opt}</span>`;
+            btn.onclick = () => checkAnswer(i, btn);
+            list.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(idx, btn) {
+        const quiz = questions[currentStep];
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.disabled = true);
+
+        const feedbackBox = document.getElementById('feedback-box');
+        const resText = document.getElementById('result-text');
+        const expl = document.getElementById('explanation');
+
+        if(idx === quiz.answer) {
+            btn.classList.add('correct');
+            resText.innerText = "정답입니다! 독자의 마음을 사로잡는 법을 아시네요. 🎣";
+            resText.style.color = "#81c784";
+        } else {
+            btn.classList.add('wrong');
+            resText.innerText = "틀렸습니다. 온라인 독자의 특성을 다시 한 번 생각해보세요!";
+            resText.style.color = "#e57373";
+            allBtns[quiz.answer].classList.add('correct');
+        }
+
+        expl.innerText = quiz.expl;
+        feedbackBox.classList.add('show');
+        
+        setTimeout(() => {
+            feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    }
+
+    function goToNext() {
+        currentStep++;
+        if(currentStep < questions.length) {
+            renderQuiz();
+            document.getElementById('scroll-area').scrollTop = 0;
+        } else {
+            alert("수고하셨습니다! 오늘의 온라인 전략 학습을 성공적으로 마쳤습니다.");
+            currentStep = 0;
+            renderQuiz();
+        }
+    }
+
+    renderQuiz();
+</script>
+
+</body>
+</html>

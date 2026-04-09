@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 모의고사 - 공공재와 습지의 가치</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 나무 테두리 디자인 */
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* 빈티지 녹색 칠판 */
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 20px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        /* 지문 스타일 (전문 반영) */
+        .passage {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #ff9800;
+            word-break: break-word;
+        }
+
+        /* 질문 영역 */
+        .question-container { margin-bottom: 25px; }
+        .q-label { 
+            color: #ff9800; 
+            font-family: 'Nanum Pen Script', cursive; 
+            font-size: 2.2rem; 
+            margin-right: 8px; 
+        }
+        .q-text { 
+            color: #ffeb3b; 
+            font-size: 1.2rem; 
+            font-weight: 700; 
+            line-height: 1.4;
+        }
+
+        /* 오지선다 버튼 */
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            background: linear-gradient(to bottom, #fffde7, #fff59d);
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #fbc02d;
+            transition: all 0.1s;
+            text-align: left;
+            width: 100%;
+        }
+        .option-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #fbc02d; }
+        
+        .option-btn.correct { background: #a5d6a7 !important; box-shadow: 0 5px 0 #66bb6a; }
+        .option-btn.wrong { background: #ef9a9a !important; box-shadow: 0 5px 0 #ef5350; }
+
+        .opt-num {
+            background: #ff9800;
+            color: white;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 0.9rem; font-weight: bold;
+            margin-right: 12px; flex-shrink: 0;
+        }
+        .opt-txt { color: #432818; font-size: 1rem; font-weight: 600; }
+
+        /* 피드백 영역 */
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #ffeb3b;
+            animation: slideUp 0.4s ease;
+        }
+        .feedback-area.show { display: block; }
+        .result-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 8px; }
+        .result-desc { font-size: 0.95rem; color: #ddd; line-height: 1.5; }
+
+        .next-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 15px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #e65100;
+            cursor: pointer;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .blackboard::-webkit-scrollbar { width: 6px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="passage">
+                Public goods are undervalued in markets, which exist for private goods but rarely for public goods. For example, aquatic habitats such as wetlands provide diverse benefits that are often public goods, including breeding or refuge for unique species, recreation, hunting and tourism, or purification of water supplies. These benefits are enjoyed simultaneously by many people and are provided to them for “free” by the natural functioning of the wetlands. As a result, there is no “market” and thus no “price” for these public good uses of wetlands. But the actual value of these services is not zero. Because many people benefit from these services, their value is the total additional benefits of all individuals who enjoy provision of these services by wetlands. This value could be huge, even though there is no apparent “market price” for these wetland services. This gap between the (zero) price for wetland services and their actual value to all beneficiaries indicates how much these public goods are undervalued in markets.
+            </div>
+
+            <div id="quiz-root">
+                <div class="question-container">
+                    <span class="q-label" id="q-label">Q1.</span>
+                    <span class="q-text" id="q-text">질문 로딩 중...</span>
+                </div>
+
+                <div class="options-list" id="options-list"></div>
+
+                <div id="feedback-box" class="feedback-area">
+                    <div id="result-text" class="result-title"></div>
+                    <div id="explanation" class="result-desc"></div>
+                    <button class="next-btn" onclick="goToNext()">다음 문제 풀기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            type: "주제",
+            q: "위 글의 주제로 가장 적절한 것은?",
+            options: [
+                "Techniques for purifying water supplies in urban areas",
+                "The economic reasons why public goods like wetlands are undervalued",
+                "Historical conflicts between private goods and public goods in markets",
+                "The biological diversity of aquatic habitats in the Hala’ib Triangle",
+                "How to establish a market price for tourism in natural wetlands"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 이 글은 습지와 같은 공공재가 시장 가격이 없다는 이유로 실제 가치보다 저평가되고 있는 경제적 현상을 주제로 합니다."
+        },
+        {
+            type: "제목",
+            q: "위 글의 제목으로 가장 적절한 것은?",
+            options: [
+                "Zero Price, Infinite Value: The Mystery of Wetlands",
+                "Private Goods: The Only Driver of Global Market Growth",
+                "How to Sell Public Goods to Tourism Agencies",
+                "The End of Free Services: Why Nature Needs a Price Tag",
+                "Simultaneous Enjoyment: The Social Benefit of Urban Parks"
+            ],
+            answer: 0,
+            expl: "정답: 1번. 시장 가격은 0원이지만 실제 가치는 거대한 습지의 역설적 상황을 잘 담아낸 제목입니다."
+        },
+        {
+            type: "요지",
+            q: "위 글의 요지로 가장 적절한 것은?",
+            options: [
+                "습지는 정수 기능보다 사냥과 관광을 통한 경제적 수익이 더 크다.",
+                "공공재는 많은 사람이 동시에 혜택을 누리므로 시장에서 가장 높은 가격에 거래된다.",
+                "공공재의 가치는 그것을 즐기는 모든 개인의 혜택을 합산한 것이며 시장 가격보다 훨씬 크다.",
+                "습지를 보존하기 위해서는 모든 이용자에게 개인적인 비용을 청구하여 시장을 형성해야 한다.",
+                "시장은 사적 재화뿐만 아니라 공공재의 가치를 평가하는 데 가장 효율적인 시스템이다."
+            ],
+            answer: 2,
+            expl: "정답: 3번. 공공재의 실제 가치는 수혜자 전체의 혜택을 합한 것이며, 시장 가격이 없다는 이유로 저평가되어서는 안 된다는 것이 요지입니다."
+        },
+        {
+            type: "함축 의미",
+            q: "밑줄 친 'undervalued in markets'가 의미하는 바로 가장 적절한 것은?",
+            options: [
+                "시장 내에서 물건의 품질이 낮아 소비자들이 구매를 꺼리는 상태",
+                "공공재의 실제 사회적 가치가 시장 가격(0원)에 반영되지 못하는 현상",
+                "사적 재화의 가격이 너무 높게 책정되어 거래가 중단되는 과정",
+                "자연 생태계가 파괴되어 더 이상 시장에 혜택을 줄 수 없는 상황",
+                "시장이 공공재를 사적 재화로 전환하여 부당한 이익을 취하는 행위"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 습지가 제공하는 거대한 가치에도 불구하고 '가격'이 매겨지지 않아 경제적 평가에서 무시되거나 낮게 평가됨을 의미합니다."
+        },
+        {
+            type: "내용 일치",
+            q: "위 글의 내용과 일치하지 않는 것은?",
+            options: [
+                "습지는 종의 보존, 휴양, 수질 정화 등 다양한 혜택을 제공한다.",
+                "습지가 제공하는 공공재적 혜택은 많은 사람이 동시에 즐길 수 있다.",
+                "시장 가격이 존재하지 않는다고 해서 습지 서비스의 실제 가치가 0인 것은 아니다.",
+                "습지의 가치는 그것을 이용하는 모든 개인의 추가적인 혜택의 총합이다.",
+                "공공재를 위한 시장은 사적 재화를 위한 시장보다 더 활발하게 운영된다."
+            ],
+            answer: 4,
+            expl: "정답: 5번. 지문 첫 문장에서 시장은 사적 재화(private goods)를 위해서는 존재하지만 공공재(public goods)를 위해서는 거의 존재하지 않는다고 명시되어 있습니다."
+        }
+    ];
+
+    let currentStep = 0;
+
+    function renderQuiz() {
+        const quiz = questions[currentStep];
+        document.getElementById('q-label').innerText = `Q${currentStep + 1}. [${quiz.type}]`;
+        document.getElementById('q-text').innerText = quiz.q;
+        
+        const list = document.getElementById('options-list');
+        list.innerHTML = '';
+        document.getElementById('feedback-box').classList.remove('show');
+
+        quiz.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span class="opt-num">${i + 1}</span><span class="opt-txt">${opt}</span>`;
+            btn.onclick = () => checkAnswer(i, btn);
+            list.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(idx, btn) {
+        const quiz = questions[currentStep];
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.disabled = true);
+
+        const feedbackBox = document.getElementById('feedback-box');
+        const resText = document.getElementById('result-text');
+        const expl = document.getElementById('explanation');
+
+        if(idx === quiz.answer) {
+            btn.classList.add('correct');
+            resText.innerText = "정답입니다! 가치를 보는 눈이 정확하시네요. 🌿";
+            resText.style.color = "#81c784";
+        } else {
+            btn.classList.add('wrong');
+            resText.innerText = "틀렸습니다. 가격과 가치의 차이를 다시 한 번 생각해보세요!";
+            resText.style.color = "#e57373";
+            allBtns[quiz.answer].classList.add('correct');
+        }
+
+        expl.innerText = quiz.expl;
+        feedbackBox.classList.add('show');
+        
+        setTimeout(() => {
+            feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    }
+
+    function goToNext() {
+        currentStep++;
+        if(currentStep < questions.length) {
+            renderQuiz();
+            document.getElementById('scroll-area').scrollTop = 0;
+        } else {
+            alert("수고하셨습니다! 오늘의 생태 경제학 학습을 성공적으로 마쳤습니다.");
+            currentStep = 0;
+            renderQuiz();
+        }
+    }
+
+    renderQuiz();
+</script>
+
+</body>
+</html>

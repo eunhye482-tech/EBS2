@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 - 문장 삽입 모의고사 (음악적 근접성 편)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 18px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        .question-header {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .q-label { color: #ff9800; font-family: 'Nanum Pen Script', cursive; font-size: 2.2rem; margin-right: 8px; }
+        .q-text { color: #ffeb3b; font-size: 1.0rem; font-weight: 700; line-height: 1.3; }
+
+        .box-sentence {
+            background: #fff9c4;
+            color: #333;
+            padding: 15px;
+            border: 2px dashed #fbc02d;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .passage {
+            font-size: 1.0rem; 
+            line-height: 2.1;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 18px;
+            border-radius: 8px;
+        }
+
+        .q-num {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            background: #ff9800;
+            color: white;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            vertical-align: middle;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .q-num:hover { transform: scale(1.1); background: #f57c00; }
+        .q-num.correct { background: #4caf50 !important; border: 2px solid white; }
+        .q-num.wrong { background: #f44336 !important; border: 2px solid white; opacity: 0.8; }
+        .q-num.disabled { pointer-events: none; }
+
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #ffeb3b;
+        }
+        .feedback-area.show { display: block; }
+        
+        .next-btn {
+            margin-top: 12px; width: 100%; padding: 12px;
+            background: #ff9800; color: white; border: none;
+            border-radius: 10px; font-size: 1.0rem; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 0 #e65100;
+        }
+
+        .blackboard::-webkit-scrollbar { width: 4px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="question-header">
+                <span class="q-label" id="q-label">Q1.</span>
+                <span class="q-text">제시된 문장이 들어갈 번호를 본문에서 클릭하세요.</span>
+            </div>
+
+            <div class="box-sentence" id="box-sentence"></div>
+            <div class="passage" id="passage-container"></div>
+
+            <div id="feedback-box" class="feedback-area">
+                <div id="result-text" style="font-size: 1.1rem; font-weight: bold; margin-bottom: 8px;"></div>
+                <div id="explanation" style="color: #ddd; line-height: 1.5; font-size: 0.9rem;"></div>
+                <button class="next-btn" onclick="nextQuestion()">다음 문제</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            box: "To get a sense of the idea of proximity, imagine a person playing a piano.",
+            parts: [
+                "In music, proximity may refer to elements’ being close together in pitch, time, or space.",
+                "For example, notes that are similar in pitch may be grouped together.",
+                "Notes are also grouped together if they are played together in time or if they come from the same instrument.",
+                "Typically, the right hand plays notes that are higher in pitch than the left hand.",
+                "Also, most often, it is the right hand that plays the melody, whereas the left hand plays the bass line or accompaniment.",
+                "Even though all notes are played in close spatial proximity, we hear the notes from the right hand emerging as melody because they are grouped together with respect to pitch."
+            ],
+            answer: 3, // ③번 위치
+            expl: "음악적 근접성의 일반적인 정의(②번 뒤)가 완료된 후, 이해를 돕기 위해 '피아노 연주자'라는 구체적인 '시각적/상상적 사례'를 도입하는 ③번 위치가 정답입니다. 뒤의 'Typically, the right hand'와 논리적으로 연결됩니다."
+        },
+        {
+            box: "Even though all of the notes are played in close spatial proximity and at approximately the same time, we hear the notes from the right hand emerging as melody because they are grouped together with respect to pitch.",
+            parts: [
+                "Imagine a person playing a piano where the right hand plays higher notes and the left hand plays the bass line.",
+                "Typically, the right hand plays the melody, whereas the left hand plays the accompaniment.",
+                "Similarly, in some of Bach’s famous solo music for violin, the violinist creates two streams of music.",
+                "Perceptually, we group the high notes together and group the low notes together, so we hear it as two lines of music.",
+                "This auditory stream segregation allows us to perceive complex layers within a single instrument.",
+                "Our cognitive processing filters the frequency ranges into distinct and manageable sequences."
+            ],
+            answer: 2, // ②번 뒤 (③번 위치)
+            expl: "피아노 연주에서 양손의 역할 분담을 설명한 뒤(②번 앞), 왜 우리가 이를 공간적 근접성보다 '음높이(pitch)'에 따라 멜로디로 인식하는지 결론짓는 ③번 위치가 정답입니다."
+        },
+        {
+            box: "Similarly, in some of Bach’s famous solo music for violin, the violinist essentially creates two streams of music by simultaneously playing both high and lower notes.",
+            parts: [
+                "In piano playing, we hear the notes from the right hand emerging as melody because they are grouped together by pitch.",
+                "Even though notes are played simultaneously, we distinguish the melody from the accompaniment.",
+                "Perceptually, we group the high notes together and group the low notes together, so we hear it as polyphonic or as two lines of music.",
+                "This creates an illusion of multiple performers where only one exists.",
+                "The ear treats the frequency gaps as boundaries between different musical voices.",
+                "Bach's mastery of this technique is evident in his Partitas and Sonatas for solo violin."
+            ],
+            answer: 2, // ②번 뒤 (③번 위치)
+            expl: "피아노 연주의 사례(②번 앞)에 이어, '마찬가지로(Similarly)' 바이올린 솔로 음악에서 고음과 저음을 동시에 연주해 두 개의 스트림을 만드는 또 다른 사례를 도입하는 ③번 위치가 정답입니다."
+        },
+        {
+            box: "Perceptually, we group the high notes together and group the low notes together, so we hear it as polyphonic or as two lines of music.",
+            parts: [
+                "In Bach’s solo music for violin, the violinist creates 두 streams of music by playing high and lower notes.",
+                "The brain uses frequency proximity to organize these rapid successions of sound.",
+                "This allows a single instrument to simulate the richness of an ensemble.",
+                "The auditory system effectively 'sorts' the notes into their respective registers.",
+                "As a result, the listener experiences a complex counterpoint that defies the physical limitations of the violin.",
+                "Musical depth is thus achieved through the clever manipulation of human perception."
+            ],
+            answer: 1, // ①번 뒤 (②번 위치)
+            expl: "바흐의 바이올린 곡에서 고음과 저음이 동시에 연주된다는 물리적 설명(①번 뒤) 뒤에, 우리가 그것을 어떻게 지각하여(Perceptually) '두 개의 선율(polyphonic)'로 듣게 되는지 설명하는 ②번 위치가 정답입니다."
+        },
+        {
+            box: "For example, notes that are similar in pitch may be grouped together.",
+            parts: [
+                "In music, proximity may refer to elements’ being close together in pitch, time, or space.",
+                "Notes are also grouped together if they are played together in time or if they come from the same instrument.",
+                "To get a sense of this idea, imagine a person playing a piano.",
+                "The right hand plays higher notes than the left, and it is usually the right hand that plays the melody.",
+                "We hear the right hand emerging as melody because the notes are grouped together with respect to pitch.",
+                "This grouping principle is fundamental to our understanding of musical structure."
+            ],
+            answer: 1, // ①번 뒤 (②번 위치)
+            expl: "근접성이 음높이, 시간, 공간에서 일어날 수 있다는 정의(①번 뒤) 직후에, 그중 첫 번째인 '음높이(pitch)'의 근접성이 그룹화를 유도한다는 구체적 사례를 제시하는 ②번 위치가 정답입니다."
+        }
+    ];
+
+    let currentIdx = 0;
+    const labels = ["①", "②", "③", "④", "⑤"];
+
+    function render() {
+        const q = questions[currentIdx];
+        document.getElementById('q-label').innerText = `Q${currentIdx + 1}.`;
+        document.getElementById('box-sentence').innerText = q.box;
+        document.getElementById('feedback-box').classList.remove('show');
+
+        const container = document.getElementById('passage-container');
+        container.innerHTML = '';
+
+        q.parts.forEach((text, i) => {
+            const txtSpan = document.createElement('span');
+            txtSpan.innerText = text + " ";
+            container.appendChild(txtSpan);
+
+            if (i < 5) {
+                const numSpan = document.createElement('span');
+                numSpan.className = 'q-num';
+                numSpan.innerText = labels[i];
+                numSpan.onclick = () => check(i, numSpan);
+                container.appendChild(numSpan);
+            }
+        });
+        document.getElementById('scroll-area').scrollTop = 0;
+    }
+
+    function check(idx, el) {
+        const q = questions[currentIdx];
+        const all = document.querySelectorAll('.q-num');
+        all.forEach(n => n.classList.add('disabled'));
+
+        const res = document.getElementById('result-text');
+        const correctLabel = labels[q.answer];
+
+        if (idx === q.answer) {
+            el.classList.add('correct');
+            res.innerText = "정답입니다! 음악적 지각의 원리를 완벽히 파악하셨네요. 🎻";
+            res.style.color = "#81c784";
+        } else {
+            el.classList.add('wrong');
+            all[q.answer].classList.add('correct');
+            res.innerText = `틀렸습니다. 정답은 ${correctLabel}번입니다.`;
+            res.style.color = "#e57373";
+        }
+
+        document.getElementById('explanation').innerText = q.expl;
+        document.getElementById('feedback-box').classList.add('show');
+        
+        setTimeout(() => {
+            document.getElementById('feedback-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 150);
+    }
+
+    function nextQuestion() {
+        currentIdx = (currentIdx + 1) % questions.length;
+        render();
+    }
+
+    render();
+</script>
+
+</body>
+</html>

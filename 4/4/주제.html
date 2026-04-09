@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수능 영어 모의고사 - 사회적 불안</title>
+
+<style>
+body {
+    background:#121212;
+    margin:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    font-family:sans-serif;
+}
+
+.app {
+    width:100%;
+    max-width:500px;
+    height:100%;
+    background:#222;
+    padding:10px;
+}
+
+.board {
+    background:#1e3a29;
+    height:100%;
+    padding:20px;
+    overflow:auto;
+    color:white;
+}
+
+.passage {
+    background:rgba(0,0,0,0.3);
+    padding:15px;
+    border-left:5px solid orange;
+    margin-bottom:20px;
+    line-height:1.7;
+}
+
+button {
+    width:100%;
+    padding:12px;
+    margin:5px 0;
+    border:none;
+    border-radius:8px;
+    background:#fff59d;
+    cursor:pointer;
+}
+
+.correct { background:#a5d6a7 !important; }
+.wrong { background:#ef9a9a !important; }
+
+.feedback {
+    margin-top:15px;
+    display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+<div class="board">
+
+<div class="passage">
+If you suffer from social angst, awkwardness, or dread, know that this is a perfectly normal response. No matter what it looks like, a lot of people are dealing with internal anxiety in social situations. But it is actually possible to build your social muscle and use it to boost your connections—and your anxiety is giving you clues to what icebreakers and lifelines other people might be grateful for you to extend. Truly listen to what your anxiety is signaling to you about where you feel uncertain or insecure, and practice empathy by offering a hand to others who might be in the same boat. Remember that flipping anxiety into compassion is something inherent in you—it is, in fact, what your anxiety was designed to do for you. Together, compassion and empathy can buffer against bad anxiety. You can use your anxiety to be more outward-facing. The outcome? The spread of compassion for your fellow human beings, other species, and the planet!
+</div>
+
+<h3 id="q"></h3>
+<div id="options"></div>
+
+<div class="feedback" id="feedback">
+<p id="result"></p>
+<p id="expl"></p>
+<button onclick="nextQ()">다음 문제</button>
+</div>
+
+</div>
+</div>
+
+<script>
+const questions = [
+
+{
+q:"위 글의 주제로 가장 적절한 것은?",
+options:[
+"사회적 불안을 제거하는 방법",
+"불안을 활용해 공감과 관계를 강화하는 방법",
+"사회적 성공을 위한 경쟁 전략",
+"불안이 인간관계를 망치는 이유",
+"타인의 감정을 무시하는 방법"
+],
+answer:1,
+expl:"정답: 2번. 불안을 공감과 연결로 전환하는 것이 핵심 주제이다."
+},
+
+{
+q:"위 글의 제목으로 가장 적절한 것은?",
+options:[
+"Anxiety as a Barrier to Social Life",
+"The Power of Ignoring Others",
+"Turning Anxiety into Compassion",
+"The Science of Social Failure",
+"Why Empathy is Useless"
+],
+answer:2,
+expl:"정답: 3번. 불안을 연민으로 전환하는 내용이 핵심이다."
+},
+
+{
+q:"위 글의 요지로 가장 적절한 것은?",
+options:[
+"불안은 반드시 제거해야 한다.",
+"불안은 인간관계를 방해한다.",
+"불안은 공감으로 바뀔 수 있다.",
+"공감은 불안과 관련이 없다.",
+"사회적 기술은 타고난 것이다."
+],
+answer:2,
+expl:"정답: 3번. 불안을 공감으로 전환할 수 있다는 것이 요지이다."
+},
+
+{
+q:"'in the same boat'의 의미로 가장 적절한 것은?",
+options:[
+"같은 장소에 있는",
+"같은 문제를 겪는",
+"같은 목표를 가진",
+"같은 취미를 가진",
+"같은 팀에 속한"
+],
+answer:1,
+expl:"정답: 2번. '같은 상황에 처해 있다'는 의미이다."
+},
+
+{
+q:"위 글의 내용과 일치하지 않는 것은?",
+options:[
+"많은 사람들이 사회적 불안을 경험한다.",
+"불안은 타인을 돕는 단서가 될 수 있다.",
+"불안은 항상 부정적인 결과만 낳는다.",
+"공감은 불안을 완화할 수 있다.",
+"불안을 외향적으로 활용할 수 있다."
+],
+answer:2,
+expl:"정답: 3번. 글에서는 불안이 긍정적으로 활용될 수 있다고 말한다."
+}
+
+];
+
+let current = 0;
+
+function render(){
+    const q = questions[current];
+
+    document.getElementById("q").innerText = "Q" + (current+1) + ". " + q.q;
+
+    const optionsDiv = document.getElementById("options");
+    optionsDiv.innerHTML = "";
+
+    q.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.innerText = (idx+1) + ". " + opt;
+        btn.onclick = () => check(idx, btn);
+        optionsDiv.appendChild(btn);
+    });
+
+    document.getElementById("feedback").style.display = "none";
+}
+
+function check(idx, btn){
+    const q = questions[current];
+    const buttons = document.querySelectorAll("#options button");
+
+    buttons.forEach(b => b.disabled = true);
+
+    if(idx === q.answer){
+        btn.classList.add("correct");
+        document.getElementById("result").innerText = "정답!";
+    } else {
+        btn.classList.add("wrong");
+        buttons[q.answer].classList.add("correct");
+        document.getElementById("result").innerText = "오답!";
+    }
+
+    document.getElementById("expl").innerText = q.expl;
+    document.getElementById("feedback").style.display = "block";
+}
+
+function nextQ(){
+    current++;
+
+    if(current < questions.length){
+        render();
+    } else {
+        alert("수고하셨습니다! 🎉");
+        current = 0;
+        render();
+    }
+}
+
+render();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 - 문장 삽입 모의고사 (시민 저널리즘 편)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 18px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        .question-header {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .q-label { color: #ff9800; font-family: 'Nanum Pen Script', cursive; font-size: 2.2rem; margin-right: 8px; }
+        .q-text { color: #ffeb3b; font-size: 1.0rem; font-weight: 700; line-height: 1.3; }
+
+        .box-sentence {
+            background: #fff9c4;
+            color: #333;
+            padding: 15px;
+            border: 2px dashed #fbc02d;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .passage {
+            font-size: 1.0rem; 
+            line-height: 2.1;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 18px;
+            border-radius: 8px;
+        }
+
+        .q-num {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            background: #ff9800;
+            color: white;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            vertical-align: middle;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .q-num:hover { transform: scale(1.1); background: #f57c00; }
+        .q-num.correct { background: #4caf50 !important; border: 2px solid white; }
+        .q-num.wrong { background: #f44336 !important; border: 2px solid white; opacity: 0.8; }
+        .q-num.disabled { pointer-events: none; }
+
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #ffeb3b;
+        }
+        .feedback-area.show { display: block; }
+        
+        .next-btn {
+            margin-top: 12px; width: 100%; padding: 12px;
+            background: #ff9800; color: white; border: none;
+            border-radius: 10px; font-size: 1.0rem; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 0 #e65100;
+        }
+
+        .blackboard::-webkit-scrollbar { width: 4px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="question-header">
+                <span class="q-label" id="q-label">Q1.</span>
+                <span class="q-text">제시된 문장이 들어갈 번호를 클릭하세요.</span>
+            </div>
+
+            <div class="box-sentence" id="box-sentence"></div>
+            <div class="passage" id="passage-container"></div>
+
+            <div id="feedback-box" class="feedback-area">
+                <div id="result-text" style="font-size: 1.1rem; font-weight: bold; margin-bottom: 8px;"></div>
+                <div id="explanation" style="color: #ddd; line-height: 1.5; font-size: 0.9rem;"></div>
+                <button class="next-btn" onclick="nextQuestion()">다음 문제</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            box: "In those places, citizens must take up the responsibility for discovering information, holding the powerful accountable, and telling the news for themselves and their neighbors.",
+            parts: [
+                "Increased community engagement by professional journalists, on their own, will not solve the problem of making the news more relevant to everyone because traditional news organizations already have abandoned many communities, leaving behind news deserts.",
+                "The democratization of information—through the disruptions caused by computers and the internet—allows citizens to retake control of local news in ways that never have existed before, and it calls them to take greater care in the gathering and dissemination of what they discover or think they know.",
+                "Journalism, perhaps like never before, belongs to the people rather than to professional journalists, wealthy publishers, or even corporate shareholders.",
+                "The same technology that has shifted the balance of power toward the people gives them the tools to act as broadcasters and publishers of information essential to their immediate community.",
+                "And, more critically, it gives them the tools to serve as gatekeepers to information for other people around them.",
+                "This shifting landscape requires a new level of media literacy among the general public."
+            ],
+            answer: 1, // ①번 뒤 (②번 위치)
+            expl: "주어진 문장의 'In those places'가 가리키는 장소는 앞 문장의 'news deserts(뉴스 사막)'입니다. 따라서 ①번 뒤인 ②번 위치가 가장 적절합니다."
+        },
+        {
+            box: "The democratization of information—through the disruptions caused by computers and the internet—allows citizens to retake control of local news in ways that never have existed before.",
+            parts: [
+                "Increased community engagement by professional journalists will not solve the news gap as traditional organizations have left many areas.",
+                "In these news deserts, citizens must take up the responsibility for uncovering information and holding the powerful accountable for their neighbors.",
+                "This new capability also calls them to take greater care in the gathering and dissemination of what they discover or think they know.",
+                "Journalism, perhaps like never before, belongs to the people rather than to professional journalists or wealthy publishers.",
+                "The same technology that has shifted the balance of power toward the people gives them the tools to act as broadcasters and publishers.",
+                "More critically, it enables them to serve as gatekeepers to information for other people around them."
+            ],
+            answer: 2, // ②번 뒤 (③번 위치)
+            expl: "시민들이 정보를 스스로 밝혀내야 한다는 당위성(②번 앞) 뒤에, 컴퓨터와 인터넷을 통한 '정보의 민주화'가 이를 실제로 가능하게 한다는 내용이 오는 ③번 위치가 적합합니다."
+        },
+        {
+            box: "Journalism, perhaps like never before, belongs to the people rather than to professional journalists, wealthy publishers, or even corporate shareholders.",
+            parts: [
+                "In news deserts, citizens must take up the responsibility for discovering information and holding the powerful accountable.",
+                "The democratization of information allows citizens to retake control of local news and calls them to take care in disseminating what they know.",
+                "This transition means that the power once held by a few is now shared by many.",
+                "The same technology that has shifted the balance of power toward the people gives them the tools to act as broadcasters and publishers.",
+                "And, more critically, it gives them the tools to serve as gatekeepers to information for other people around them.",
+                "The future of truth depends on how effectively people utilize these new instruments of power."
+            ],
+            answer: 2, // ②번 뒤 (③번 위치)
+            expl: "정보 민주화와 시민의 통제권 회복(②번 앞)에 대한 결론적 진술로서, 저널리즘이 이제 전문가가 아닌 '사람들'의 것이 되었다는 선언적 문장이 오는 ③번이 자연스럽습니다."
+        },
+        {
+            box: "The same technology that has shifted the balance of power toward the people gives them the tools to act as broadcasters and publishers of information essential to their immediate community.",
+            parts: [
+                "Journalism, perhaps like never before, belongs to the people rather than to professional journalists, wealthy publishers, or corporate shareholders.",
+                "This shift in ownership is supported by the digital tools that empower individual voices.",
+                "Citizens now have the means to collect and share news that matters to their local surroundings.",
+                "More critically, this technology allows them to serve as gatekeepers to information for other people around them.",
+                "The democratization of information has truly revolutionized how we perceive and consume daily news.",
+                "It has turned passive audience members into active participants in the democratic process."
+            ],
+            answer: 3, // ③번 뒤 (④번 위치)
+            expl: "주어진 문장의 'The same technology'가 앞서 언급된 기술적 배경(인터넷/컴퓨터)을 받아 구체적인 기능(방송인/출판인 역할)을 설명하고, ④번 뒤의 'More critically'와 이어지며 게이트키퍼 역할까지 확장되는 흐름입니다."
+        },
+        {
+            box: "And, more critically, it gives them the tools to serve as gatekeepers to information for other people around them.",
+            parts: [
+                "Journalism, perhaps like never before, belongs to the people rather than to professional journalists or wealthy publishers.",
+                "The technology that has shifted the balance of power toward the people gives them the tools to act as broadcasters and publishers.",
+                "They can now share information essential to their immediate community through various digital platforms.",
+                "This multifaceted role highlights the immense influence that ordinary citizens now hold over public discourse.",
+                "Consequently, the responsibility of the citizen-journalist has never been greater in our modern society.",
+                "They must now navigate the complex ethical landscape of information sharing without traditional oversight."
+            ],
+            answer: 3, // ③번 뒤 (④번 위치)
+            expl: "시민들이 공동체에 필요한 정보를 방송하고 출판하는 도구를 가졌다는 내용(③번 앞) 뒤에, '더욱 결정적으로(more critically)' 타인에게 정보를 전달하는 문지기(gatekeeper) 역할까지 한다는 심화 내용이 이어지는 ④번이 정답입니다."
+        }
+    ];
+
+    let currentIdx = 0;
+    const labels = ["①", "②", "③", "④", "⑤"];
+
+    function render() {
+        const q = questions[currentIdx];
+        document.getElementById('q-label').innerText = `Q${currentIdx + 1}.`;
+        document.getElementById('box-sentence').innerText = q.box;
+        document.getElementById('feedback-box').classList.remove('show');
+
+        const container = document.getElementById('passage-container');
+        container.innerHTML = '';
+
+        q.parts.forEach((text, i) => {
+            const txtSpan = document.createElement('span');
+            txtSpan.innerText = text + " ";
+            container.appendChild(txtSpan);
+
+            if (i < 5) {
+                const numSpan = document.createElement('span');
+                numSpan.className = 'q-num';
+                numSpan.innerText = labels[i];
+                numSpan.onclick = () => check(i, numSpan);
+                container.appendChild(numSpan);
+            }
+        });
+        document.getElementById('scroll-area').scrollTop = 0;
+    }
+
+    function check(idx, el) {
+        const q = questions[currentIdx];
+        const all = document.querySelectorAll('.q-num');
+        all.forEach(n => n.classList.add('disabled'));
+
+        const res = document.getElementById('result-text');
+        if (idx === q.answer) {
+            el.classList.add('correct');
+            res.innerText = "정답입니다! 저널리즘의 변화를 잘 이해하셨네요. 🗞️";
+            res.style.color = "#81c784";
+        } else {
+            el.classList.add('wrong');
+            all[q.answer].classList.add('correct');
+            res.innerText = "틀렸습니다. 논리적 장치(In those places 등)를 확인해 보세요.";
+            res.style.color = "#e57373";
+        }
+
+        document.getElementById('explanation').innerText = q.expl;
+        document.getElementById('feedback-box').classList.add('show');
+        
+        setTimeout(() => {
+            document.getElementById('feedback-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 150);
+    }
+
+    function nextQuestion() {
+        currentIdx = (currentIdx + 1) % questions.length;
+        render();
+    }
+
+    render();
+</script>
+
+</body>
+</html>

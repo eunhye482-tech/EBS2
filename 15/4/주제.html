@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 모의고사 - 비기만적 플라세보</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 나무 테두리 디자인 */
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* 빈티지 녹색 칠판 */
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 20px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        /* 지문 스타일 (전문 반영) */
+        .passage {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #ff9800;
+            word-break: break-word;
+        }
+
+        /* 질문 영역 */
+        .question-container { margin-bottom: 25px; }
+        .q-label { 
+            color: #ff9800; 
+            font-family: 'Nanum Pen Script', cursive; 
+            font-size: 2.2rem; 
+            margin-right: 8px; 
+        }
+        .q-text { 
+            color: #ffeb3b; 
+            font-size: 1.2rem; 
+            font-weight: 700; 
+            line-height: 1.4;
+        }
+
+        /* 오지선다 버튼 */
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            background: linear-gradient(to bottom, #fffde7, #fff59d);
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #fbc02d;
+            transition: all 0.1s;
+            text-align: left;
+            width: 100%;
+        }
+        .option-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #fbc02d; }
+        
+        .option-btn.correct { background: #a5d6a7 !important; box-shadow: 0 5px 0 #66bb6a; }
+        .option-btn.wrong { background: #ef9a9a !important; box-shadow: 0 5px 0 #ef5350; }
+
+        .opt-num {
+            background: #ff9800;
+            color: white;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 0.9rem; font-weight: bold;
+            margin-right: 12px; flex-shrink: 0;
+        }
+        .opt-txt { color: #432818; font-size: 1rem; font-weight: 600; }
+
+        /* 피드백 영역 */
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #ffeb3b;
+            animation: slideUp 0.4s ease;
+        }
+        .feedback-area.show { display: block; }
+        .result-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 8px; }
+        .result-desc { font-size: 0.95rem; color: #ddd; line-height: 1.5; }
+
+        .next-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 15px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #e65100;
+            cursor: pointer;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .blackboard::-webkit-scrollbar { width: 6px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="passage">
+                Because belief is so crucial in the placebo effect, it would seem that deception is necessary in order to trigger a patient’s trust in the actual drug he might be taking. But Ted Kaptchuk, a leading placebo researcher at Harvard, is investigating the possibility of doing away with the element of deception. He tells patients up front that they will be taking a placebo, but he also informs them about how powerful and effective placebos can be. In one trial with irritable bowel syndrome, it was found that roughly 59 percent of those on an open placebo treatment reported improvements, as compared with 35 percent of the control group that received no treatment. The results may seem modest, but they make the point that giving a placebo isn’t the same as doing nothing.
+            </div>
+
+            <div id="quiz-root">
+                <div class="question-container">
+                    <span class="q-label" id="q-label">Q1.</span>
+                    <span class="q-text" id="q-text">질문 로딩 중...</span>
+                </div>
+
+                <div class="options-list" id="options-list"></div>
+
+                <div id="feedback-box" class="feedback-area">
+                    <div id="result-text" class="result-title"></div>
+                    <div id="explanation" class="result-desc"></div>
+                    <button class="next-btn" onclick="goToNext()">다음 문제 풀기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            type: "주제",
+            q: "위 글의 주제로 가장 적절한 것은?",
+            options: [
+                "The psychological reasons behind irritable bowel syndrome",
+                "The necessity of deception for effective medical treatments",
+                "The effectiveness of open-label placebos without deception",
+                "How to increase patient trust in pharmaceutical drugs",
+                "Comparing the costs of placebo and real drug treatments"
+            ],
+            answer: 2,
+            expl: "정답: 3번. 이 글은 환자에게 플라세보임을 알리고 투여해도 효과가 나타날 수 있다는 '비기만적 플라세보'의 가능성을 다루고 있습니다."
+        },
+        {
+            type: "제목",
+            q: "위 글의 제목으로 가장 적절한 것은?",
+            options: [
+                "Placebo Effect: Why Lying to Patients is Always Necessary",
+                "No More Deception: The Power of Knowing You're on Placebo",
+                "Irritable Bowel Syndrome: A New Cure through Harvard Research",
+                "The Modest Results of Modern Medical Trials",
+                "Trust Your Doctor: The Secret Ingredient of Real Drugs"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 기만(거짓말) 없이도 플라세보의 강력한 효과가 나타날 수 있음을 보여주는 제목입니다."
+        },
+        {
+            type: "요지",
+            q: "위 글의 요지로 가장 적절한 것은?",
+            options: [
+                "환자가 플라세보임을 알고 복용하는 것은 치료에 아무런 도움이 되지 않는다.",
+                "대조군과 비교했을 때 플라세보 처방의 수치적 결과는 무시해도 될 수준이다.",
+                "플라세보 효과를 위해서는 환자가 진짜 약을 먹고 있다는 믿음이 반드시 필요하다.",
+                "플라세보임을 밝히고 그 효능을 설명하는 것만으로도 치료 효과를 볼 수 있다.",
+                "테드 캡척은 기만적인 플라세보 연구가 윤리적으로 더 우월하다고 주장한다."
+            ],
+            answer: 3,
+            expl: "정답: 4번. 환자에게 플라세보임을 미리 알리더라도 그 효능을 교육받으면 실제적인 증상 개선이 일어난다는 것이 요지입니다."
+        },
+        {
+            type: "함축 의미",
+            q: "밑줄 친 'doing away with the element of deception'이 의미하는 바로 가장 적절한 것은?",
+            options: [
+                "환자에게 가짜 약을 진짜 약이라고 속이는 과정을 생략함",
+                "플라세보 연구를 중단하고 실제 신약 개발에만 집중함",
+                "환자의 신뢰를 얻기 위해 약물의 부작용을 숨기는 행위",
+                "연구 결과를 조작하여 플라세보 효과를 과장하는 것",
+                "의료진 사이의 정보 공유를 차단하여 실험의 객관성을 유지함"
+            ],
+            answer: 0,
+            expl: "정답: 1번. 플라세보 효과의 전통적인 필수 요소였던 '속임수(기만)'를 없애고 투명하게 진행한다는 의미입니다."
+        },
+        {
+            type: "내용 일치",
+            q: "위 글의 내용과 일치하지 않는 것은?",
+            options: [
+                "플라세보 효과에서 믿음(belief)은 매우 결정적인 역할을 한다.",
+                "테드 캡척은 환자에게 플라세보를 복용할 것임을 미리 밝힌다.",
+                "과민성 대장 증후군 실험에서 대조군의 35%가 개선을 보고했다.",
+                "오픈 플라세보를 복용한 그룹의 개선 보고율은 대조군보다 낮았다.",
+                "플라세보 처방을 하는 것은 아무것도 하지 않는 것과는 차이가 있다."
+            ],
+            answer: 3,
+            expl: "정답: 4번. 지문에 따르면 오픈 플라세보 그룹은 약 59%가 개선을 보고하여, 대조군(35%)보다 확연히 높은 수치를 보였습니다."
+        }
+    ];
+
+    let currentStep = 0;
+
+    function renderQuiz() {
+        const quiz = questions[currentStep];
+        document.getElementById('q-label').innerText = `Q${currentStep + 1}. [${quiz.type}]`;
+        document.getElementById('q-text').innerText = quiz.q;
+        
+        const list = document.getElementById('options-list');
+        list.innerHTML = '';
+        document.getElementById('feedback-box').classList.remove('show');
+
+        quiz.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span class="opt-num">${i + 1}</span><span class="opt-txt">${opt}</span>`;
+            btn.onclick = () => checkAnswer(i, btn);
+            list.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(idx, btn) {
+        const quiz = questions[currentStep];
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.disabled = true);
+
+        const feedbackBox = document.getElementById('feedback-box');
+        const resText = document.getElementById('result-text');
+        const expl = document.getElementById('explanation');
+
+        if(idx === quiz.answer) {
+            btn.classList.add('correct');
+            resText.innerText = "정답입니다! 진실된 믿음의 힘을 이해하셨네요. 💊";
+            resText.style.color = "#81c784";
+        } else {
+            btn.classList.add('wrong');
+            resText.innerText = "틀렸습니다. 지문의 수치와 실험 결과를 다시 확인해 보세요!";
+            resText.style.color = "#e57373";
+            allBtns[quiz.answer].classList.add('correct');
+        }
+
+        expl.innerText = quiz.expl;
+        feedbackBox.classList.add('show');
+        
+        setTimeout(() => {
+            feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    }
+
+    function goToNext() {
+        currentStep++;
+        if(currentStep < questions.length) {
+            renderQuiz();
+            document.getElementById('scroll-area').scrollTop = 0;
+        } else {
+            alert("수고하셨습니다! 오늘의 의학적 분석 학습을 성공적으로 마쳤습니다.");
+            currentStep = 0;
+            renderQuiz();
+        }
+    }
+
+    renderQuiz();
+</script>
+
+</body>
+</html>

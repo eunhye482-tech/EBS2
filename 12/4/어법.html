@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        Literature is not a 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">disposable / disposably</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        carrier of nuggets of information. Literature (as opposed to everyday reading) 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">invites / invite</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        us back again and again 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">to re-experience / re-experience</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">what / that</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        it 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">offers / is offered</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">to reassess / reassessing</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">its / their</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        meanings. Literature 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">continues / continue</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        to communicate meaning and significance over time, and, most 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">remarkably / remarkable</span></span> 
+        <div id="expl-8" class="explanation"></div>, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">to shift / shifted</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        its meaning 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">based / basing</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        on our perspective. We have all 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">had / been had</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        the experience of taking up a classic work of literature after several years and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">finding / found</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        in it details and significance we 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">missed / were missed</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        the first (or fifth) time through. 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">What / That</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        has changed is not the work of literature 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">exactly / exact</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        but our experiences 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">that / what</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        are now 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">reflected / reflecting</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        in the text. One’s perception of Shakespeare’s grand drama on aging under existential threat, King Lear, is a different experience read in one’s twenties than it is in one’s seventies. This is true because reading literature, as opposed to everyday reading, requires full reader participation, activating not just our informational processing skills but our analysis, imagination, and emotions. These change over time in every person, and those changes explain how works of literature are more dynamic than everyday reading.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "disposable", cat: "형용사/부사", desc: "명사인 carrier를 수식하므로 형용사 disposable이 적절합니다." },
+        { ans: "invites", cat: "수 일치", desc: "주어인 Literature는 단수 명사이므로 단수 동사 invites를 씁니다." },
+        { ans: "to re-experience", cat: "준동사", desc: "invite + 목적어 + to부정사 구조로 '~하도록 권하다'는 뜻입니다." },
+        { ans: "what", cat: "접속사", desc: "offers의 목적어가 없는 불완전한 문장을 이끄는 관계대명사입니다." },
+        { ans: "offers", cat: "능동태/수동태", desc: "문학이 가치를 제공하는 능동의 관계이므로 능동태를 씁니다." },
+        { ans: "to reassess", cat: "병렬", desc: "앞의 to re-experience와 and로 연결된 병렬 구조입니다." },
+        { ans: "its", cat: "대명사", desc: "단수 명사인 Literature의 의미를 뜻하므로 소유격 its가 맞습니다." },
+        { ans: "continues", cat: "수 일치", desc: "주어 Literature에 맞춘 단수 동사입니다." },
+        { ans: "remarkably", cat: "형용사/부사", desc: "문장 전체나 이어지는 동사구를 수식하는 부사 자리입니다." },
+        { ans: "to shift", cat: "병렬", desc: "to communicate와 and로 연결되는 병렬 구조입니다." },
+        { ans: "based", cat: "준동사(분사)", desc: "based on(~에 근거하여)은 관용적으로 쓰이는 과거분사 표현입니다." },
+        { ans: "had", cat: "능동태/수동태", desc: "경험을 '가져왔다'는 능동의 현재완료 시제입니다." },
+        { ans: "finding", cat: "병렬", desc: "of 뒤에 걸리는 taking과 and로 연결된 동명사 병렬입니다." },
+        { ans: "missed", cat: "능동태/수동태", desc: "우리가 놓쳤던 것이므로 능동의 과거형 동사가 적절합니다." },
+        { ans: "What", cat: "접속사", desc: "has changed의 주어 역할을 하는 동시에 명사절을 이끄는 관계대명사입니다." },
+        { ans: "exactly", cat: "형용사/부사", desc: "동사구(is not ~)를 수식하거나 문맥을 강조하는 부사 자리입니다." },
+        { ans: "that", cat: "접속사(관계사)", desc: "선행사 experiences를 수식하는 주격 관계대명사입니다." },
+        { ans: "reflected", cat: "능동태/수동태", desc: "경험이 텍스트에 '반영되는' 수동의 관계입니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

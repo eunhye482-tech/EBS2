@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        Sharing meanings and experiences 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">is / are</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        not a simple, automatic process: whenever two or more people observe or 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">participate / participating</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        in the same ongoing event 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">they / it</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        experience 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">it / them</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        from different perspectives, with different histories, with different background knowledge. These differences 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">are / is</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        most glaring when the individuals 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">involved / involving</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        include an infant or very young child and an adult, although an adult 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">arranging / arranged</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        an event for an infant may 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">find / finds</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        it 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">difficult / difficultly</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">to keep / keeping</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        these differences in mind. When 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">giving / given</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        a bath, for example, a parent 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">whose / whom</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        experience with water play 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">has been / was being</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        fun, whose knowledge about the source of the water and its disposition 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">provides / provide</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        confidence, and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">whose / who</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        body control ensures that the baby 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">is safely held / is safely holding</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        and not in danger, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">expects / expect</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        the infant 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">to enjoy / enjoying</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        splashing water. Yet the baby may make it clear (perhaps by terrified crying) that her perspective is quite different from that of the adult. The two share an experience, but not a meaning.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "is", cat: "수 일치", desc: "주어가 동명사구(Sharing ~)이므로 단수 동사 is를 씁니다." },
+        { ans: "participate", cat: "병렬", desc: "observe와 or로 연결되어 주어 people에 걸리는 동사 병렬 구조입니다." },
+        { ans: "they", cat: "대명사", desc: "앞의 복수 주어인 two or more people을 가리킵니다." },
+        { ans: "it", cat: "대명사", desc: "단수 명사인 the same ongoing event를 가리킵니다." },
+        { ans: "are", cat: "수 일치", desc: "주어가 복수 명사인 These differences이므로 복수 동사 are를 씁니다." },
+        { ans: "involved", cat: "준동사(분사)", desc: "'관련된' 개인들이라는 의미로 수동의 의미를 지닌 과거분사가 적절합니다." },
+        { ans: "arranging", cat: "준동사(분사)", desc: "이벤트를 '준비하는' 성인이므로 능동의 의미인 현재분사가 수식합니다." },
+        { ans: "find", cat: "조동사/동사", desc: "조동사 may 뒤에는 동사원형이 와야 합니다." },
+        { ans: "difficult", cat: "형용사/부사", desc: "find + 가목적어(it) + 목적보어(형용사) 구조입니다." },
+        { ans: "to keep", cat: "준동사", desc: "it(가목적어)의 진목적어 역할을 하는 to부정사입니다." },
+        { ans: "giving", cat: "준동사(분사구문)", desc: "부모가 목욕을 '시키는' 능동의 상황이므로 현재분사를 씁니다." },
+        { ans: "whose", cat: "접속사(관계사)", desc: "parent의 경험(experience)을 소유의 관계로 연결하는 소유격 관계대명사입니다." },
+        { ans: "has been", cat: "시제", desc: "과거부터 지금까지 그래왔다는 완료의 상태를 나타냅니다." },
+        { ans: "provides", cat: "수 일치", desc: "관계절의 주어 knowledge가 단수이므로 단수 동사 provides를 씁니다." },
+        { ans: "whose", cat: "접속사(관계사)", desc: "parent의 신체 조절(body control)을 연결하는 소유격 관계대명사입니다." },
+        { ans: "is safely held", cat: "능동태/수동태", desc: "아기가 안전하게 '안겨 있는' 것이므로 수동태가 적절합니다." },
+        { ans: "expects", cat: "수 일치", desc: "문장의 진짜 주어인 a parent가 단수이므로 단수 동사 expects를 씁니다." },
+        { ans: "to enjoy", cat: "준동사", desc: "expect + 목적어 + to부정사 구조로 '~가 ~할 것을 기대하다'는 뜻입니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

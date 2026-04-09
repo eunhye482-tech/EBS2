@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        Reformist approaches 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">assume / assumes</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        that markets could operate in 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">more equitable / more equitably</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        and environmentally reasonable ways, and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">that / what</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        a market is the most 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">efficient / efficiently</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        option available. Yet the logic of market efficiencies generally 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">rotates / rotate</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        on purely 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">monetary / monetarily</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        calculations, effectively 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">reasoning / reasoned</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        in a hall of mirrors and marginalising real social and environmental values. Familiar examples 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">are / is</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        conventional food retailers, such as supermarkets, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">which / what</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        purchase fruit and vegetables as 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">cheaply / cheap</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        as possible. Inexpensive produce might 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">be grown / grow</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        using soil- and water-damaging fertilisers, by poorly 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">paid / paying</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        illegal migrant workers, and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">transported / transporting</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        long distances 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">using / used</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        more cheap labour and environmentally 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">damaging / damaged</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        practices. However, organic farmers can only follow ecologically sound practices and make sure 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">they / it</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        pay 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">their / its</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        workers fair wages if the food costs more, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">meaning / meant</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        supply for an elite demand. By its very nature, one never manages to escape the conundrums that production for trade entails. Real social and environmental values involved in caring for people and Earth highlight the inequities and damage of market-oriented activities.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "assume", cat: "수 일치", desc: "주어가 복수 명사인 approaches이므로 복수 동사 assume을 씁니다." },
+        { ans: "more equitable", cat: "형용사/부사", desc: "명사인 ways를 수식하므로 형용사가 적절합니다." },
+        { ans: "that", cat: "접속사", desc: "assume의 두 번째 목적어 절을 이끄는 접속사입니다." },
+        { ans: "efficient", cat: "형용사/부사", desc: "명사 option을 수식하는 형용사 자리입니다." },
+        { ans: "rotates", cat: "수 일치", desc: "주어가 단수 명사인 the logic이므로 단수 동사 rotates를 씁니다." },
+        { ans: "monetary", cat: "형용사/부사", desc: "명사 calculations를 수식하는 형용사입니다." },
+        { ans: "reasoning", cat: "준동사(분사구문)", desc: "논리(logic)가 추론을 하는 주체이므로 능동의 현재분사를 씁니다." },
+        { ans: "are", cat: "수 일치", desc: "주어가 복수 명사인 Familiar examples이므로 are가 맞습니다." },
+        { ans: "which", cat: "접속사(관계사)", desc: "선행사인 supermarkets를 부연 설명하는 관계대명사의 계속적 용법입니다." },
+        { ans: "cheaply", cat: "형용사/부사", desc: "동사인 purchase를 수식하므로 부사가 적절합니다." },
+        { ans: "be grown", cat: "능동태/수동태", desc: "농산물(produce)은 재배되는 것이므로 수동태를 씁니다." },
+        { ans: "paid", cat: "준동사(분사)", desc: "노동자들이 보수를 '받는' 것이므로 과거분사가 수식합니다." },
+        { ans: "transported", cat: "병렬/태", desc: "be grown과 병렬 구조를 이루며 운송되는 수동의 관계입니다." },
+        { ans: "using", cat: "준동사(분사구문)", desc: "~을 사용하면서라는 의미로 능동의 분사구문입니다." },
+        { ans: "damaging", cat: "준동사(분사)", desc: "관행이 환경에 손상을 '입히는' 능동의 의미로 명사를 수식합니다." },
+        { ans: "they", cat: "대명사", desc: "앞의 복수 명사인 organic farmers를 가리킵니다." },
+        { ans: "their", cat: "대명사", desc: "유기농 농부들의 노동자들이므로 복수 소유격 their를 씁니다." },
+        { ans: "meaning", cat: "준동사(분사구문)", desc: "앞 문장의 내용이 ~을 의미한다는 능동의 결과적 분사구문입니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

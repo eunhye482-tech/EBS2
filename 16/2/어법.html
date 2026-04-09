@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        The human perceptual system 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">is designed / designs</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        to recognize objects under changing illuminations, situations, and contexts. It is 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">extraordinarily / extraordinary</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">adapted / adapting</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        to a 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">constantly / constant</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        changing world. To deal with this uncertainty, the brain 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">uses / use</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        not one, but multiple routes. If one is 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">blocked / blocking</span></span> 
+        <div id="expl-5" class="explanation"></div>, 
+        it 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">takes / is taken</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        another route. This immense flexibility of the brain 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">to rely / relying</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        on changing cues, according to 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">whatever / that</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        is 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">available / availably</span></span> 
+        <div id="expl-9" class="explanation"></div>, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">is known / knows</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        as vicarious functioning. It can 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">be found / find</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        in most biological systems. For instance, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">migrating / migrated</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        birds fly thousands of miles and may rely on the stars 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">to navigate / navigating</span></span> 
+        <div id="expl-13" class="explanation"></div>. 
+        But if it’s a cloudy day, they may instead rely on 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">their / its</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        magnetic sense. Similarly, the brain can recognize a face by the shape of the eyes, nose, and mouth. In 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">extreme / extremely</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        cases, only a few lines 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">are / is</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        sufficient, as when we recognize the face of a celebrity in caricatures 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">made / making</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        with just a few pencil strokes. Face recognition also functions even when parts of a face are covered and internal features such as eyes are hardly visible. In this case, the brain relies on external features such as hair and head shape.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "is designed", cat: "능동태/수동태", desc: "지각 시스템(system)은 인간에 의해 설계된 것이므로 수동태가 적절합니다." },
+        { ans: "extraordinarily", cat: "형용사/부사", desc: "과거분사 형용사인 adapted를 수식하므로 부사가 와야 합니다." },
+        { ans: "adapted", cat: "능동태/수동태", desc: "be adapted to (~에 적응하다)라는 수동 형태의 관용 표현입니다." },
+        { ans: "constantly", cat: "형용사/부사", desc: "현재분사 형용사인 changing을 수식하므로 부사가 적절합니다." },
+        { ans: "uses", cat: "수 일치", desc: "주어가 단수 명사인 the brain이므로 단수 동사 uses를 씁니다." },
+        { ans: "blocked", cat: "능동태/수동태", desc: "경로(one)가 차단되는 수동의 상태이므로 과거분사를 씁니다." },
+        { ans: "takes", cat: "능동태/수동태", desc: "뇌(it)가 다른 경로를 택하는 능동의 주체이므로 능동태를 씁니다." },
+        { ans: "to rely", cat: "준동사", desc: "flexibility를 수식하는 형용사적 용법의 to부정사입니다." },
+        { ans: "whatever", cat: "접속사", desc: "전치사 to의 목적어절을 이끄는 복합관계대명사로 '무엇이든지'라는 뜻입니다." },
+        { ans: "available", cat: "형용사/부사", desc: "be동사 is 뒤의 보어 자리이므로 형용사 available이 적절합니다." },
+        { ans: "is known", cat: "수 일치/태", desc: "문장의 진짜 주어는 flexibility이므로 단수 수동태 동사를 씁니다." },
+        { ans: "be found", cat: "능동태/수동태", desc: "현상(it)은 발견되는 대상이므로 조동사 뒤에 수동태를 씁니다." },
+        { ans: "migrating", cat: "준동사(분사)", desc: "새들이 직접 이주하는 능동의 주체이므로 현재분사가 명사를 수식합니다." },
+        { ans: "to navigate", cat: "준동사", desc: "'항해하기 위해서'라는 목적의 의미를 가진 부사적 용법의 to부정사입니다." },
+        { ans: "their", cat: "대명사", desc: "복수 명사인 birds를 가리키므로 복수 소유격인 their가 맞습니다." },
+        { ans: "extreme", cat: "형용사/부사", desc: "명사 cases를 수식하므로 형용사가 적절합니다." },
+        { ans: "are", cat: "수 일치", desc: "주어인 a few lines는 복수 취급하므로 복수 동사 are를 씁니다." },
+        { ans: "made", cat: "준동사(분사)", desc: "캐리커처는 그려지는(만들어지는) 수동의 대상이므로 과거분사가 수식합니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

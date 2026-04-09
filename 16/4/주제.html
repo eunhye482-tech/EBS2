@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 모의고사 - 준거 집단과 자아</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 나무 테두리 디자인 */
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* 빈티지 녹색 칠판 */
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 20px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        /* 지문 스타일 (전문 반영) */
+        .passage {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #ff9800;
+            word-break: break-word;
+        }
+
+        /* 질문 영역 */
+        .question-container { margin-bottom: 25px; }
+        .q-label { 
+            color: #ff9800; 
+            font-family: 'Nanum Pen Script', cursive; 
+            font-size: 2.2rem; 
+            margin-right: 8px; 
+        }
+        .q-text { 
+            color: #ffeb3b; 
+            font-size: 1.2rem; 
+            font-weight: 700; 
+            line-height: 1.4;
+        }
+
+        /* 오지선다 버튼 */
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            background: linear-gradient(to bottom, #fffde7, #fff59d);
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #fbc02d;
+            transition: all 0.1s;
+            text-align: left;
+            width: 100%;
+        }
+        .option-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #fbc02d; }
+        
+        .option-btn.correct { background: #a5d6a7 !important; box-shadow: 0 5px 0 #66bb6a; }
+        .option-btn.wrong { background: #ef9a9a !important; box-shadow: 0 5px 0 #ef5350; }
+
+        .opt-num {
+            background: #ff9800;
+            color: white;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 0.9rem; font-weight: bold;
+            margin-right: 12px; flex-shrink: 0;
+        }
+        .opt-txt { color: #432818; font-size: 1rem; font-weight: 600; }
+
+        /* 피드백 영역 */
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #ffeb3b;
+            animation: slideUp 0.4s ease;
+        }
+        .feedback-area.show { display: block; }
+        .result-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 8px; }
+        .result-desc { font-size: 0.95rem; color: #ddd; line-height: 1.5; }
+
+        .next-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 15px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #e65100;
+            cursor: pointer;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .blackboard::-webkit-scrollbar { width: 6px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="passage">
+                An in-group can become a reference group, a group that is used as the frame of reference for evaluating one’s own behavior. Members of a volunteer organization, for example, may evaluate themselves by the standards of the group and feel proud about their contribution to a community service project. This positive self-evaluation reflects the normative effect of a reference group whose members share the same view of themselves. If other members of your reference group (say, your parents) have high self-esteem, you, too, are likely to share that norm and have high self-esteem. The normative effect basically involves imitating the reference group. However, reference groups can also have comparison effects and associative effects on self-appraisals. If most of your classmates shine in academic achievement, you are likely to compare yourself with them. As a result, you may have a negative self-evaluation, feeling that your academic performance is not up to par. Being associated with the brilliant group, though, makes you feel proud of yourself, “basking in reflected glory.”
+            </div>
+
+            <div id="quiz-root">
+                <div class="question-container">
+                    <span class="q-label" id="q-label">Q1.</span>
+                    <span class="q-text" id="q-text">질문 로딩 중...</span>
+                </div>
+
+                <div class="options-list" id="options-list"></div>
+
+                <div id="feedback-box" class="feedback-area">
+                    <div id="result-text" class="result-title"></div>
+                    <div id="explanation" class="result-desc"></div>
+                    <button class="next-btn" onclick="goToNext()">다음 문제 풀기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            type: "주제",
+            q: "위 글의 주제로 가장 적절한 것은?",
+            options: [
+                "The evolution of volunteer organizations in modern society",
+                "How reference groups influence individuals' self-appraisal",
+                "Methods for increasing academic achievement among classmates",
+                "The psychological difference between parents and children's self-esteem",
+                "Why 'basking in reflected glory' leads to social conflicts"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 이 글은 준거 집단(Reference Group)이 규범, 비교, 연합 효과를 통해 개인의 자아 평가(self-appraisal)에 어떤 영향을 미치는지 설명하고 있습니다."
+        },
+        {
+            type: "제목",
+            q: "위 글의 제목으로 가장 적절한 것은?",
+            options: [
+                "Imitation: The Only Function of a Reference Group",
+                "Reference Group: A Double-Edged Sword for Self-Evaluation",
+                "Why Your Parents' Self-Esteem Does Not Matter to You",
+                "Academic Shine: The Negative Impact of Brilliant Classmates",
+                "The Normative Effect: Following the Rules of the Crowd"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 준거 집단이 긍정적인 자부심을 줄 수도 있고(규범/연합 효과), 부정적인 평가를 낳을 수도 있는(비교 효과) 양면성을 다룬 제목입니다."
+        },
+        {
+            type: "요지",
+            q: "위 글의 요지로 가장 적절한 것은?",
+            options: [
+                "자원봉사 단체에 가입하는 것은 개인의 자존감을 높이는 유일한 방법이다.",
+                "부모의 자존감이 높으면 자녀는 독립적인 규범을 형성하려는 경향이 강해진다.",
+                "준거 집단은 개인에게 규범을 제시하거나 타인과 비교하게 함으로써 자아 평가에 영향을 준다.",
+                "학업 성취도가 높은 학급 친구들과 자신을 비교하는 것은 항상 긍정적인 결과를 가져온다.",
+                "자신보다 뛰어난 집단에 소속감을 느끼는 것은 실제 개인의 실력 향상과는 무관하다."
+            ],
+            answer: 2,
+            expl: "정답: 3번. 준거 집단이 자아 평가에 미치는 다양한 효과(규범적, 비교적, 연합적 효과)를 종합한 요지입니다."
+        },
+        {
+            type: "함축 의미",
+            q: "밑줄 친 'basking in reflected glory'가 의미하는 바로 가장 적절한 것은?",
+            options: [
+                "자신이 속한 뛰어난 집단의 명성을 통해 자신의 가치를 높게 느끼는 것",
+                "과거의 영광을 잊지 못하고 현재의 삶을 등한시하는 태도",
+                "거울에 비친 자신의 모습을 보며 외모에 대한 자부심을 갖는 행위",
+                "다른 사람의 실수를 발판 삼아 자신의 성공을 돋보이게 만드는 것",
+                "집단 내에서 독보적인 존재가 되기 위해 경쟁자들을 물리치는 과정"
+            ],
+            answer: 0,
+            expl: "정답: 1번. 자신이 직접 성취한 것이 아니더라도, 소속된 집단이 뛰어날 때 그 영광에 편승하여 자부심을 느끼는 심리 상태를 뜻합니다."
+        },
+        {
+            type: "내용 일치",
+            q: "위 글의 내용과 일치하지 않는 것은?",
+            options: [
+                "준거 집단은 자신의 행동을 평가하는 틀(frame of reference)로 사용된다.",
+                "규범적 효과는 기본적으로 준거 집단을 모방하는 것을 포함한다.",
+                "부모의 자존감이 높으면 자녀도 그 규범을 공유하여 자존감이 높을 가능성이 크다.",
+                "뛰어난 친구들과 자신을 비교하는 것은 항상 긍정적인 자아 평가로 이어진다.",
+                "준거 집단은 자아 평가에 규범적 효과뿐만 아니라 비교 및 연합 효과도 미친다."
+            ],
+            answer: 3,
+            expl: "정답: 4번. 지문에 따르면 뛰어난 친구들과 자신을 비교할 경우, 자신의 성과가 기준에 못 미친다고 느껴 부정적인 자아 평가(negative self-evaluation)를 할 수 있다고 설명합니다."
+        }
+    ];
+
+    let currentStep = 0;
+
+    function renderQuiz() {
+        const quiz = questions[currentStep];
+        document.getElementById('q-label').innerText = `Q${currentStep + 1}. [${quiz.type}]`;
+        document.getElementById('q-text').innerText = quiz.q;
+        
+        const list = document.getElementById('options-list');
+        list.innerHTML = '';
+        document.getElementById('feedback-box').classList.remove('show');
+
+        quiz.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span class="opt-num">${i + 1}</span><span class="opt-txt">${opt}</span>`;
+            btn.onclick = () => checkAnswer(i, btn);
+            list.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(idx, btn) {
+        const quiz = questions[currentStep];
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.disabled = true);
+
+        const feedbackBox = document.getElementById('feedback-box');
+        const resText = document.getElementById('result-text');
+        const expl = document.getElementById('explanation');
+
+        if(idx === quiz.answer) {
+            btn.classList.add('correct');
+            resText.innerText = "정답입니다! 집단 심리의 메커니즘을 완벽히 이해하셨네요. 🌟";
+            resText.style.color = "#81c784";
+        } else {
+            btn.classList.add('wrong');
+            resText.innerText = "틀렸습니다. 지문의 세 가지 효과를 다시 한 번 확인해 보세요!";
+            resText.style.color = "#e57373";
+            allBtns[quiz.answer].classList.add('correct');
+        }
+
+        expl.innerText = quiz.expl;
+        feedbackBox.classList.add('show');
+        
+        setTimeout(() => {
+            feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    }
+
+    function goToNext() {
+        currentStep++;
+        if(currentStep < questions.length) {
+            renderQuiz();
+            document.getElementById('scroll-area').scrollTop = 0;
+        } else {
+            alert("수고하셨습니다! 오늘의 사회 심리학 학습을 성공적으로 마쳤습니다.");
+            currentStep = 0;
+            renderQuiz();
+        }
+    }
+
+    renderQuiz();
+</script>
+
+</body>
+</html>

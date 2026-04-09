@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 - 문장 삽입 모의고사 (객관적 진실 편)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 18px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        .question-header {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .q-label { color: #ff9800; font-family: 'Nanum Pen Script', cursive; font-size: 2.2rem; margin-right: 8px; }
+        .q-text { color: #ffeb3b; font-size: 1.0rem; font-weight: 700; line-height: 1.3; }
+
+        .box-sentence {
+            background: #fff9c4;
+            color: #333;
+            padding: 15px;
+            border: 2px dashed #fbc02d;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .passage {
+            font-size: 1.0rem; 
+            line-height: 2.1;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 18px;
+            border-radius: 8px;
+        }
+
+        .q-num {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            background: #ff9800;
+            color: white;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            vertical-align: middle;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .q-num:hover { transform: scale(1.1); background: #f57c00; }
+        .q-num.correct { background: #4caf50 !important; border: 2px solid white; }
+        .q-num.wrong { background: #f44336 !important; border: 2px solid white; opacity: 0.8; }
+        .q-num.disabled { pointer-events: none; }
+
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #ffeb3b;
+        }
+        .feedback-area.show { display: block; }
+        
+        .next-btn {
+            margin-top: 12px; width: 100%; padding: 12px;
+            background: #ff9800; color: white; border: none;
+            border-radius: 10px; font-size: 1.0rem; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 0 #e65100;
+        }
+
+        .blackboard::-webkit-scrollbar { width: 4px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="question-header">
+                <span class="q-label" id="q-label">Q1.</span>
+                <span class="q-text">제시된 문장이 들어갈 번호를 클릭하세요.</span>
+            </div>
+
+            <div class="box-sentence" id="box-sentence"></div>
+            <div class="passage" id="passage-container"></div>
+
+            <div id="feedback-box" class="feedback-area">
+                <div id="result-text" style="font-size: 1.1rem; font-weight: bold; margin-bottom: 8px;"></div>
+                <div id="explanation" style="color: #ddd; line-height: 1.5; font-size: 0.9rem;"></div>
+                <button class="next-btn" onclick="nextQuestion()">다음 문제</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            box: "These accomplishments are made possible by objective truths.",
+            parts: [
+                "It is a myth that all ideas are equally valid, even those with little or no objective proof. The existence of science is the commitment to objective truth.",
+                "After all, science is true: fire is hot, the wheel is efficient, birds and planes can fly, we’ve landed on a comet and traveled to the Moon, antibiotics treat illness, and immunizations keep us from getting sick.",
+                "A plausible theory can, and frequently does, push science forward.",
+                "However, an intuition must be followed with testing that confirms or disproves its veracity.",
+                "If a theory is disproved, one should consider it as a reason to reject or alter the hypothesis, not a justification to just keep firmly holding to it.",
+                "Critical thinking is an absolute must, and we must respect evidence."
+            ],
+            answer: 1, // ①번 뒤 (②번 위치)
+            expl: "주어진 문장의 'These accomplishments(이러한 업적들)'는 앞 문장에 나열된 달 착륙, 항생제 치료, 예방 접종 등의 구체적인 과학적 성과들을 가리킵니다."
+        },
+        {
+            box: "However, an intuition must be followed with testing that confirms or disproves its veracity.",
+            parts: [
+                "The existence of science is the commitment to objective truth. Science is true: fire is hot and immunizations keep us from getting sick.",
+                "These accomplishments are made possible by objective truths.",
+                "A plausible theory can, and frequently does, push science forward.",
+                "If a theory is disproved, one should consider it as a reason to reject or alter the hypothesis, not a justification to keep firmly holding to it.",
+                "Critical thinking is an absolute must, and we must respect evidence.",
+                "Without testing and evidence, intuition is useful, but it is never the ultimate word."
+            ],
+            answer: 2, // ②번 뒤 (③번 위치)
+            expl: "그럴듯한 이론(intuition/theory)이 과학을 진보시킨다는 긍정적 진술(②번 앞) 뒤에, '하지만(However)' 반드시 검증이 뒤따라야 한다는 제약 조건을 제시하는 흐름이 자연스럽습니다."
+        },
+        {
+            box: "If a theory is disproved, one should consider it as a reason to reject or alter the hypothesis, not a justification to just keep firmly holding to the hypothesis because you are instinctively wedded to it.",
+            parts: [
+                "A plausible theory can push science forward. However, an intuition must be followed with testing that confirms or disproves its veracity.",
+                "Testing is the rigorous process that separates scientific truth from mere speculation.",
+                "Evidence provides the objective foundation upon which we build our understanding of reality.",
+                "Critical thinking is an absolute must, and we must respect evidence.",
+                "It’s the only reason for anyone to trust anything about reality.",
+                "Without testing and evidence, intuition is useful, but it is never the ultimate word."
+            ],
+            answer: 0, // 첫 번째 번호 (①번 위치)
+            expl: "앞 문장에서 언급된 'disproves its veracity(진실성을 반증하다)'라는 개념을 구체화하여, 이론이 틀렸을 때(disproved) 취해야 할 올바른 과학적 태도를 설명하는 문장입니다."
+        },
+        {
+            box: "Critical thinking is an absolute must, and we must respect evidence.",
+            parts: [
+                "After all, science is true, and these accomplishments are made possible by objective truths.",
+                "A plausible theory must be followed with testing that confirms or disproves its veracity.",
+                "If a theory is disproved, one should consider it as a reason to reject or alter the hypothesis.",
+                "It’s the only reason for anyone to trust anything about reality.",
+                "Without testing and evidence, intuition is useful, but it is never the ultimate word.",
+                "Ultimately, science remains our most reliable tool for navigating the physical world."
+            ],
+            answer: 2, // ②번 뒤 (③번 위치)
+            expl: "이론을 기각하거나 수정해야 한다는 구체적 방법론 뒤에, 이를 아우르는 원칙인 '비판적 사고'와 '증거 존중'을 선언하는 ③번 위치가 적합하며, 뒤의 'It(증거 존중)'과 연결됩니다."
+        },
+        {
+            box: "Without testing and evidence, intuition is useful, but it is never the ultimate word.",
+            parts: [
+                "The existence of science is the commitment to objective truth.",
+                "An intuition must be followed with testing that confirms or disproves its veracity.",
+                "If a theory is disproved, one should reject or alter the hypothesis.",
+                "Critical thinking is an absolute must, and we must respect evidence.",
+                "It’s the only reason for anyone to trust anything about reality.",
+                "The quest for knowledge is a continuous journey of refining our understanding."
+            ],
+            answer: 4, // ④번 뒤 (⑤번 위치)
+            expl: "지문의 전체 내용을 요약하며, 직관의 유용성은 인정하되 검증과 증거가 없는 한 그것이 '최종 결론(ultimate word)'이 될 수 없음을 명시하는 결론부인 ⑤번이 가장 적절합니다."
+        }
+    ];
+
+    let currentIdx = 0;
+    const labels = ["①", "②", "③", "④", "⑤"];
+
+    function render() {
+        const q = questions[currentIdx];
+        document.getElementById('q-label').innerText = `Q${currentIdx + 1}.`;
+        document.getElementById('box-sentence').innerText = q.box;
+        document.getElementById('feedback-box').classList.remove('show');
+
+        const container = document.getElementById('passage-container');
+        container.innerHTML = '';
+
+        q.parts.forEach((text, i) => {
+            const txtSpan = document.createElement('span');
+            txtSpan.innerText = text + " ";
+            container.appendChild(txtSpan);
+
+            if (i < 5) {
+                const numSpan = document.createElement('span');
+                numSpan.className = 'q-num';
+                numSpan.innerText = labels[i];
+                numSpan.onclick = () => check(i, numSpan);
+                container.appendChild(numSpan);
+            }
+        });
+        document.getElementById('scroll-area').scrollTop = 0;
+    }
+
+    function check(idx, el) {
+        const q = questions[currentIdx];
+        const all = document.querySelectorAll('.q-num');
+        all.forEach(n => n.classList.add('disabled'));
+
+        const res = document.getElementById('result-text');
+        if (idx === q.answer) {
+            el.classList.add('correct');
+            res.innerText = "정답입니다! 객관적 증거를 잘 찾으셨네요. 🔭";
+            res.style.color = "#81c784";
+        } else {
+            el.classList.add('wrong');
+            all[q.answer].classList.add('correct');
+            res.innerText = "틀렸습니다. 논리적 인과 관계를 다시 살펴보세요.";
+            res.style.color = "#e57373";
+        }
+
+        document.getElementById('explanation').innerText = q.expl;
+        document.getElementById('feedback-box').classList.add('show');
+        
+        setTimeout(() => {
+            document.getElementById('feedback-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 150);
+    }
+
+    function nextQuestion() {
+        currentIdx = (currentIdx + 1) % questions.length;
+        render();
+    }
+
+    render();
+</script>
+
+</body>
+</html>

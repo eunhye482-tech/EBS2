@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        Even outdoors, although climate (including temperature) 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">is / are</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        usually 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">regarded / regarding</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        as beyond the control of man, localized temperature control is 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">sometimes / sometime</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        effective on a microclimate scale. Vancouver, Canada, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">is / are</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        a few miles north of the 49th parallel, about 60 miles farther north than Minot, North Dakota, with 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">its / their</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        legendary harsh winter temperatures. But constant foehn winds 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">off / of</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        the Pacific Ocean 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">make / makes</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        Vancouver winters 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">mild / mildly</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        and wet, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">although / despite</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        sunshine is scant. When I 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">had / have had</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        a garden there in the late 1940s, a neighbor used to 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">say / saying</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        that I “cheated God” 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">to bring / bringing</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        in my lettuce and tomatoes 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">earlier / early</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        than anyone else. The bed in 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">which / that</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        the vegetables grew 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">was banked / banked</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        toward the south at approximately 50 degrees, and the area between the plants was 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">covered / covering</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        with flat stones, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">gathered / gathering</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        from the nearby beach, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">to maximize / maximizing</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        soil heating from the weak late winter–early spring sun.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "is", cat: "수 일치", desc: "주어가 단수인 climate이므로 is가 적절합니다." },
+        { ans: "regarded", cat: "능동태/수동태", desc: "기후가 간주되는 것이므로 수동태(be regarded as)가 맞습니다." },
+        { ans: "sometimes", cat: "형용사/부사", desc: "빈도부사인 '때때로'의 의미로는 sometimes를 씁니다." },
+        { ans: "is", cat: "수 일치", desc: "주어 Vancouver(도시명)는 단수 취급합니다." },
+        { ans: "its", cat: "대명사", desc: "단수 명사인 Minot(도시)를 가리키므로 its를 씁니다." },
+        { ans: "off", cat: "전치사", desc: "~로부터 떨어진 곳에서 불어오는 의미로 off가 쓰였습니다." },
+        { ans: "make", cat: "수 일치", desc: "주어가 복수 명사인 winds이므로 동사는 make입니다." },
+        { ans: "mild", cat: "형용사/부사", desc: "make + 목적어 + 목적보어(형용사) 구조입니다." },
+        { ans: "although", cat: "접속사", desc: "뒤에 주어+동사가 있는 절이 오므로 접속사 although가 맞습니다." },
+        { ans: "had", cat: "수 일치/시제", desc: "특정 과거 시점(1940s)을 나타내므로 단순 과거형을 씁니다." },
+        { ans: "say", cat: "준동사", desc: "used to 뒤에는 동사원형이 와서 과거의 습관을 나타냅니다." },
+        { ans: "to bring", cat: "준동사", desc: "'~하기 위하여'라는 목적의 의미를 가진 to부정사 자리입니다." },
+        { ans: "earlier", cat: "형용사/부사", desc: "than과 어울리는 비교급 형태가 필요합니다." },
+        { ans: "which", cat: "접속사(관계사)", desc: "전치사 in 뒤에는 관계대명사 which만 올 수 있습니다(that은 불가능)." },
+        { ans: "was banked", cat: "능동태/수동태", desc: "침상(bed)이 기울어진 상태로 만들어진 것이므로 수동태를 씁니다." },
+        { ans: "covered", cat: "능동태/수동태", desc: "면적이 덮여 있는 상태를 나타내는 수동태(be covered with)입니다." },
+        { ans: "gathered", cat: "준동사(분사)", desc: "돌들은 해변에서 '수집된' 것이므로 과거분사가 수식합니다." },
+        { ans: "to maximize", cat: "준동사", desc: "'최대화하기 위하여'라는 목적의 to부정사입니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

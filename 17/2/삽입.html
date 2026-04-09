@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 - 문장 삽입 모의고사 (상징과 현실 편)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 18px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        .question-header {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .q-label { color: #ff9800; font-family: 'Nanum Pen Script', cursive; font-size: 2.2rem; margin-right: 8px; }
+        .q-text { color: #ffeb3b; font-size: 1.0rem; font-weight: 700; line-height: 1.3; }
+
+        .box-sentence {
+            background: #fff9c4;
+            color: #333;
+            padding: 15px;
+            border: 2px dashed #fbc02d;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .passage {
+            font-size: 1.0rem; 
+            line-height: 2.1;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 18px;
+            border-radius: 8px;
+        }
+
+        .q-num {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            background: #ff9800;
+            color: white;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            vertical-align: middle;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .q-num:hover { transform: scale(1.1); background: #f57c00; }
+        .q-num.correct { background: #4caf50 !important; border: 2px solid white; }
+        .q-num.wrong { background: #f44336 !important; border: 2px solid white; opacity: 0.8; }
+        .q-num.disabled { pointer-events: none; }
+
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #ffeb3b;
+        }
+        .feedback-area.show { display: block; }
+        
+        .next-btn {
+            margin-top: 12px; width: 100%; padding: 12px;
+            background: #ff9800; color: white; border: none;
+            border-radius: 10px; font-size: 1.0rem; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 0 #e65100;
+        }
+
+        .blackboard::-webkit-scrollbar { width: 4px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="question-header">
+                <span class="q-label" id="q-label">Q1.</span>
+                <span class="q-text">제시된 문장이 들어갈 번호를 본문에서 클릭하세요.</span>
+            </div>
+
+            <div class="box-sentence" id="box-sentence"></div>
+            <div class="passage" id="passage-container"></div>
+
+            <div id="feedback-box" class="feedback-area">
+                <div id="result-text" style="font-size: 1.1rem; font-weight: bold; margin-bottom: 8px;"></div>
+                <div id="explanation" style="color: #ddd; line-height: 1.5; font-size: 0.9rem;"></div>
+                <button class="next-btn" onclick="nextQuestion()">다음 문제</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            box: "Subjective reality is acquired and shared through agreed-upon symbols, especially language.",
+            parts: [
+                "Symbols are instrumental in helping people derive meanings from social situations.",
+                "In social encounters, each person’s interpretation of a situation becomes a subjective reality from that person’s viewpoint.",
+                "We often assume that what we consider to be “reality” is shared by others; however, this assumption is often incorrect.",
+                "If a person shouts “Fire!” in a crowded movie theater, that language produces the same response in all of those who hear it.",
+                "When people in a group do not share the same meaning for a symbol, however, confusion results.",
+                "How people interpret the messages they receive becomes their subjective reality and influences their behavior."
+            ],
+            answer: 2, // ③번 위치
+            expl: "우리의 현실 인식이 타인과 공유된다는 가정이 틀릴 수 있다는 점(②번 뒤)을 지적한 후, 그럼에도 불구하고 주관적 현실이 언어와 같은 '약속된 상징'을 통해 획득되고 공유된다는 원리를 설명하는 ③번 위치가 정답입니다. 뒤의 'Fire!' 사례가 이를 뒷받침합니다."
+        },
+        {
+            box: "If a person shouts “Fire!” in a crowded movie theater, for example, that language produces the same response (attempting to escape) in all of those who hear and understand it.",
+            parts: [
+                "Each person’s definition of a given situation becomes a subjective reality from that person’s viewpoint.",
+                "Subjective reality is acquired and shared through agreed-upon symbols, especially language.",
+                "When people in a group do not share the same meaning for a given symbol, however, confusion results.",
+                "For example, people who did not know the meaning of the word fire would not know what the commotion was about.",
+                "How people interpret the messages they receive becomes their subjective reality.",
+                "Ultimately, the effectiveness of communication depends on this shared symbolic vocabulary."
+            ],
+            answer: 2, // ③번 위치
+            expl: "주관적 현실이 언어라는 상징을 통해 공유된다는 일반적 진술(②번 앞) 뒤에, 영화관에서 '불이야!'라고 외치는 구체적인 '예시(for example)'를 통해 상징의 공유가 어떤 결과를 낳는지 보여주는 ③번 위치가 정답입니다."
+        },
+        {
+            box: "When people in a group do not share the same meaning for a given symbol, however, confusion results; for example, people who did not know the meaning of the word fire would not know what the commotion was about.",
+            parts: [
+                "Subjective reality is shared through language, which allows for coordinated action in many social contexts.",
+                "Shouting “Fire!” in a movie theater produces a collective response among those who understand the term.",
+                "How people interpret the messages they receive and the situations they encounter becomes their subjective reality.",
+                "This may strongly influence their behavior in ways that are unpredictable to outside observers.",
+                "The breakdown of shared meaning is a primary cause of social misunderstanding.",
+                "Symbols must be mutually understood for a society to function smoothly and predictably."
+            ],
+            answer: 2, // ③번 위치
+            expl: "언어 상징이 잘 공유되어 같은 반응을 보이는 상황(②번 앞)과 대조적으로('however'), 상징의 의미를 공유하지 못했을 때 발생하는 '혼란'의 사례를 제시하는 ③번 위치가 정답입니다."
+        },
+        {
+            box: "How people interpret the messages they receive and the situations they encounter becomes their subjective reality and may strongly influence their behavior.",
+            parts: [
+                "Subjective reality is acquired through agreed-upon symbols, especially language.",
+                "If people share the meaning of a word like “Fire!”, they will respond in a similar, coordinated manner.",
+                "When they do not share the same meaning, confusion results as people fail to understand the commotion.",
+                "This interpretive process is continuous and shapes our entire experience of the social world.",
+                "We do not merely react to objective stimuli, but to the meanings we assign to them.",
+                "The study of symbols is therefore central to understanding human interaction and social structure."
+            ],
+            answer: 3, // ④번 위치
+            expl: "상징의 공유가 잘 될 때와 안 될 때의 사례들(③번 앞)을 모두 종합하여, 결국 개인의 '해석'이 주관적 현실이 되고 그것이 행동에 강력한 영향을 미친다는 지문의 최종 결론을 내리는 ④번 위치가 정답입니다."
+        },
+        {
+            box: "We often assume that what we consider to be “reality” is shared by others; however, this assumption is often incorrect.",
+            parts: [
+                "Symbols are instrumental in helping people derive meanings from social situations.",
+                "In social encounters, each person’s interpretation becomes a subjective reality from their own viewpoint.",
+                "Subjective reality is acquired and shared through agreed-upon symbols, especially language.",
+                "If a person shouts “Fire!”, that language produces a collective response in those who understand it.",
+                "When meanings are not shared, however, confusion results among the participants.",
+                "This discrepancy highlights the need for constant negotiation of meaning in daily life."
+            ],
+            answer: 2, // ③번 위치
+            expl: "개인마다 주관적 현실이 다르다는 점(②번 앞)을 언급한 뒤, 우리가 현실을 공유하고 있다는 착각이 틀릴 수 있음을 경고하며 '상징을 통한 공유'라는 해결책으로 넘어가기 전 징검다리 역할을 하는 ③번 위치가 정답입니다."
+        }
+    ];
+
+    let currentIdx = 0;
+    const labels = ["①", "②", "③", "④", "⑤"];
+
+    function render() {
+        const q = questions[currentIdx];
+        document.getElementById('q-label').innerText = `Q${currentIdx + 1}.`;
+        document.getElementById('box-sentence').innerText = q.box;
+        document.getElementById('feedback-box').classList.remove('show');
+
+        const container = document.getElementById('passage-container');
+        container.innerHTML = '';
+
+        q.parts.forEach((text, i) => {
+            const txtSpan = document.createElement('span');
+            txtSpan.innerText = text + " ";
+            container.appendChild(txtSpan);
+
+            if (i < 5) {
+                const numSpan = document.createElement('span');
+                numSpan.className = 'q-num';
+                numSpan.innerText = labels[i];
+                numSpan.onclick = () => check(i, numSpan);
+                container.appendChild(numSpan);
+            }
+        });
+        document.getElementById('scroll-area').scrollTop = 0;
+    }
+
+    function check(idx, el) {
+        const q = questions[currentIdx];
+        const all = document.querySelectorAll('.q-num');
+        all.forEach(n => n.classList.add('disabled'));
+
+        const res = document.getElementById('result-text');
+        const correctLabel = labels[q.answer];
+
+        if (idx === q.answer) {
+            el.classList.add('correct');
+            res.innerText = "정답입니다! 상징과 주관적 현실의 관계를 완벽히 이해하셨네요. 🔥";
+            res.style.color = "#81c784";
+        } else {
+            el.classList.add('wrong'); // 선택한 오답 빨간색
+            all[q.answer].classList.add('correct'); // 실제 정답 번호 초록색 하이라이트
+            res.innerText = `틀렸습니다. 정답은 ${correctLabel}번입니다.`;
+            res.style.color = "#e57373";
+        }
+
+        document.getElementById('explanation').innerText = q.expl;
+        document.getElementById('feedback-box').classList.add('show');
+        
+        setTimeout(() => {
+            document.getElementById('feedback-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 150);
+    }
+
+    function nextQuestion() {
+        currentIdx = (currentIdx + 1) % questions.length;
+        render();
+    }
+
+    render();
+</script>
+
+</body>
+</html>

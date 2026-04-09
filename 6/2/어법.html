@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        When people 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">are asked / ask</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        what any painting 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">hanging / hung</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        on a gallery wall 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">means / mean</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        , no matter how 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">strange / strangely</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        it might appear, as is the case with most abstract-expressionist paintings, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">they / it</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        tend to find meaning in 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">it / them</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        because 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">it / they</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        is 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">located / locating</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        in a gallery. Consider a soda can 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">found / finding</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        thrown away on a city street. If we 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">were / are</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        to come across this item on the street, we would no doubt view 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">it / them</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        as a piece of garbage or rubbish. But if we 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">saw / see</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        the very same object on a pedestal, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">displayed / displaying</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        in an art gallery, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">signed / signing</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        by some artist, and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">given / giving</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        a title such as “Waste,” then we would interpret 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">its / their</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        meaning in a 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">vastly / vast</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        different way. We would, in fact, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">be inclined / incline</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        to interpret it as an artistic form, descrying a throw-away or materialistic society. Clearly, the can’s location on a sidewalk versus its display on a pedestal in an art gallery will influence how we will interpret it.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "are asked", cat: "능동태/수동태", desc: "사람들이 질문을 '받는' 것이므로 수동태가 적절합니다." },
+        { ans: "hanging", cat: "준동사(분사)", desc: "그림이 벽에 '걸려 있는' 능동의 상태를 나타내는 현재분사입니다." },
+        { ans: "means", cat: "수 일치", desc: "의문절의 주어 any painting이 단수이므로 means가 맞습니다." },
+        { ans: "strange", cat: "형용사/부사", desc: "appear는 2형식 동사로 보어 자리에 형용사가 필요합니다." },
+        { ans: "they", cat: "대명사", desc: "문장의 주어인 people을 가리키는 복수 대명사입니다." },
+        { ans: "it", cat: "대명사", desc: "앞의 단수 명사인 any painting을 가리킵니다." },
+        { ans: "it", cat: "수 일치", desc: "동사 is와 호응하며 앞의 painting을 가리키는 단수 주어입니다." },
+        { ans: "located", cat: "능동태/수동태", desc: "사물이 특정 장소에 '위치하게 된' 것이므로 수동태를 씁니다." },
+        { ans: "found", cat: "준동사(분사)", desc: "캔이 '발견된' 것이므로 수동의 의미인 과거분사로 수식합니다." },
+        { ans: "were", cat: "도치/가정법", desc: "가정법 과거 구문(If 주어 과거동사)으로 현재 사실과 반대되는 가정을 나타냅니다." },
+        { ans: "it", cat: "대명사", desc: "단수 명사인 this item을 가리킵니다." },
+        { ans: "saw", cat: "시제/가정법", desc: "뒤의 주절(would interpret)과 호응하는 가정법 과거 시제입니다." },
+        { ans: "displayed", cat: "준동사(분사)", desc: "대상(object)이 '전시된' 수동의 관계이므로 과거분사를 씁니다." },
+        { ans: "signed", cat: "병렬/분사", desc: "displayed와 병렬 구조를 이루며 대상을 수식하는 과거분사입니다." },
+        { ans: "given", cat: "병렬/분사", desc: "displayed, signed와 병렬인 과거분사로 '제목이 부여된'의 의미입니다." },
+        { ans: "its", cat: "대명사", desc: "단수 명사인 the very same object를 가리키는 소유격입니다." },
+        { ans: "vastly", cat: "형용사/부사", desc: "형용사 different를 수식하므로 부사 형태가 적절합니다." },
+        { ans: "be inclined", cat: "능동태/수동태", desc: "be inclined to(~하는 경향이 있다)는 관용적 수동 형태입니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

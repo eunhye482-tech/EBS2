@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 - 문장 삽입 모의고사 (도덕적 분개 편)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 18px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        .question-header {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .q-label { color: #ff9800; font-family: 'Nanum Pen Script', cursive; font-size: 2.2rem; margin-right: 8px; }
+        .q-text { color: #ffeb3b; font-size: 1.0rem; font-weight: 700; line-height: 1.3; }
+
+        .box-sentence {
+            background: #fff9c4;
+            color: #333;
+            padding: 15px;
+            border: 2px dashed #fbc02d;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .passage {
+            font-size: 1.0rem; 
+            line-height: 2.1;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 18px;
+            border-radius: 8px;
+        }
+
+        .q-num {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            background: #ff9800;
+            color: white;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            vertical-align: middle;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .q-num:hover { transform: scale(1.1); background: #f57c00; }
+        .q-num.correct { background: #4caf50 !important; border: 2px solid white; }
+        .q-num.wrong { background: #f44336 !important; border: 2px solid white; opacity: 0.8; }
+        .q-num.disabled { pointer-events: none; }
+
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #ffeb3b;
+        }
+        .feedback-area.show { display: block; }
+        
+        .next-btn {
+            margin-top: 12px; width: 100%; padding: 12px;
+            background: #ff9800; color: white; border: none;
+            border-radius: 10px; font-size: 1.0rem; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 0 #e65100;
+        }
+
+        .blackboard::-webkit-scrollbar { width: 4px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="question-header">
+                <span class="q-label" id="q-label">Q1.</span>
+                <span class="q-text">제시된 문장이 들어갈 번호를 본문에서 클릭하세요.</span>
+            </div>
+
+            <div class="box-sentence" id="box-sentence"></div>
+            <div class="passage" id="passage-container"></div>
+
+            <div id="feedback-box" class="feedback-area">
+                <div id="result-text" style="font-size: 1.1rem; font-weight: bold; margin-bottom: 8px;"></div>
+                <div id="explanation" style="color: #ddd; line-height: 1.5; font-size: 0.9rem;"></div>
+                <button class="next-btn" onclick="nextQuestion()">다음 문제</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            box: "When we witness unjust harm, whether someone committing interpersonal violence or obvious cheating, we have an embodied physical reaction.",
+            parts: [
+                "Moral outrage is the psychological tool that motivates people to punish wrongdoers, even at cost or risk to themselves.",
+                "It is a “commitment device,” something that commits people to punishment, even though trying to punish someone can be dangerous.",
+                "We get angry, our blood pressure spikes, our heart beats faster; we thirst for retribution.",
+                "Outrage leads us to ignore the irrationality of risking our own safety to punish someone.",
+                "In any single situation, there is rarely an immediate personal benefit for meting out punishment.",
+                "But the powerful feeling of outrage leads us to momentarily forget this unfavorable evaluation and get involved."
+            ],
+            answer: 2, // ③번 위치
+            expl: "도덕적 분개가 처벌을 강제하는 '전념 장치(commitment device)'라는 설명(②번 앞) 뒤에, 우리가 부당함을 목격했을 때 나타나는 구체적인 '신체적 반응(physical reaction)'을 도입하는 ③번 위치가 정답입니다. 뒤의 분노와 혈압 상승 수치가 이를 뒷받침합니다."
+        },
+        {
+            box: "Outrage leads us to ignore the irrationality of risking our own safety to punish someone.",
+            parts: [
+                "Moral outrage is the psychological tool that motivates people to punish wrongdoers even at personal risk.",
+                "We witness unjust harm and have an embodied physical reaction: we get angry, our blood pressure spikes, and our heart beats faster.",
+                "In any single situation, there is rarely an immediate personal benefit for meting out punishment, and often there is real risk.",
+                "The person you are serving justice against could lash out at you or get revenge in the future.",
+                "But the powerful feeling of outrage leads us to momentarily forget this unfavorable evaluation.",
+                "Science reveals how this feeling and forgetting is essential for maintaining a cooperative society."
+            ],
+            answer: 2, // ③번 위치
+            expl: "신체적 분노 반응(②번 앞)이 일어난 후, 그 결과로 처벌을 위해 자신의 안전을 거는 '비합리성'을 무시하게 된다는 내용이 오는 ③번 위치가 적절합니다. 뒤이어 처벌의 구체적 위험성이 설명됩니다."
+        },
+        {
+            box: "In any single situation, there is rarely an immediate personal benefit for meting out punishment, and often there is real risk.",
+            parts: [
+                "Moral outrage motivates people to punish wrongdoers even at cost or risk to themselves.",
+                "Outrage leads us to ignore the irrationality of risking our own safety to punish someone.",
+                "The person you are serving justice against could lash out at you or get revenge in the future.",
+                "But the powerful feeling of outrage leads us to momentarily forget this unfavorable evaluation and get involved.",
+                "Science reveals how this feeling and forgetting is essential for maintaining a cooperative society.",
+                "Punishment acts as a deterrent that keeps selfish behavior in check within the group."
+            ],
+            answer: 2, // ③번 위치
+            expl: "안전을 무시하게 된다는 언급(②번 앞) 뒤에, 실제로 처벌 행위가 개인에게 이득이 없고 위험하다는 구체적 상황을 제시하는 ③번 위치가 정답입니다. 뒤의 'lash out(달려들다)'이 이 위험을 구체화합니다."
+        },
+        {
+            box: "But the powerful feeling of outrage leads us to momentarily forget this unfavorable evaluation and get involved in a situation we would be better off avoiding.",
+            parts: [
+                "Outrage leads us to ignore the irrationality of risking our own safety to punish someone.",
+                "There is rarely an immediate personal benefit for meting out punishment, because the target could get revenge in the future.",
+                "This evaluation suggests that avoiding the conflict would be the most logical choice for an individual.",
+                "Science reveals how this feeling and forgetting is essential for maintaining a cooperative society.",
+                "The evolution of moral outrage serves a greater collective purpose beyond individual survival.",
+                "Cooperation flourishes when individuals are willing to enforce norms even at a personal cost."
+            ],
+            answer: 3, // ④번 위치
+            expl: "처벌의 위험성과 부정적 평가(③번 앞)를 언급한 뒤, '하지만(But)' 분개의 감정이 이러한 부정적 평가를 잊게 만들고 개입하게 한다는 반전의 연결이 일어나는 ④번 위치가 적합합니다."
+        },
+        {
+            box: "Science reveals how this feeling and forgetting is essential for maintaining a cooperative society.",
+            parts: [
+                "Moral outrage commits people to punishment even when it is dangerous to do so.",
+                "Outrage leads us to ignore the risks and ignore the lack of immediate personal benefit.",
+                "The feeling leads us to forget the unfavorable evaluation and get involved in serving justice.",
+                "This mechanism ensures that cheaters and wrongdoers do not go unpunished in a group.",
+                "Without it, the selfish would exploit the altruistic until cooperation collapsed.",
+                "Therefore, our emotional reactions serve as the bedrock of large-scale human interaction."
+            ],
+            answer: 3, // ④번 위치
+            expl: "분개로 인해 위험을 잊고 개입한다는 심리학적 기제(③번 앞)가 설명된 후, 이것이 왜 필요한지에 대한 '과학적 결론(협력 사회 유지에 필수적)'을 내리는 ④번 위치가 정답입니다."
+        }
+    ];
+
+    let currentIdx = 0;
+    const labels = ["①", "②", "③", "④", "⑤"];
+
+    function render() {
+        const q = questions[currentIdx];
+        document.getElementById('q-label').innerText = `Q${currentIdx + 1}.`;
+        document.getElementById('box-sentence').innerText = q.box;
+        document.getElementById('feedback-box').classList.remove('show');
+
+        const container = document.getElementById('passage-container');
+        container.innerHTML = '';
+
+        q.parts.forEach((text, i) => {
+            const txtSpan = document.createElement('span');
+            txtSpan.innerText = text + " ";
+            container.appendChild(txtSpan);
+
+            if (i < 5) {
+                const numSpan = document.createElement('span');
+                numSpan.className = 'q-num';
+                numSpan.innerText = labels[i];
+                numSpan.onclick = () => check(i, numSpan);
+                container.appendChild(numSpan);
+            }
+        });
+        document.getElementById('scroll-area').scrollTop = 0;
+    }
+
+    function check(idx, el) {
+        const q = questions[currentIdx];
+        const all = document.querySelectorAll('.q-num');
+        all.forEach(n => n.classList.add('disabled'));
+
+        const res = document.getElementById('result-text');
+        const correctLabel = labels[q.answer];
+
+        if (idx === q.answer) {
+            el.classList.add('correct');
+            res.innerText = "정답입니다! 정의의 사도가 되셨군요. ⚖️";
+            res.style.color = "#81c784";
+        } else {
+            el.classList.add('wrong'); // 고른 오답 빨간색
+            all[q.answer].classList.add('correct'); // 실제 정답 초록색 하이라이트
+            res.innerText = `틀렸습니다. 정답은 ${correctLabel}번입니다.`;
+            res.style.color = "#e57373";
+        }
+
+        document.getElementById('explanation').innerText = q.expl;
+        document.getElementById('feedback-box').classList.add('show');
+        
+        setTimeout(() => {
+            document.getElementById('feedback-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 150);
+    }
+
+    function nextQuestion() {
+        currentIdx = (currentIdx + 1) % questions.length;
+        render();
+    }
+
+    render();
+</script>
+
+</body>
+</html>

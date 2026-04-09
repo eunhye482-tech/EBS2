@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        Many crises today, such as the Great Recession, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">are / is</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        simply too big and too overwhelming for you 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">to completely comprehend / completely comprehend</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        , much less control. Crises of this ilk 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">are / is</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        precisely the kind 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">that / what</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        can easily engulf you with destructive reactions 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">that / what</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        interfere with your ability 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">to overcome / overcoming</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">them / it</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        . 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">Focusing / Focused</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        on these oversized crises will exacerbate the natural psychological, emotional, and physical reactions you 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">are going / are gone</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        to experience. With these sorts of crises, your best chance 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">is / are</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        to identify 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">those / that</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        aspects 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">that / what</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        are within your control. Then, you can break down the 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">bigger / biggest</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        crisis into smaller, more 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">manageable / manageably</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        problems toward 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">which / that</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        you can direct your energy and find solutions. For example, think back to the Great Recession. Although you probably 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">didn’t have / haven't had</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        the ability to influence economic policy, you 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">were able / are able</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        to revisit the distribution of 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">your / yours</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        investments and choose to create a more diverse portfolio.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "are", cat: "수 일치", desc: "주어가 복수 명사인 Many crises이므로 복수 동사 are를 씁니다." },
+        { ans: "to completely comprehend", cat: "준동사", desc: "too ~ for A to B 구문으로, 'A가 B하기에는 너무 ~하다'는 의미입니다." },
+        { ans: "are", cat: "수 일치", desc: "주어 Crises에 맞춘 복수 동사입니다." },
+        { ans: "that", cat: "접속사(관계사)", desc: "선행사 the kind가 있고 뒤가 불완전한 주격 관계대명사 자리입니다." },
+        { ans: "that", cat: "접속사(관계사)", desc: "선행사 reactions를 수식하는 관계대명사입니다." },
+        { ans: "to overcome", cat: "준동사", desc: "ability를 수식하는 형용사적 용법의 to부정사입니다." },
+        { ans: "them", cat: "대명사", desc: "앞의 복수 명사인 reactions를 가리키므로 복수형 them이 맞습니다." },
+        { ans: "Focusing", cat: "준동사", desc: "문장의 주어 역할을 하는 동명사 주어입니다." },
+        { ans: "are going", cat: "능동태/수동태", desc: "미래의 일을 나타내는 be going to 구문의 능동 형태입니다." },
+        { ans: "is", cat: "수 일치", desc: "주어가 단수인 your best chance이므로 단수 동사 is가 적절합니다." },
+        { ans: "those", cat: "대명사", desc: "복수 명사인 aspects를 가리키는 지시형용사 those입니다." },
+        { ans: "that", cat: "접속사(관계사)", desc: "선행사 aspects가 있고 뒤에 동사가 이어지는 주격 관계대명사입니다." },
+        { ans: "bigger", cat: "형용사/부사", desc: "뒤의 smaller와 짝을 이루는 비교급 형태가 맥락상 어울립니다." },
+        { ans: "manageable", cat: "형용사/부사", desc: "명사 problems를 수식하는 형용사 자리입니다." },
+        { ans: "which", cat: "접속사(관계사)", desc: "전치사 toward의 목적어 역할을 하는 관계대명사 which입니다." },
+        { ans: "didn’t have", cat: "시제", desc: "Great Recession이라는 과거 시점을 언급하므로 단순 과거형을 씁니다." },
+        { ans: "were able", cat: "시제", desc: "과거의 능력이나 상황을 서술하므로 과거 동사를 사용합니다." },
+        { ans: "your", cat: "대명사", desc: "명사 investments를 수식하는 소유격 대명사 자리입니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

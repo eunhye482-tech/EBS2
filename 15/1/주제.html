@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 모의고사 - 운동과 감정</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 나무 테두리 디자인 */
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* 빈티지 녹색 칠판 */
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 20px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        /* 지문 스타일 (전문 반영) */
+        .passage {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #ff9800;
+            word-break: break-word;
+        }
+
+        /* 질문 영역 */
+        .question-container { margin-bottom: 25px; }
+        .q-label { 
+            color: #ff9800; 
+            font-family: 'Nanum Pen Script', cursive; 
+            font-size: 2.2rem; 
+            margin-right: 8px; 
+        }
+        .q-text { 
+            color: #ffeb3b; 
+            font-size: 1.2rem; 
+            font-weight: 700; 
+            line-height: 1.4;
+        }
+
+        /* 오지선다 버튼 */
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            background: linear-gradient(to bottom, #fffde7, #fff59d);
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #fbc02d;
+            transition: all 0.1s;
+            text-align: left;
+            width: 100%;
+        }
+        .option-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #fbc02d; }
+        
+        .option-btn.correct { background: #a5d6a7 !important; box-shadow: 0 5px 0 #66bb6a; }
+        .option-btn.wrong { background: #ef9a9a !important; box-shadow: 0 5px 0 #ef5350; }
+
+        .opt-num {
+            background: #ff9800;
+            color: white;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 0.9rem; font-weight: bold;
+            margin-right: 12px; flex-shrink: 0;
+        }
+        .opt-txt { color: #432818; font-size: 1rem; font-weight: 600; }
+
+        /* 피드백 영역 */
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #ffeb3b;
+            animation: slideUp 0.4s ease;
+        }
+        .feedback-area.show { display: block; }
+        .result-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 8px; }
+        .result-desc { font-size: 0.95rem; color: #ddd; line-height: 1.5; }
+
+        .next-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 15px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #e65100;
+            cursor: pointer;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .blackboard::-webkit-scrollbar { width: 6px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="passage">
+                The use of emotion may be important in exercise, particularly among exercise instructors. It has been established that exercise enjoyment is associated with increased exercise adherence. An instructor might aim to foster enjoyment in his participants as a means of increasing their program adherence. An instructor also might use emotion to elicit greater effort from her students. Cuing participants to feelings of anger and frustration during a cardio kickboxing class might lead to more effortful punches and stronger kicks. Conversely, a yoga instructor could use positive emotions or emotion-related states such as compassion to get her students in the proper mindset for their practice. Evidently, there are a number of ways emotions could be used to enhance performance in sport and exercise.
+            </div>
+
+            <div id="quiz-root">
+                <div class="question-container">
+                    <span class="q-label" id="q-label">Q1.</span>
+                    <span class="q-text" id="q-text">질문 로딩 중...</span>
+                </div>
+
+                <div class="options-list" id="options-list"></div>
+
+                <div id="feedback-box" class="feedback-area">
+                    <div id="result-text" class="result-title"></div>
+                    <div id="explanation" class="result-desc"></div>
+                    <button class="next-btn" onclick="goToNext()">다음 문제 풀기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            type: "주제",
+            q: "위 글의 주제로 가장 적절한 것은?",
+            options: [
+                "The physiological benefits of high-intensity cardio exercises",
+                "How exercise instructors can use emotions to improve performance",
+                "Why negative emotions like anger should be avoided in sport",
+                "The correlation between yoga practice and emotional stability",
+                "Various methods to track participant adherence in fitness programs"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 이 글은 운동 강사가 즐거움, 분노, 자비 등 다양한 감정을 활용해 운동 효과와 지속력을 높이는 방법을 다루고 있습니다."
+        },
+        {
+            type: "제목",
+            q: "위 글의 제목으로 가장 적절한 것은?",
+            options: [
+                "Kickboxing vs. Yoga: Which One Provides More Enjoyment?",
+                "Emotion: A Strategic Tool for Enhanced Exercise Performance",
+                "Why Adherence is the Most Difficult Part of Any Workout",
+                "How to Train Instructors to Control Their Own Emotions",
+                "Positive Energy: The Only Key to Physical Strength"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 운동 성과를 높이기 위한 전략적 도구로서의 감정 활용을 잘 나타낸 제목입니다."
+        },
+        {
+            type: "요지",
+            q: "위 글의 요지로 가장 적절한 것은?",
+            options: [
+                "운동의 즐거움은 참가자들이 중도에 포기하게 만드는 주된 원인이다.",
+                "요가 강사는 학생들의 근력을 키우기 위해 분노를 유발해야 한다.",
+                "적절한 감정 자극은 운동 지속력을 높이고 수행 능력을 향상시킬 수 있다.",
+                "운동 중 느끼는 모든 감정은 신체적 퍼포먼스에 방해가 될 뿐이다.",
+                "강사는 감정을 사용하기보다 정확한 자세 교정에만 집중해야 한다."
+            ],
+            answer: 2,
+            expl: "정답: 3번. 감정을 적절히 활용하면 운동 지속 의지(adherence)와 노력의 강도를 조절할 수 있다는 것이 요지입니다."
+        },
+        {
+            type: "함축 의미",
+            q: "밑줄 친 'adherence'가 운동 문맥에서 의미하는 바로 가장 적절한 것은?",
+            options: [
+                "운동 도중 장비를 안전하게 사용하는 수칙 준수",
+                "정해진 운동 프로그램을 중단하지 않고 꾸준히 지속함",
+                "강사의 명령에 조건 없이 복종하는 태도",
+                "운동 직후 근육이 팽창하여 나타나는 생리적 현상",
+                "스포츠 경기에서 심판의 판정에 승복하는 스포츠맨십"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 운동 문맥에서 'adherence'는 운동 계획이나 프로그램을 포기하지 않고 성실히 수행하며 지속하는 것을 의미합니다."
+        },
+        {
+            type: "내용 일치",
+            q: "위 글의 내용과 일치하지 않는 것은?",
+            options: [
+                "운동의 즐거움은 운동을 꾸준히 지속하는 것과 관련이 있다.",
+                "강사는 학생들의 더 큰 노력을 끌어내기 위해 감정을 사용할 수 있다.",
+                "킥복싱 수업에서 분노의 감정은 더 강력한 펀치와 킥으로 이어질 수 있다.",
+                "요가 강사는 자비와 같은 상태를 이용해 적절한 마음가짐을 갖게 한다.",
+                "부정적인 감정은 어떤 상황에서도 운동 성과를 향상시킬 수 없다."
+            ],
+            answer: 4,
+            expl: "정답: 5번. 지문에 따르면 킥복싱 수업에서 분노(anger)나 좌절(frustration) 같은 감정을 활용해 더 큰 노력을 유도할 수 있다고 했습니다."
+        }
+    ];
+
+    let currentStep = 0;
+
+    function renderQuiz() {
+        const quiz = questions[currentStep];
+        document.getElementById('q-label').innerText = `Q${currentStep + 1}. [${quiz.type}]`;
+        document.getElementById('q-text').innerText = quiz.q;
+        
+        const list = document.getElementById('options-list');
+        list.innerHTML = '';
+        document.getElementById('feedback-box').classList.remove('show');
+
+        quiz.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span class="opt-num">${i + 1}</span><span class="opt-txt">${opt}</span>`;
+            btn.onclick = () => checkAnswer(i, btn);
+            list.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(idx, btn) {
+        const quiz = questions[currentStep];
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.disabled = true);
+
+        const feedbackBox = document.getElementById('feedback-box');
+        const resText = document.getElementById('result-text');
+        const expl = document.getElementById('explanation');
+
+        if(idx === quiz.answer) {
+            btn.classList.add('correct');
+            resText.innerText = "정답입니다! 감정 활용의 전략을 완벽히 이해하셨네요. 🧘‍♂️";
+            resText.style.color = "#81c784";
+        } else {
+            btn.classList.add('wrong');
+            resText.innerText = "틀렸습니다. 지문의 감정 활용 사례를 다시 한 번 확인해 보세요!";
+            resText.style.color = "#e57373";
+            allBtns[quiz.answer].classList.add('correct');
+        }
+
+        expl.innerText = quiz.expl;
+        feedbackBox.classList.add('show');
+        
+        setTimeout(() => {
+            feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    }
+
+    function goToNext() {
+        currentStep++;
+        if(currentStep < questions.length) {
+            renderQuiz();
+            document.getElementById('scroll-area').scrollTop = 0;
+        } else {
+            alert("수고하셨습니다! 오늘의 감정 분석 학습을 성공적으로 마쳤습니다.");
+            currentStep = 0;
+            renderQuiz();
+        }
+    }
+
+    renderQuiz();
+</script>
+
+</body>
+</html>

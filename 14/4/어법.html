@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        The importance of 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">what / that</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        a reader 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">brings / bring</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        to the page 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">is highlighted / highlights</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        in a study 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">discussed / discussing</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        by Hirsch in The Knowledge Deficit. This study 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">consisted / was consisted</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        of two groups of students 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">who / which</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">were asked / asked</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        to read a passage about baseball. The first group 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">was made / made</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        up of strong readers 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">who / which</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">knew / know</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        little about baseball. The second group 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">was composed / composed</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        of 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">struggling / struggled</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        readers who 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">were / was</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        knowledgeable about baseball. After 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">reading / read</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        the passage, students in each group 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">had / were had</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        their comprehension 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">tested / testing</span></span> 
+        <div id="expl-15" class="explanation"></div>. 
+        Guess which group scored 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">higher / highly</span></span> 
+        <div id="expl-16" class="explanation"></div>? 
+        The struggling readers. Having strong reading skills 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">was / were</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        not enough for the students who came to the page with a knowledge deficit about the topic. Though the second group of readers were not strong readers, their prior knowledge enabled them to outscore readers with far better abilities. Prior knowledge, or, in the case of the good readers, the lack of prior knowledge, was the x-factor.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "what", cat: "접속사", desc: "brings의 목적어가 없는 불완전한 문장을 이끌며 전치사 of의 목적어절을 만드는 관계대명사입니다." },
+        { ans: "brings", cat: "수 일치", desc: "관계절의 주어 a reader가 단수이므로 단수 동사 brings를 씁니다." },
+        { ans: "is highlighted", cat: "능동태/수동태", desc: "중요성(The importance)은 강조되는 대상이므로 수동태가 적절합니다." },
+        { ans: "discussed", cat: "준동사(분사)", desc: "Hirsch에 의해 '논의된' 연구이므로 과거분사가 수식합니다." },
+        { ans: "consisted", cat: "능동태/수동태", desc: "consist of(~로 구성되다)는 자동사로 수동태를 쓰지 않습니다." },
+        { ans: "who", cat: "접속사(관계사)", desc: "선행사가 사람(students)이므로 관계대명사 who를 사용합니다." },
+        { ans: "were asked", cat: "능동태/수동태", desc: "학생들이 읽으라고 요청을 '받은' 것이므로 수동태가 맞습니다." },
+        { ans: "was made", cat: "능동태/수동태", desc: "그룹이 구성된 수동의 상태를 나타냅니다. (be made up of)" },
+        { ans: "who", cat: "접속사(관계사)", desc: "선행사 strong readers를 수식하는 주격 관계대명사입니다." },
+        { ans: "knew", cat: "시제", desc: "실험 당시의 과거 상황을 서술하므로 과거형을 씁니다." },
+        { ans: "was composed", cat: "능동태/수동태", desc: "그룹이 ~로 구성되었다는 의미의 수동 표현입니다. (be composed of)" },
+        { ans: "struggling", cat: "준동사(분사)", desc: "읽기에 '어려움을 겪는' 독자들이라는 능동 의미의 현재분사 수식입니다." },
+        { ans: "were", cat: "수 일치", desc: "관계대명사 who의 선행사가 복수 명사 readers이므로 복수 동사 were를 씁니다." },
+        { ans: "reading", cat: "준동사", desc: "전치사 After의 목적어 역할을 하는 동명사입니다." },
+        { ans: "had", cat: "능동태/수동태", desc: "학생들이 테스트를 보게 했다는 사역의 의미를 담은 능동 과거 동사입니다." },
+        { ans: "tested", cat: "준동사", desc: "had + 목적어 + 과거분사(p.p.) 구조로 '목적어(이해도)가 테스트 되게 하다'는 뜻입니다." },
+        { ans: "higher", cat: "형용사/부사", desc: "동사 scored를 수식하며 '더 높게'라는 의미를 지닌 비교급 부사입니다." },
+        { ans: "was", cat: "수 일치", desc: "주어가 동명사구(Having ~)이므로 단수 동사 was를 씁니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 모의고사 - 도덕적 분노의 기능</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 나무 테두리 디자인 */
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* 빈티지 녹색 칠판 */
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 20px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        /* 지문 스타일 (전문 반영) */
+        .passage {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #ff9800;
+            word-break: break-word;
+        }
+
+        /* 질문 영역 */
+        .question-container { margin-bottom: 25px; }
+        .q-label { 
+            color: #ff9800; 
+            font-family: 'Nanum Pen Script', cursive; 
+            font-size: 2.2rem; 
+            margin-right: 8px; 
+        }
+        .q-text { 
+            color: #ffeb3b; 
+            font-size: 1.2rem; 
+            font-weight: 700; 
+            line-height: 1.4;
+        }
+
+        /* 오지선다 버튼 */
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            background: linear-gradient(to bottom, #fffde7, #fff59d);
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #fbc02d;
+            transition: all 0.1s;
+            text-align: left;
+            width: 100%;
+        }
+        .option-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #fbc02d; }
+        
+        .option-btn.correct { background: #a5d6a7 !important; box-shadow: 0 5px 0 #66bb6a; }
+        .option-btn.wrong { background: #ef9a9a !important; box-shadow: 0 5px 0 #ef5350; }
+
+        .opt-num {
+            background: #ff9800;
+            color: white;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 0.9rem; font-weight: bold;
+            margin-right: 12px; flex-shrink: 0;
+        }
+        .opt-txt { color: #432818; font-size: 1rem; font-weight: 600; }
+
+        /* 하단 피드백 영역 */
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #ffeb3b;
+            animation: slideUp 0.4s ease;
+        }
+        .feedback-area.show { display: block; }
+        .result-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 8px; }
+        .result-desc { font-size: 0.95rem; color: #ddd; line-height: 1.5; }
+
+        .next-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 15px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #e65100;
+            cursor: pointer;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 스크롤바 디자인 */
+        .blackboard::-webkit-scrollbar { width: 6px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="passage">
+                Moral outrage is the psychological tool that motivates people to punish wrongdoers, even at cost or risk to themselves. It is a “commitment device,” something that commits people to punishment, even though trying to punish someone can be dangerous. When we witness unjust harm, whether someone committing interpersonal violence or obvious cheating, we have an embodied physical reaction. We get angry, our blood pressure spikes, our heart beats faster; we thirst for retribution. Outrage leads us to ignore the irrationality of risking our own safety to punish someone. In any single situation, there is rarely an immediate personal benefit for meting out punishment, and often there is real risk, because the person you are serving justice against could lash out at you or get revenge in the future. But the powerful feeling of outrage leads us to momentarily forget this unfavorable evaluation and get involved in a situation we would be better off avoiding, and science reveals how this feeling and forgetting is essential for maintaining a cooperative society.
+            </div>
+
+            <div id="quiz-root">
+                <div class="question-container">
+                    <span class="q-label" id="q-label">Q1.</span>
+                    <span class="q-text" id="q-text">질문 로딩 중...</span>
+                </div>
+
+                <div class="options-list" id="options-list"></div>
+
+                <div id="feedback-box" class="feedback-area">
+                    <div id="result-text" class="result-title"></div>
+                    <div id="explanation" class="result-desc"></div>
+                    <button class="next-btn" onclick="goToNext()">다음 문제 풀기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            type: "주제",
+            q: "위 글의 주제로 가장 적절한 것은?",
+            options: [
+                "The biological origins of interpersonal violence",
+                "The role of moral outrage in maintaining social cooperation",
+                "Ways to avoid dangerous situations in a lawless society",
+                "The irrationality of taking revenge in personal relationships",
+                "How to lower blood pressure during stressful encounters"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 이 글은 도덕적 분노가 위험을 감수하고서라도 처벌을 수행하게 함으로써 사회적 협력을 유지하는 역할을 한다는 점을 설명합니다."
+        },
+        {
+            type: "제목",
+            q: "위 글의 제목으로 가장 적절한 것은?",
+            options: [
+                "Retribution: A Self-Destructive Path to Future Revenge",
+                "Why Our Hearts Beat Faster: The Science of Cheating",
+                "Moral Outrage: A Costly Tool for a Cooperative Society",
+                "Rational Thinking: The Best Way to Avoid Conflict",
+                "Ignoring Danger: The Psychological Weakness of Humans"
+            ],
+            answer: 2,
+            expl: "정답: 3번. 도덕적 분노가 개인에게는 비용(위험)이 따르지만 사회적으로는 협력을 돕는 도구라는 핵심 내용을 잘 담은 제목입니다."
+        },
+        {
+            type: "요지",
+            q: "위 글의 요지로 가장 적절한 것은?",
+            options: [
+                "개인의 안전을 위해 도덕적 분노를 억제하는 것이 합리적이다.",
+                "부당한 피해를 목격했을 때 신체적 반응을 조절하는 훈련이 필요하다.",
+                "가해자에 대한 처벌은 즉각적인 개인적 보상을 가져오는 경우가 드물다.",
+                "도덕적 분노는 위험을 잊게 하여 사회적 협력 유지에 필수적인 처벌을 가능케 한다.",
+                "과거의 원한을 갚으려는 행위는 사회적 갈등을 유발하는 주요 원인이다."
+            ],
+            answer: 3,
+            expl: "정답: 4번. 도덕적 분노가 위험에 대한 불리한 평가를 일시적으로 잊게 함으로써 협력 사회 유지를 위한 처벌을 수행하게 한다는 것이 요지입니다."
+        },
+        {
+            type: "함축 의미",
+            q: "밑줄 친 'commitment device'가 의미하는 바로 가장 적절한 것은?",
+            options: [
+                "범죄를 저지르지 않겠다고 스스로 약속하게 만드는 윤리적 강령",
+                "자신의 안전을 최우선으로 고려하게 만드는 지능적인 판단 장치",
+                "위험이 따르더라도 처벌을 수행하도록 밀어붙이는 심리적 기제",
+                "타인의 감정에 공감하여 평화로운 해결책을 찾게 돕는 도구",
+                "법적 처벌 수위를 결정하는 데 사용되는 객관적인 증거물"
+            ],
+            answer: 2,
+            expl: "정답: 3번. 위험하거나 위험할 수 있는 상황에서도 처벌이라는 행위에 전념하게 만드는 심리적 장치를 의미합니다."
+        },
+        {
+            type: "내용 일치",
+            q: "위 글의 내용과 일치하지 않는 것은?",
+            options: [
+                "도덕적 분노는 가해자를 처벌하도록 동기를 부여하는 심리학적 도구이다.",
+                "부당한 행위를 목격하면 혈압 상승이나 심박수 증가 같은 신체적 반응이 나타난다.",
+                "처벌을 내리는 상황에서 즉각적인 개인적 보상을 얻는 경우는 거의 없다.",
+                "도덕적 분노는 처벌 과정에서 발생할 수 있는 위험을 더욱 철저히 계산하게 만든다.",
+                "분노 때문에 위험을 잊고 사건에 개입하는 것은 과학적으로 협력 사회 유지에 중요하다."
+            ],
+            answer: 3,
+            expl: "정답: 4번. 지문에 따르면 분노는 위험에 대한 불리한 평가를 '일시적으로 잊게(momentarily forget)' 만든다고 했으므로, 더 철저히 계산하게 만든다는 설명은 틀렸습니다."
+        }
+    ];
+
+    let currentStep = 0;
+
+    function renderQuiz() {
+        const quiz = questions[currentStep];
+        document.getElementById('q-label').innerText = `Q${currentStep + 1}. [${quiz.type}]`;
+        document.getElementById('q-text').innerText = quiz.q;
+        
+        const list = document.getElementById('options-list');
+        list.innerHTML = '';
+        document.getElementById('feedback-box').classList.remove('show');
+
+        quiz.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span class="opt-num">${i + 1}</span><span class="opt-txt">${opt}</span>`;
+            btn.onclick = () => checkAnswer(i, btn);
+            list.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(idx, btn) {
+        const quiz = questions[currentStep];
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.disabled = true);
+
+        const feedbackBox = document.getElementById('feedback-box');
+        const resText = document.getElementById('result-text');
+        const expl = document.getElementById('explanation');
+
+        if(idx === quiz.answer) {
+            btn.classList.add('correct');
+            resText.innerText = "정답입니다! 정의로운 통찰력을 가지셨군요. ⚖️";
+            resText.style.color = "#81c784";
+        } else {
+            btn.classList.add('wrong');
+            resText.innerText = "틀렸습니다. 분노의 역설적인 기능을 다시 생각해보세요!";
+            resText.style.color = "#e57373";
+            allBtns[quiz.answer].classList.add('correct');
+        }
+
+        expl.innerText = quiz.expl;
+        feedbackBox.classList.add('show');
+        
+        setTimeout(() => {
+            feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    }
+
+    function goToNext() {
+        currentStep++;
+        if(currentStep < questions.length) {
+            renderQuiz();
+            document.getElementById('scroll-area').scrollTop = 0;
+        } else {
+            alert("수고하셨습니다! 모든 수능 영어 분석을 성공적으로 마쳤습니다.");
+            currentStep = 0;
+            renderQuiz();
+        }
+    }
+
+    renderQuiz();
+</script>
+
+</body>
+</html>

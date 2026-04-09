@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        It is a myth 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">that / what</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        all ideas are 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">equally / equal</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        valid, even 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">those / that</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        with little or no objective proof. The existence of science 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">is / are</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        the commitment to objective truth. After all, science is true: fire is hot, the wheel is efficient, birds and planes can fly, we’ve 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">landed / been landed</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        on a comet and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">traveled / traveling</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        to the Moon, antibiotics treat illness, and immunizations keep us from 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">getting / get</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        sick. These accomplishments 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">are made / made</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        possible by objective truths. A plausible theory can, and frequently 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">does / is</span></span>, 
+        <div id="expl-8" class="explanation"></div>
+        push science forward. However, an intuition must 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">be followed / follow</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        with testing that 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">confirms / confirm</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        or disproves 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">its / their</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        veracity. If a theory 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">is disproved / disproves</span></span>, 
+        <div id="expl-12" class="explanation"></div>
+        one should consider it as a reason to reject or 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">alter / altering</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        the hypothesis, not a justification to just keep firmly 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">holding / to hold</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        to the hypothesis because you are 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">instinctively / instinctive</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        wedded to 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">it / them</span></span>. 
+        <div id="expl-16" class="explanation"></div>
+        Critical thinking is an absolute must, and we must respect evidence. It’s the only reason for anyone 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">to trust / trust</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        anything about reality. Without
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "that", cat: "접속사", desc: "가주어 it의 진주어 역할을 하는 명사절 접속사입니다." },
+        { ans: "equally", cat: "형용사/부사", desc: "형용사 valid를 수식하므로 부사가 적절합니다." },
+        { ans: "those", cat: "대명사", desc: "앞의 복수 명사 ideas를 대신하므로 those를 씁니다." },
+        { ans: "is", cat: "수 일치", desc: "주어가 단수인 The existence입니다." },
+        { ans: "landed", cat: "능동태/수동태", desc: "land(착륙하다)는 자동사로 쓰여 완료형 능동태가 맞습니다." },
+        { ans: "traveled", cat: "병렬", desc: "have landed와 병렬 구조를 이루는 과거분사입니다." },
+        { ans: "getting", cat: "준동사", desc: "전치사 from 뒤에는 동명사가 와야 합니다." },
+        { ans: "are made", cat: "능동태/수동태", desc: "업적은 만들어지는 것이므로 수동태가 적절합니다." },
+        { ans: "does", cat: "도치/강조/대동사", desc: "앞의 동사 push를 강조하거나 대신하는 조동사 does입니다." },
+        { ans: "be followed", cat: "능동태/수동태", desc: "직관은 테스트에 의해 뒤따라와야 하는 것이므로 수동태입니다." },
+        { ans: "confirms", cat: "수 일치", desc: "주격 관계대명사 that의 선행사가 단수인 testing입니다." },
+        { ans: "its", cat: "대명사", desc: "단수 명사인 intuition의 진실성을 뜻하므로 its가 맞습니다." },
+        { ans: "is disproved", cat: "능동태/수동태", desc: "이론이 반증되는 것이므로 수동태를 씁니다." },
+        { ans: "alter", cat: "병렬", desc: "to reject와 or로 연결되는 동사원형 자리입니다." },
+        { ans: "holding", cat: "준동사", desc: "keep + (목적어) + ~ing 구문으로 '계속 ~하다'를 뜻합니다." },
+        { ans: "instinctively", cat: "형용사/부사", desc: "형용사(과거분사) wedded를 수식하는 부사 자리입니다." },
+        { ans: "it", cat: "대명사", desc: "단수 명사인 the hypothesis를 가리킵니다." },
+        { ans: "to trust", cat: "준동사", desc: "앞의 reason을 수식하는 형용사적 용법의 to부정사입니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

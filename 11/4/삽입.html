@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 - 문장 삽입 모의고사 (분량 왜곡과 비만 편)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 18px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        .question-header {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .q-label { color: #ff9800; font-family: 'Nanum Pen Script', cursive; font-size: 2.2rem; margin-right: 8px; }
+        .q-text { color: #ffeb3b; font-size: 1.0rem; font-weight: 700; line-height: 1.3; }
+
+        .box-sentence {
+            background: #fff9c4;
+            color: #333;
+            padding: 15px;
+            border: 2px dashed #fbc02d;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .passage {
+            font-size: 1.0rem; 
+            line-height: 2.1;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 18px;
+            border-radius: 8px;
+        }
+
+        .q-num {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            background: #ff9800;
+            color: white;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            vertical-align: middle;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .q-num:hover { transform: scale(1.1); background: #f57c00; }
+        .q-num.correct { background: #4caf50 !important; border: 2px solid white; }
+        .q-num.wrong { background: #f44336 !important; border: 2px solid white; opacity: 0.8; }
+        .q-num.disabled { pointer-events: none; }
+
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #ffeb3b;
+        }
+        .feedback-area.show { display: block; }
+        
+        .next-btn {
+            margin-top: 12px; width: 100%; padding: 12px;
+            background: #ff9800; color: white; border: none;
+            border-radius: 10px; font-size: 1.0rem; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 0 #e65100;
+        }
+
+        .blackboard::-webkit-scrollbar { width: 4px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="question-header">
+                <span class="q-label" id="q-label">Q1.</span>
+                <span class="q-text">제시된 문장이 들어갈 번호를 본문에서 클릭하세요.</span>
+            </div>
+
+            <div class="box-sentence" id="box-sentence"></div>
+            <div class="passage" id="passage-container"></div>
+
+            <div id="feedback-box" class="feedback-area">
+                <div id="result-text" style="font-size: 1.1rem; font-weight: bold; margin-bottom: 8px;"></div>
+                <div id="explanation" style="color: #ddd; line-height: 1.5; font-size: 0.9rem;"></div>
+                <button class="next-btn" onclick="nextQuestion()">다음 문제</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            box: "Consider this: Adults today consume an average of 300 more calories per day than they did in the year 1985.",
+            parts: [
+                "Many factors contribute to Americans’ growing waistlines, but the incidence of obesity has increased in parallel with increasing portion sizes.",
+                "Is this just a coincidence, or do larger portion sizes have something to do with it?",
+                "In almost every eating situation, we are now confronted by huge portions, which are perceived as “normal” or “a great value.”",
+                "Americans have created the perception that large portion sizes are appropriate, creating an environment of portion distortion.",
+                "We find portion distortions in restaurants, where the jumbo-sized portions are consistently 250 percent larger than the regular portions.",
+                "We even find portion distortions in our homes, where the sizes of our bowls and glasses have steadily increased."
+            ],
+            answer: 1, // ②번 위치
+            expl: "비만과 1인분 분량 증가가 병행한다는 첫 문장(①번 앞) 뒤에, 구체적인 수치(300칼로리 증가)를 들어 '한번 생각해보라(Consider this)'며 독자의 주의를 끄는 ②번 위치가 가장 적합합니다."
+        },
+        {
+            box: "We even find portion distortions in our homes, where the sizes of our bowls and glasses have steadily increased and where the surface area of the average dinner plate has increased 36 percent since 1960.",
+            parts: [
+                "Americans have created the perception that large portion sizes are appropriate, creating an environment of portion distortion.",
+                "We find portion distortions in restaurants, where the jumbo-sized portions are consistently 250 percent larger than the regular portions.",
+                "Research shows that people unintentionally consume more calories when offered larger portions.",
+                "Consuming larger portion sizes can contribute to positive energy balance, which, over time, leads to weight gain.",
+                "Ultimately, this pattern of eating can result in obesity for a large segment of the population.",
+                "Health experts emphasize the need to recalibrate our understanding of a proper meal size."
+            ],
+            answer: 2, // ③번 위치
+            expl: "식당에서의 분량 왜곡 사례(②번 앞)에 이어, '집에서도(even in our homes)' 분량 왜곡이 발견된다는 추가 사례를 제시하는 ③번 위치가 정답입니다."
+        },
+        {
+            box: "Research shows that people unintentionally consume more calories when offered larger portions.",
+            parts: [
+                "Americans have created an environment of portion distortion in restaurants and homes.",
+                "The sizes of our bowls and dinner plates have increased significantly over the last few decades.",
+                "Consuming larger portion sizes can contribute to positive energy balance, which leads to weight gain.",
+                "Ultimately, this persistent energy surplus can result in obesity.",
+                "Reducing portion sizes is thus a critical step in managing weight at the population level.",
+                "Public health campaigns must address this psychological bias toward 'more is better'."
+            ],
+            answer: 2, // ③번 위치
+            expl: "집과 식당의 분량 왜곡 실태를 설명한 뒤(②번 앞), 이러한 큰 분량이 제공될 때 사람들이 '의도치 않게(unintentionally)' 더 많은 칼로리를 섭취한다는 연구 결과를 연결하는 ③번 위치가 논리적입니다."
+        },
+        {
+            box: "Is this just a coincidence, or do larger portion sizes have something to do with it?",
+            parts: [
+                "The incidence of obesity has increased in parallel with increasing portion sizes.",
+                "Adults today consume an average of 300 more calories per day than they did in the year 1985.",
+                "In almost every eating situation, we are now confronted by huge portions, which are perceived as “normal.”",
+                "Americans have created the perception that large portion sizes are appropriate, creating an environment of portion distortion.",
+                "We find portion distortions in restaurants where jumbo-sized portions are 250 percent larger.",
+                "Research shows that people consume more calories when offered larger portions, ultimately leading to obesity."
+            ],
+            answer: 2, // ③번 위치
+            expl: "칼로리 섭취가 늘었다는 통계(②번 앞)를 제시한 후, 이것이 우연인지 아니면 분량 증가 때문인지 의문을 제기하며 본격적인 분석으로 들어가는 ③번 위치가 적합합니다."
+        },
+        {
+            box: "Consuming larger portion sizes can contribute to positive energy balance, which, over time, leads to weight gain and ultimately can result in obesity.",
+            parts: [
+                "Research shows that people unintentionally consume more calories when offered larger portions.",
+                "This behavior is linked to the biological tendency to eat what is put in front of us.",
+                "Our ancestors benefited from this instinct in times of scarcity, but it is a disadvantage today.",
+                "Addressing the root causes of portion distortion is essential for long-term health.",
+                "Small changes in plate size can lead to significant reductions in daily calorie intake.",
+                "Education and awareness are our best tools in the fight against the obesity epidemic."
+            ],
+            answer: 0, // ①번 위치 (문맥상 결론 도출을 위해 맨 앞 활용)
+            expl: "큰 분량 제공 시 칼로리 섭취가 늘어난다는 사실(①번 뒤)을 바탕으로, 이것이 어떻게 체중 증가와 비만이라는 생물학적 결과로 이어지는지 메커니즘을 설명하는 결론적 문장으로 ①번 앞(지문 전체의 결말부 흐름)이 정답입니다."
+        }
+    ];
+
+    let currentIdx = 0;
+    const labels = ["①", "②", "③", "④", "⑤"];
+
+    function render() {
+        const q = questions[currentIdx];
+        document.getElementById('q-label').innerText = `Q${currentIdx + 1}.`;
+        document.getElementById('box-sentence').innerText = q.box;
+        document.getElementById('feedback-box').classList.remove('show');
+
+        const container = document.getElementById('passage-container');
+        container.innerHTML = '';
+
+        q.parts.forEach((text, i) => {
+            const txtSpan = document.createElement('span');
+            txtSpan.innerText = text + " ";
+            container.appendChild(txtSpan);
+
+            if (i < 5) {
+                const numSpan = document.createElement('span');
+                numSpan.className = 'q-num';
+                numSpan.innerText = labels[i];
+                numSpan.onclick = () => check(i, numSpan);
+                container.appendChild(numSpan);
+            }
+        });
+        document.getElementById('scroll-area').scrollTop = 0;
+    }
+
+    function check(idx, el) {
+        const q = questions[currentIdx];
+        const all = document.querySelectorAll('.q-num');
+        all.forEach(n => n.classList.add('disabled'));
+
+        const res = document.getElementById('result-text');
+        const correctLabel = labels[q.answer];
+
+        if (idx === q.answer) {
+            el.classList.add('correct');
+            res.innerText = "정답입니다! 건강한 독해 실력을 갖추셨네요. 🥗";
+            res.style.color = "#81c784";
+        } else {
+            el.classList.add('wrong'); // 고른 오답 빨간색
+            all[q.answer].classList.add('correct'); // 실제 정답 초록색 하이라이트
+            res.innerText = `틀렸습니다. 정답은 ${correctLabel}번입니다.`;
+            res.style.color = "#e57373";
+        }
+
+        document.getElementById('explanation').innerText = q.expl;
+        document.getElementById('feedback-box').classList.add('show');
+        
+        setTimeout(() => {
+            document.getElementById('feedback-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 150);
+    }
+
+    function nextQuestion() {
+        currentIdx = (currentIdx + 1) % questions.length;
+        render();
+    }
+
+    render();
+</script>
+
+</body>
+</html>

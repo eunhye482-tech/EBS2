@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 모의고사 - 음악 감독과 관객</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 나무 테두리 디자인 */
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* 빈티지 녹색 칠판 */
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 20px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        /* 지문 스타일 (전문 반영) */
+        .passage {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #ff9800;
+            word-break: break-word;
+        }
+
+        /* 질문 영역 */
+        .question-container { margin-bottom: 25px; }
+        .q-label { 
+            color: #ff9800; 
+            font-family: 'Nanum Pen Script', cursive; 
+            font-size: 2.2rem; 
+            margin-right: 8px; 
+        }
+        .q-text { 
+            color: #ffeb3b; 
+            font-size: 1.2rem; 
+            font-weight: 700; 
+            line-height: 1.4;
+        }
+
+        /* 오지선다 버튼 */
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            background: linear-gradient(to bottom, #fffde7, #fff59d);
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #fbc02d;
+            transition: all 0.1s;
+            text-align: left;
+            width: 100%;
+        }
+        .option-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #fbc02d; }
+        
+        .option-btn.correct { background: #a5d6a7 !important; box-shadow: 0 5px 0 #66bb6a; }
+        .option-btn.wrong { background: #ef9a9a !important; box-shadow: 0 5px 0 #ef5350; }
+
+        .opt-num {
+            background: #ff9800;
+            color: white;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 0.9rem; font-weight: bold;
+            margin-right: 12px; flex-shrink: 0;
+        }
+        .opt-txt { color: #432818; font-size: 1rem; font-weight: 600; }
+
+        /* 피드백 영역 */
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #ffeb3b;
+            animation: slideUp 0.4s ease;
+        }
+        .feedback-area.show { display: block; }
+        .result-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 8px; }
+        .result-desc { font-size: 0.95rem; color: #ddd; line-height: 1.5; }
+
+        .next-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 15px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #e65100;
+            cursor: pointer;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .blackboard::-webkit-scrollbar { width: 6px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="passage">
+                The idea of music direction, in the sense of someone shaping and leading a musical performance, goes back to the beginnings of music. Even the gamelans of ancient Indonesia had leaders who would signal to the group changes of meter and tempo, beginnings and endings, and transitions from piece to piece. Yet listening audiences are rarely aware of any musical leadership, and for good aesthetic reason. They need not be aware to fulfill their experience; indeed, the unnecessarily conspicuous presence of a musical leader will detract from it. An audience is better off, for the most part, taking in the whole of a stage work rather than being party to the techniques that go into realizing it. This is not to say that when an orchestra plays alone the audience members’ eyes are not fixed on the conductor for the majority of the time; they probably are. When music is accompanying something happening on stage, however, all eyes turn to the stage, and so do everyone’s ears, too (including the music director’s).
+            </div>
+
+            <div id="quiz-root">
+                <div class="question-container">
+                    <span class="q-label" id="q-label">Q1.</span>
+                    <span class="q-text" id="q-text">질문 로딩 중...</span>
+                </div>
+
+                <div class="options-list" id="options-list"></div>
+
+                <div id="feedback-box" class="feedback-area">
+                    <div id="result-text" class="result-title"></div>
+                    <div id="explanation" class="result-desc"></div>
+                    <button class="next-btn" onclick="goToNext()">다음 문제 풀기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            type: "주제",
+            q: "위 글의 주제로 가장 적절한 것은?",
+            options: [
+                "The evolution of musical instruments in ancient Indonesia",
+                "The history and aesthetic function of musical leadership",
+                "Techniques for conductors to gain more audience attention",
+                "Why music directors should avoid participating in stage works",
+                "The psychological impact of meter and tempo on listeners"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 이 글은 음악 감독의 오랜 역사와 관객의 미적 경험을 위해 그 존재가 두드러지지 않아야 한다는 미적 기능을 다루고 있습니다."
+        },
+        {
+            type: "제목",
+            q: "위 글의 제목으로 가장 적절한 것은?",
+            options: [
+                "Ancient Gamelans: The Origin of Modern Orchestra",
+                "Conductors: The Stars Who Should Not Shine Too Brightly",
+                "Why Music Directors Always Focus on the Stage",
+                "Aesthetic Experience: The Importance of Technical Awareness",
+                "Stage Works: When Music Becomes More Important Than Acting"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 음악 감독이 필요하지만 미적 이유로 관객에게 너무 눈에 띄어서는 안 된다는 역설적 성격을 잘 나타낸 제목입니다."
+        },
+        {
+            type: "요지",
+            q: "위 글의 요지로 가장 적절한 것은?",
+            options: [
+                "고대 인도네시아 가멜란 음악은 지휘자 없이도 완벽한 조화를 이루었다.",
+                "관객의 미적 몰입을 위해 음악 감독의 존재감은 가급적 드러나지 않는 것이 좋다.",
+                "오케스트라 공연 시 관객은 지휘자보다 개별 연주자의 기교에 더 집중해야 한다.",
+                "무대 공연에서 음악 감독은 무대 위의 상황보다 악보의 정확한 구현에 집중해야 한다.",
+                "음악 감독은 관객이 공연의 제작 기법을 명확히 이해하도록 적극적으로 소통해야 한다."
+            ],
+            answer: 1,
+            expl: "정답: 2번. 음악 감독의 존재가 너무 눈에 띄면(unnecessarily conspicuous) 관객의 미적 경험을 해칠 수 있다는 것이 요지입니다."
+        },
+        {
+            type: "내용 일치",
+            q: "위 글의 내용과 일치하지 않는 것은?",
+            options: [
+                "음악 공연을 이끄는 음악 감독의 개념은 음악의 시작 단계까지 거슬러 올라간다.",
+                "고대 가멜란의 리더는 곡의 시작과 끝, 템포 변화 등을 그룹에 신호로 알렸다.",
+                "관객이 음악 감독의 존재를 의식하지 못하는 것은 미적 관점에서 긍정적이다.",
+                "오케스트라가 단독으로 연주할 때 관객의 시선은 주로 지휘자에게 고정된다.",
+                "무대 위에서 무언가 진행될 때 음악 감독은 오로지 단원들의 연주에만 시선을 둔다."
+            ],
+            answer: 4,
+            expl: "정답: 5번. 지문 마지막 부분에서 무대 위 상황이 진행될 때 모든 이들의 눈(음악 감독 포함)은 무대를 향한다고 명시되어 있습니다."
+        },
+        {
+            type: "함축 의미",
+            q: "밑줄 친 'unnecessarily conspicuous'가 의미하는 바로 가장 적절한 것은?",
+            options: [
+                "음악 감독이 연주 단원들에게 신호를 잘못 보내는 경우",
+                "음악 감독의 존재나 역할이 관객의 시야에 지나치게 띄는 것",
+                "무대 공연의 제작 기법이 너무 정교하여 관객을 압도하는 것",
+                "가멜란 리더의 지휘 방식이 현대 오케스트라와 다른 점",
+                "관객이 공연 전체가 아닌 음악 감독의 표정만을 관찰하는 상황"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 음악 감독이 미적 몰입을 방해할 정도로 관객의 주의를 끄는 불필요하게 눈에 띄는 상태를 의미합니다."
+        }
+    ];
+
+    let currentStep = 0;
+
+    function renderQuiz() {
+        const quiz = questions[currentStep];
+        document.getElementById('q-label').innerText = `Q${currentStep + 1}. [${quiz.type}]`;
+        document.getElementById('q-text').innerText = quiz.q;
+        
+        const list = document.getElementById('options-list');
+        list.innerHTML = '';
+        document.getElementById('feedback-box').classList.remove('show');
+
+        quiz.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span class="opt-num">${i + 1}</span><span class="opt-txt">${opt}</span>`;
+            btn.onclick = () => checkAnswer(i, btn);
+            list.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(idx, btn) {
+        const quiz = questions[currentStep];
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.disabled = true);
+
+        const feedbackBox = document.getElementById('feedback-box');
+        const resText = document.getElementById('result-text');
+        const expl = document.getElementById('explanation');
+
+        if(idx === quiz.answer) {
+            btn.classList.add('correct');
+            resText.innerText = "정답입니다! 미적 통찰력이 뛰어나시네요. 🎶";
+            resText.style.color = "#81c784";
+        } else {
+            btn.classList.add('wrong');
+            resText.innerText = "틀렸습니다. 지문의 미적 배려 부분을 다시 읽어보세요!";
+            resText.style.color = "#e57373";
+            allBtns[quiz.answer].classList.add('correct');
+        }
+
+        expl.innerText = quiz.expl;
+        feedbackBox.classList.add('show');
+        
+        setTimeout(() => {
+            feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    }
+
+    function goToNext() {
+        currentStep++;
+        if(currentStep < questions.length) {
+            renderQuiz();
+            document.getElementById('scroll-area').scrollTop = 0;
+        } else {
+            alert("수고하셨습니다! 오늘의 음악적 분석 학습을 모두 완료했습니다.");
+            currentStep = 0;
+            renderQuiz();
+        }
+    }
+
+    renderQuiz();
+</script>
+
+</body>
+</html>

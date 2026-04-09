@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 모의고사 - 은유와 리서치</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 나무 테두리 그라데이션 */
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* 빈티지 녹색 칠판 */
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 20px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        /* 지문 스타일 (전문 반영) */
+        .passage {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #ff9800;
+            word-break: break-word;
+        }
+
+        /* 질문 영역 포인트 */
+        .question-container { margin-bottom: 25px; }
+        .q-label { 
+            color: #ff9800; 
+            font-family: 'Nanum Pen Script', cursive; 
+            font-size: 2.2rem; 
+            margin-right: 8px; 
+        }
+        .q-text { 
+            color: #ffeb3b; 
+            font-size: 1.2rem; 
+            font-weight: 700; 
+            line-height: 1.4;
+        }
+
+        /* 오지선다 (노란색 버튼) */
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            background: linear-gradient(to bottom, #fffde7, #fff59d);
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #fbc02d;
+            transition: all 0.1s;
+            text-align: left;
+            width: 100%;
+        }
+        .option-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #fbc02d; }
+        
+        .option-btn.correct { background: #a5d6a7 !important; box-shadow: 0 5px 0 #66bb6a; }
+        .option-btn.wrong { background: #ef9a9a !important; box-shadow: 0 5px 0 #ef5350; }
+
+        .opt-num {
+            background: #ff9800;
+            color: white;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 0.9rem; font-weight: bold;
+            margin-right: 12px; flex-shrink: 0;
+        }
+        .opt-txt { color: #432818; font-size: 1rem; font-weight: 600; }
+
+        /* 하단 피드백 영역 */
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #ffeb3b;
+            animation: slideUp 0.4s ease;
+        }
+        .feedback-area.show { display: block; }
+        .result-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 8px; }
+        .result-desc { font-size: 0.95rem; color: #ddd; line-height: 1.5; }
+
+        .next-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 15px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #e65100;
+            cursor: pointer;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 스크롤바 디자인 */
+        .blackboard::-webkit-scrollbar { width: 6px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="passage">
+                Here’s an application of metaphors to research papers: Below-grade-level readers in my urban middle school have a great deal of difficulty doing research. Their answer when assigned to do “a report” is to come to the media center and copy verbatim everything in the encyclopedia article or whatever source they have located, be it Internet, print, or whatever. To try to get the students to understand why it isn’t necessary to copy everything in the articles, I use a comparison to a supermarket. I ask them if everything in the supermarket is useful, and we discuss this, with the usual conclusion being that it is, but we don’t buy everything all the time. Then I ask them why they don’t buy everything each time they go and how they determine what to buy when they go with their parents. Someone usually mentions that they have a list. From that point on, I lead a discussion about how whatever their teachers have asked for is their “shopping list” for their research, and they should just read for that information and write it down in note format. It sometimes helps them to understand that copying everything is a wasteful endeavor.
+            </div>
+
+            <div id="quiz-root">
+                <div class="question-container">
+                    <span class="q-label" id="q-label">Q1.</span>
+                    <span class="q-text" id="q-text">질문 로딩 중...</span>
+                </div>
+
+                <div class="options-list" id="options-list"></div>
+
+                <div id="feedback-box" class="feedback-area">
+                    <div id="result-text" class="result-title"></div>
+                    <div id="explanation" class="result-desc"></div>
+                    <button class="next-btn" onclick="goToNext()">다음 문제 풀기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            type: "주제",
+            q: "위 글의 주제로 가장 적절한 것은?",
+            options: [
+                "The rising costs of consumer goods in supermarkets",
+                "Using metaphors to teach students effective research skills",
+                "The psychological causes of verbatim copying in schools",
+                "Benefits of collaborative learning in urban middle schools",
+                "How to organize a media center for better research"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 이 글은 학생들이 모든 정보를 베끼지 않고 필요한 것만 골라낼 수 있도록 '슈퍼마켓 쇼핑'이라는 은유를 사용하여 리서치 기술을 가르치는 내용을 다룹니다."
+        },
+        {
+            type: "제목",
+            q: "위 글의 제목으로 가장 적절한 것은?",
+            options: [
+                "Copying Everything: A Path to Academic Success",
+                "Why Students Hate Going to the Supermarket",
+                "Research as Shopping: Picking Only What You Need",
+                "The Encyclopedia: The Ultimate Source for Reports",
+                "Teacher's Lists vs. Students' Preferences"
+            ],
+            answer: 2,
+            expl: "정답: 3번. 리서치를 쇼핑에 비유하여 필요한 정보만 선택해야 한다는 핵심 내용을 잘 담은 제목입니다."
+        },
+        {
+            type: "요지",
+            q: "위 글의 요지로 가장 적절한 것은?",
+            options: [
+                "학생들의 낮은 독해력 수준을 고려하여 리서치 과제를 줄여야 한다.",
+                "백과사전의 모든 내용은 가치가 있으므로 최대한 많이 적는 것이 좋다.",
+                "은유를 활용해 학생들이 리서치 시 필요한 정보만 골라 적도록 교육할 수 있다.",
+                "미디어 센터는 학생들이 인터넷을 자유롭게 사용하도록 개방되어야 한다.",
+                "슈퍼마켓 쇼핑 목록을 만드는 습관이 리서치 실력 향상에 직접적인 영향을 준다."
+            ],
+            answer: 2,
+            expl: "정답: 3번. 쇼핑 리스트 비유를 통해 학생들이 불필요하게 모든 것을 베끼는 낭비를 줄이고 필요한 정보만 메모하게 한다는 것이 요지입니다."
+        },
+        {
+            type: "함축 의미",
+            q: "밑줄 친 'shopping list'가 리서치 과정에서 의미하는 바로 가장 적절한 것은?",
+            options: [
+                "학생들이 백과사전에서 베껴 써야 할 전체 문장들",
+                "선생님이 과제에서 요구한 구체적인 질문이나 정보",
+                "학생들이 미디어 센터에서 빌려야 할 책들의 목록",
+                "부모님과 함께 슈퍼마켓에서 사야 할 식료품들",
+                "인터넷 검색 엔진에 입력해야 할 복잡한 키워드들"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 지문에서 선생님이 과제로 요구한 내용이 곧 리서치를 위한 '쇼핑 리스트'가 된다고 설명하고 있습니다."
+        },
+        {
+            type: "내용 일치",
+            q: "위 글의 내용과 일치하지 않는 것은?",
+            options: [
+                "필자의 학교 학생들은 보고서 작성 시 내용을 그대로 베끼는 경향이 있다.",
+                "필자는 리서치의 필요성을 설명하기 위해 슈퍼마켓을 예로 들었다.",
+                "슈퍼마켓에 있는 모든 물건은 유용하지만 매번 다 구매하지는 않는다.",
+                "학생들은 리서치할 때 필요한 정보만 메모 형식으로 적어야 한다.",
+                "모든 기사 내용을 그대로 베끼는 것이 리서치의 가장 효율적인 방법이다."
+            ],
+            answer: 4,
+            expl: "정답: 5번. 마지막 문장에서 모든 것을 베끼는 것은 '낭비적인 노력(wasteful endeavor)'이라고 명시되어 있습니다."
+        }
+    ];
+
+    let currentStep = 0;
+
+    function renderQuiz() {
+        const quiz = questions[currentStep];
+        document.getElementById('q-label').innerText = `Q${currentStep + 1}. [${quiz.type}]`;
+        document.getElementById('q-text').innerText = quiz.q;
+        
+        const list = document.getElementById('options-list');
+        list.innerHTML = '';
+        document.getElementById('feedback-box').classList.remove('show');
+
+        quiz.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span class="opt-num">${i + 1}</span><span class="opt-txt">${opt}</span>`;
+            btn.onclick = () => checkAnswer(i, btn);
+            list.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(idx, btn) {
+        const quiz = questions[currentStep];
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.disabled = true);
+
+        const feedbackBox = document.getElementById('feedback-box');
+        const resText = document.getElementById('result-text');
+        const expl = document.getElementById('explanation');
+
+        if(idx === quiz.answer) {
+            btn.classList.add('correct');
+            resText.innerText = "정답입니다! 필요한 정보만 쏙쏙 골라내셨군요. 🛒";
+            resText.style.color = "#81c784";
+        } else {
+            btn.classList.add('wrong');
+            resText.innerText = "틀렸습니다. 쇼핑 리스트(질문)를 다시 확인해 보세요!";
+            resText.style.color = "#e57373";
+            allBtns[quiz.answer].classList.add('correct');
+        }
+
+        expl.innerText = quiz.expl;
+        feedbackBox.classList.add('show');
+        
+        setTimeout(() => {
+            feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    }
+
+    function goToNext() {
+        currentStep++;
+        if(currentStep < questions.length) {
+            renderQuiz();
+            document.getElementById('scroll-area').scrollTop = 0;
+        } else {
+            alert("수고하셨습니다! 오늘의 학습을 모두 마쳤습니다.");
+            currentStep = 0;
+            renderQuiz();
+        }
+    }
+
+    renderQuiz();
+</script>
+
+</body>
+</html>

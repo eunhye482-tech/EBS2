@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        There 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">is / are</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        no scientific basis for the term “race”. Most humans 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">are / is</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">genetically / genetic</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        very 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">similar / similarly</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        and there is 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">so / very</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        little variation amongst us 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">that / which</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        it is not 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">possible / possibly</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">to draw / drawing</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        neat boundaries around people and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">label / labeling</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">them / it</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        as a distinct racial group. Race is an example of social construction, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">where / which</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        social processes 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">create / creates</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        something 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">that / what</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        essentially does not 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">exist / be existed</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        but 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">takes / take</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        on real force in people’s lives. Sociologists prefer 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">to call / call</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        these processes “racialization”. Historical evidence that race 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">has always been / is always being</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        an issue 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">is / are</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        hard to find. For example, in ancient Rome there were various leading figures, such as Emperor Septimius Severus (ruled C.E. 193–211), who were black. Little is said of their skin colour in accounts written at the time, because the ancient Romans did not think it made any difference. They thought more in terms of judging people as being civilized or a barbarian.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "is", cat: "수 일치", desc: "There is/are 구문에서 진짜 주어인 basis가 단수이므로 is를 씁니다." },
+        { ans: "are", cat: "수 일치", desc: "주어가 복수 명사인 Most humans이므로 복수 동사 are를 씁니다." },
+        { ans: "genetically", cat: "형용사/부사", desc: "형용사 similar를 수식하므로 부사 genetically가 적절합니다." },
+        { ans: "similar", cat: "형용사/부사", desc: "be동사 are의 보어 자리이므로 형용사 similar가 와야 합니다." },
+        { ans: "so", cat: "접속사", desc: "뒤의 that절과 호응하여 '너무 ~해서 ...하다'라는 의미를 만드는 so입니다." },
+        { ans: "that", cat: "접속사", desc: "so ~ that 구문으로 결과를 나타내는 부사절을 이끄는 접속사입니다." },
+        { ans: "possible", cat: "형용사/부사", desc: "be동사 is 뒤의 보어 자리로 형용사 possible이 적절합니다." },
+        { ans: "to draw", cat: "준동사", desc: "it(가주어)의 진주어 역할을 하는 to부정사입니다." },
+        { ans: "label", cat: "병렬", desc: "to draw와 and로 연결된 동사원형 병렬 구조입니다." },
+        { ans: "them", cat: "대명사", desc: "앞의 복수 명사인 people을 가리키므로 복수 대명사 them을 씁니다." },
+        { ans: "where", cat: "접속사(관계사)", desc: "선행사 social construction을 장소나 상황적 맥락으로 수식하며 뒤가 완전하므로 관계부사 where가 적절합니다." },
+        { ans: "create", cat: "수 일치", desc: "관계절의 주어 social processes가 복수이므로 복수 동사 create를 씁니다." },
+        { ans: "that", cat: "접속사(관계사)", desc: "선행사 something을 수식하는 주격 관계대명사입니다." },
+        { ans: "exist", cat: "능동태/수동태", desc: "exist는 자동사로 수동태를 쓰지 않습니다." },
+        { ans: "takes", cat: "병렬", desc: "관계대명사 that절 내의 동사 does not exist와 병렬을 이루는 단수 동사입니다." },
+        { ans: "to call", cat: "준동사", desc: "prefer는 목적어로 to부정사와 동명사를 모두 취할 수 있습니다." },
+        { ans: "has always been", cat: "시제", desc: "과거부터 지금까지의 상태를 나타내는 현재완료 시제가 적절합니다." },
+        { ans: "is", cat: "수 일치", desc: "문장의 진짜 주어는 단수 명사인 Historical evidence입니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

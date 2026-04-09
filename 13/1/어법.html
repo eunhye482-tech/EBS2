@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        In the Physics, Aristotle 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">asks / is asked</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">whether / that</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        nature acts for the sake of something. He offers an account of rain as water 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">that / what</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        rises when 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">heated / heating</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        by the Sun, then 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">cools / cooling</span></span> 
+        <div id="expl-4" class="explanation"></div>, 
+        condenses, and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">falls / falling</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        to Earth, but 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">is / are</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        not 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">particularly / particular</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        concerned with 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">explaining / explain</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        rain as such. Rather, he addresses a more 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">general / generally</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        question: how to account for natural objects, events, and processes 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">that / what</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        appear with regularity. He queries 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">whether / that</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        the sharpness of front teeth and the bluntness of molars 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">is / are</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        coincidental and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">rejects / rejecting</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        that possibility, because this arrangement 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">occurs / is occurred</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        with regularity and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">that / what</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        regularity 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">is linked / links</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        to purposefulness. The sharpness of front teeth allows 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">them / it</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        to tear while the bluntness of those in the back enables them to crush food; both are useful for eating. In Aristotle’s view, all natural things happen in a given way and occur for the sake of something; that is the final cause.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "asks", cat: "능동태/수동태", desc: "아리스토텔레스가 직접 질문하는 능동의 주체입니다." },
+        { ans: "whether", cat: "접속사", desc: "asks의 목적어 절로 '~인지 아닌지'라는 의문의 의미를 담은 접속사입니다." },
+        { ans: "that", cat: "접속사(관계사)", desc: "선행사 water를 수식하는 주격 관계대명사입니다." },
+        { ans: "heated", cat: "준동사(분사구문)", desc: "물(it)이 태양에 의해 '가열될' 때이므로 수동의 과거분사가 적절합니다." },
+        { ans: "cools", cat: "병렬", desc: "주격 관계대명사 절 내에서 rises, cools, condenses, falls가 병렬을 이룹니다." },
+        { ans: "falls", cat: "병렬", desc: "rises, cools, condenses와 함께 water에 걸리는 단수 동사 병렬입니다." },
+        { ans: "is", cat: "수 일치", desc: "주어인 he에 연결되는 단수 동사입니다." },
+        { ans: "particularly", cat: "형용사/부사", desc: "형용사인 concerned를 수식하므로 부사가 적절합니다." },
+        { ans: "explaining", cat: "준동사", desc: "전치사 with 뒤에 오는 동명사 목적어입니다." },
+        { ans: "general", cat: "형용사/부사", desc: "명사인 question을 수식하므로 형용사가 필요합니다." },
+        { ans: "that", cat: "접속사(관계사)", desc: "선행사를 수식하며 뒤에 주어가 없는 불완전한 절을 이끄는 관계대명사입니다." },
+        { ans: "whether", cat: "접속사", desc: "queries의 목적어 절로 '~인지(여부)'를 묻는 접속사입니다." },
+        { ans: "is", cat: "수 일치", desc: "sharpness and bluntness를 하나의 조화로운 구성으로 보거나, 각 부분이 coincidental한지 묻는 단수 취급 문맥입니다." },
+        { ans: "rejects", cat: "병렬", desc: "주어 He에 연결되는 queries와 rejects의 동사 병렬 구조입니다." },
+        { ans: "occurs", cat: "능동태/수동태", desc: "occur는 자동사로 수동태를 쓰지 않습니다." },
+        { ans: "that", cat: "대명사", desc: "특정한 '그' 규칙성을 가리키는 지시형용사로 쓰였습니다." },
+        { ans: "is linked", cat: "능동태/수동태", desc: "규칙성이 목적의식과 '연결되어 있는' 상태이므로 수동태가 적절합니다." },
+        { ans: "them", cat: "대명사", desc: "복수 명사인 front teeth를 가리키므로 복수 대명사 them을 씁니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

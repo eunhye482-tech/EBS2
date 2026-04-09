@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 - 문장 삽입 모의고사 (섬김의 리더십 편)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 18px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        .question-header {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .q-label { color: #ff9800; font-family: 'Nanum Pen Script', cursive; font-size: 2.2rem; margin-right: 8px; }
+        .q-text { color: #ffeb3b; font-size: 1.0rem; font-weight: 700; line-height: 1.3; }
+
+        .box-sentence {
+            background: #fff9c4;
+            color: #333;
+            padding: 15px;
+            border: 2px dashed #fbc02d;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .passage {
+            font-size: 1.0rem; 
+            line-height: 2.1;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 18px;
+            border-radius: 8px;
+        }
+
+        .q-num {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            background: #ff9800;
+            color: white;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            vertical-align: middle;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .q-num:hover { transform: scale(1.1); background: #f57c00; }
+        .q-num.correct { background: #4caf50 !important; border: 2px solid white; }
+        .q-num.wrong { background: #f44336 !important; border: 2px solid white; opacity: 0.8; }
+        .q-num.disabled { pointer-events: none; }
+
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #ffeb3b;
+        }
+        .feedback-area.show { display: block; }
+        
+        .next-btn {
+            margin-top: 12px; width: 100%; padding: 12px;
+            background: #ff9800; color: white; border: none;
+            border-radius: 10px; font-size: 1.0rem; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 0 #e65100;
+        }
+
+        .blackboard::-webkit-scrollbar { width: 4px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="question-header">
+                <span class="q-label" id="q-label">Q1.</span>
+                <span class="q-text">제시된 문장이 들어갈 번호를 본문에서 클릭하세요.</span>
+            </div>
+
+            <div class="box-sentence" id="box-sentence"></div>
+            <div class="passage" id="passage-container"></div>
+
+            <div id="feedback-box" class="feedback-area">
+                <div id="result-text" style="font-size: 1.1rem; font-weight: bold; margin-bottom: 8px;"></div>
+                <div id="explanation" style="color: #ddd; line-height: 1.5; font-size: 0.9rem;"></div>
+                <button class="next-btn" onclick="nextQuestion()">다음 문제</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            box: "He’d then hand off whatever he was selling to me and say, “Can you give this to the owner?”",
+            parts: [
+                "My business partner Charles and I embraced the servant leader’s way of doing things. In other words, nothing was beneath us.",
+                "We led by example and did the work. When any new salesman came into the store, he would look around, notice Charles polishing some corner of the floor and me covered in flour, and assume the decision-maker was not present.",
+                "Now, if Charles and I had remained in the bakery for too long, we wouldn’t have been able to grow and scale.",
+                "I’m not saying you should be sweeping the floors forever; it’s more about modeling what’s important.",
+                "If cleanliness and details are important, be sure you aren’t above doing the work and pitching in.",
+                "Come into your workspace and ask how you can help."
+            ],
+            answer: 1, // ①번 뒤 (②번 위치)
+            expl: "판매원이 들어와 주인이 없다고 가정한 상황(①번 뒤)과 그 결과로 필자에게 물건을 건네며 주인에게 전달해달라고 부탁하는 장면이 이어지는 ②번 위치가 가장 자연스럽습니다."
+        },
+        {
+            box: "Now, if Charles and I had remained in the bakery for too long, we wouldn’t have been able to grow and scale, so I’m not saying you should be sweeping the floors forever.",
+            parts: [
+                "My business partner Charles and I embraced the servant leader’s way of doing things. In other words, nothing was beneath us.",
+                "We led by example and did the work. When any new salesman came into the store, he would assume the owner was not there because we were busy with menial tasks.",
+                "He would then hand off his samples to us, asking us to give them to the owner.",
+                "It’s more about modeling what’s important through your own actions.",
+                "If cleanliness and details are important, be sure you aren’t above doing the work and pitching in.",
+                "If it’s clear your team is in the weeds, jump in without asking."
+            ],
+            answer: 3, // ③번 뒤 (④번 위치)
+            expl: "리더가 직접 몸소 일하는 에피소드(③번 앞)를 마무리하고, '하지만 영원히 바닥만 쓸라는 것은 아니다'라는 현실적인 조언과 함께 '모델링'의 중요성으로 화제를 전환하는 ④번 위치가 정답입니다."
+        },
+        {
+            box: "If cleanliness and details are important, be sure you aren’t above doing the work and pitching in.",
+            parts: [
+                "My business partner and I led by example. We were never above the work that needed to be done in our bakery.",
+                "I am not saying that as a leader you should be sweeping the floors forever, as you must also grow and scale the business.",
+                "It’s more about modeling what’s important to your team.",
+                "Come into your workspace and ask how you can help your employees.",
+                "If it’s clear your team is in the weeds, jump in without asking.",
+                "This proactive attitude builds a culture of mutual support and excellence."
+            ],
+            answer: 3, // ③번 뒤 (④번 위치)
+            expl: "중요한 가치를 직접 행동으로 보여주는 '모델링'에 대한 설명(③번 앞) 뒤에, 구체적으로 청결과 세부사항이라는 예를 들어 리더의 솔선수범을 강조하는 ④번 위치가 적절합니다."
+        },
+        {
+            box: "Come into your workspace and ask how you can help.",
+            parts: [
+                "Now, if Charles and I had remained in the bakery for too long, we wouldn’t have been able to grow and scale.",
+                "It’s more about modeling what’s important. If cleanliness and details are important, be sure you aren’t above doing the work.",
+                "Being willing to pitch in is the hallmark of a true servant leader.",
+                "If it’s clear your team is in the weeds, jump in without asking.",
+                "Modeling is what makes a leader's message resonate with the entire organization.",
+                "This approach ensures that everyone feels valued and supported in their roles."
+            ],
+            answer: 3, // ③번 뒤 (④번 위치)
+            expl: "리더가 작업 공간에 들어와 도움을 제안하는 태도(③번 앞)를 설명한 뒤, 더 나아가 팀이 곤경에 처했을 때 묻지도 않고 뛰어드는 구체적 행동 강령으로 이어지는 ④번 위치가 정답입니다."
+        },
+        {
+            box: "If it’s clear your team is in the weeds, jump in without asking.",
+            parts: [
+                "It’s about modeling what’s important. If cleanliness is important, be sure you aren’t above doing the work.",
+                "Come into your workspace and ask how you can help your team members.",
+                "This active involvement shows that you are a part of the team, not just a superior watching from afar.",
+                "True leaders lead by example and are always ready to support their people.",
+                "In the end, the culture of an organization is defined by the actions of its leaders.",
+                "Such a culture inspires everyone to strive for the collective goal."
+            ],
+            answer: 2, // ②번 뒤 (③번 위치)
+            expl: "도움을 제안하는 것(②번 앞)보다 더 적극적인 개입 상황인 '팀이 바쁠 때 바로 투입되는 것'을 설명하는 ③번 위치가 지문의 결론부 흐름상 가장 자연스럽습니다."
+        }
+    ];
+
+    let currentIdx = 0;
+    const labels = ["①", "②", "③", "④", "⑤"];
+
+    function render() {
+        const q = questions[currentIdx];
+        document.getElementById('q-label').innerText = `Q${currentIdx + 1}.`;
+        document.getElementById('box-sentence').innerText = q.box;
+        document.getElementById('feedback-box').classList.remove('show');
+
+        const container = document.getElementById('passage-container');
+        container.innerHTML = '';
+
+        q.parts.forEach((text, i) => {
+            const txtSpan = document.createElement('span');
+            txtSpan.innerText = text + " ";
+            container.appendChild(txtSpan);
+
+            if (i < 5) {
+                const numSpan = document.createElement('span');
+                numSpan.className = 'q-num';
+                numSpan.innerText = labels[i];
+                numSpan.onclick = () => check(i, numSpan);
+                container.appendChild(numSpan);
+            }
+        });
+        document.getElementById('scroll-area').scrollTop = 0;
+    }
+
+    function check(idx, el) {
+        const q = questions[currentIdx];
+        const all = document.querySelectorAll('.q-num');
+        all.forEach(n => n.classList.add('disabled'));
+
+        const res = document.getElementById('result-text');
+        const correctLabel = labels[q.answer];
+
+        if (idx === q.answer) {
+            el.classList.add('correct');
+            res.innerText = "정답입니다! 진정한 섬김의 리더십을 보여주셨네요. 🥧";
+            res.style.color = "#81c784";
+        } else {
+            el.classList.add('wrong'); // 오답은 빨간색
+            all[q.answer].classList.add('correct'); // 정답은 초록색 하이라이트
+            res.innerText = `틀렸습니다. 정답은 ${correctLabel}번입니다.`;
+            res.style.color = "#e57373";
+        }
+
+        document.getElementById('explanation').innerText = q.expl;
+        document.getElementById('feedback-box').classList.add('show');
+        
+        setTimeout(() => {
+            document.getElementById('feedback-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 150);
+    }
+
+    function nextQuestion() {
+        currentIdx = (currentIdx + 1) % questions.length;
+        render();
+    }
+
+    render();
+</script>
+
+</body>
+</html>

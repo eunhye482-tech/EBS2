@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 모의고사 - 비르 타윌의 비밀</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 나무 테두리 디자인 */
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* 빈티지 녹색 칠판 */
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 20px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        /* 지문 스타일 (전문 반영) */
+        .passage {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #ff9800;
+            word-break: break-word;
+        }
+
+        /* 질문 영역 */
+        .question-container { margin-bottom: 25px; }
+        .q-label { 
+            color: #ff9800; 
+            font-family: 'Nanum Pen Script', cursive; 
+            font-size: 2.2rem; 
+            margin-right: 8px; 
+        }
+        .q-text { 
+            color: #ffeb3b; 
+            font-size: 1.2rem; 
+            font-weight: 700; 
+            line-height: 1.4;
+        }
+
+        /* 오지선다 버튼 */
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            background: linear-gradient(to bottom, #fffde7, #fff59d);
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #fbc02d;
+            transition: all 0.1s;
+            text-align: left;
+            width: 100%;
+        }
+        .option-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #fbc02d; }
+        
+        .option-btn.correct { background: #a5d6a7 !important; box-shadow: 0 5px 0 #66bb6a; }
+        .option-btn.wrong { background: #ef9a9a !important; box-shadow: 0 5px 0 #ef5350; }
+
+        .opt-num {
+            background: #ff9800;
+            color: white;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 0.9rem; font-weight: bold;
+            margin-right: 12px; flex-shrink: 0;
+        }
+        .opt-txt { color: #432818; font-size: 1rem; font-weight: 600; }
+
+        /* 피드백 영역 */
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #ffeb3b;
+            animation: slideUp 0.4s ease;
+        }
+        .feedback-area.show { display: block; }
+        .result-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 8px; }
+        .result-desc { font-size: 0.95rem; color: #ddd; line-height: 1.5; }
+
+        .next-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 15px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #e65100;
+            cursor: pointer;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .blackboard::-webkit-scrollbar { width: 6px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="passage">
+                Bir Tawil is a strange place. In January 1899, administrators of the British Empire decided to finalize a border between the countries of Egypt and Sudan. In colonial fashion, they decided to use the conveniently straight line of the twenty-second parallel of latitude. Unsurprisingly, this new international border arbitrarily tore through local tribes and communities, and in 1902, the British drew a new line to reflect tribal territories. The combination of these two intersecting lines brought about the creation of two new areas: the large, inhabitable coastal area called the Hala’ib Triangle and an empty, landlocked patch of desert, which is Bir Tawil. To keep the desirable Hala’ib, Egypt understandably claimed the original, straight border of 1899, whereas Sudan—with the same goal in mind—claimed the new 1902 line. The strange result of this long-standing conflict is that, to this day, both countries refuse to claim Bir Tawil, an area of land roughly the size of London, as it would mean giving up a greater prize. This makes Bir Tawil the largest—perhaps the only—piece of land that no country wants.
+            </div>
+
+            <div id="quiz-root">
+                <div class="question-container">
+                    <span class="q-label" id="q-label">Q1.</span>
+                    <span class="q-text" id="q-text">질문 로딩 중...</span>
+                </div>
+
+                <div class="options-list" id="options-list"></div>
+
+                <div id="feedback-box" class="feedback-area">
+                    <div id="result-text" class="result-title"></div>
+                    <div id="explanation" class="result-desc"></div>
+                    <button class="next-btn" onclick="goToNext()">다음 문제 풀기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            type: "주제",
+            q: "위 글의 주제로 가장 적절한 것은?",
+            options: [
+                "The economic potential of the Hala’ib Triangle",
+                "The historical origin of the 'ownerless' land, Bir Tawil",
+                "British colonial tactics for finalizing African borders",
+                "The geographical features of the desert in northern Sudan",
+                "Successful tribal cooperation in the twentieth century"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 이 글은 국경 설정 과정에서 발생한 갈등으로 인해 어느 국가도 소유권을 주장하지 않게 된 비르 타윌의 역사적 기원을 다룹니다."
+        },
+        {
+            type: "제목",
+            q: "위 글의 제목으로 가장 적절한 것은?",
+            options: [
+                "London in the Desert: The Beauty of Bir Tawil",
+                "A Greater Prize: Why Egypt and Sudan Share Hala’ib",
+                "The Land That Nobody Wants: The Mystery of Bir Tawil",
+                "Straight Lines vs. Tribes: A Failure of British Empire",
+                "Landlocked Deserts: A New Frontier for Globalization"
+            ],
+            answer: 2,
+            expl: "정답: 3번. 할라이브 트라이앵글을 얻기 위해 서로 영유권을 거부당한 '아무도 원치 않는 땅' 비르 타윌에 대한 제목입니다."
+        },
+        {
+            type: "요지",
+            q: "위 글의 요지로 가장 적절한 것은?",
+            options: [
+                "영국의 국경 설정 방식은 현지 부족들의 문화를 존중하는 방향으로 이루어졌다.",
+                "이집트와 수단은 비르 타윌을 얻기 위해 100년 넘게 전쟁을 벌여오고 있다.",
+                "비르 타윌은 거주가 불가능한 사막 지역이므로 경제적 가치가 전혀 없다.",
+                "두 국경선의 충돌로 인해 발생한 비르 타윌은 전략적 이유로 두 나라 모두에게 외면받고 있다.",
+                "할라이브 트라이앵글은 1899년 직선 국경선에 의해서만 존재가 증명될 수 있다."
+            ],
+            answer: 3,
+            expl: "정답: 4번. 할라이브를 차지하기 위해 각국이 서로 유리한 국경선을 주장하다 보니, 그 결과 비르 타윌이 주인 없는 땅이 되었다는 것이 요지입니다."
+        },
+        {
+            type: "함축 의미",
+            q: "밑줄 친 'a greater prize'가 의미하는 바로 가장 적절한 것은?",
+            options: [
+                "영국 제국으로부터 얻어낸 독립의 권리",
+                "비르 타윌 내부에 숨겨진 막대한 양의 석유 자원",
+                "두 국가가 모두 탐내고 있는 할라이브 트라이앵글 지역",
+                "런던만큼 거대한 면적을 가진 사막 영토의 소유권",
+                "부족 영토를 반영하여 새롭게 그려진 1902년의 국경선"
+            ],
+            answer: 2,
+            expl: "정답: 3번. 비르 타윌을 포기하면서까지 지키고자 하는 '더 큰 보상'은 바로 해안가에 인접하고 거주 가능한 할라이브 트라이앵글을 뜻합니다."
+        },
+        {
+            type: "내용 일치",
+            q: "위 글의 내용과 일치하지 않는 것은?",
+            options: [
+                "1899년 영국은 이집트와 수단 사이의 국경을 북위 22도선으로 정했다.",
+                "1902년에 새로 그려진 국경선은 부족 영토를 반영하기 위한 것이었다.",
+                "비르 타윌은 해안가에 위치한 거대한 규모의 거주 가능 지역이다.",
+                "수단은 할라이브를 차지하기 위해 1902년 국경선을 지지한다.",
+                "비르 타윌은 현재 어느 국가도 공식적으로 원하지 않는 영토로 남아 있다."
+            ],
+            answer: 2,
+            expl: "정답: 3번. 지문에 따르면 비르 타윌은 '육지에 둘러싸인 텅 빈 사막(empty, landlocked patch of desert)'이며, 해안가 지역은 할라이브입니다."
+        }
+    ];
+
+    let currentStep = 0;
+
+    function renderQuiz() {
+        const quiz = questions[currentStep];
+        document.getElementById('q-label').innerText = `Q${currentStep + 1}. [${quiz.type}]`;
+        document.getElementById('q-text').innerText = quiz.q;
+        
+        const list = document.getElementById('options-list');
+        list.innerHTML = '';
+        document.getElementById('feedback-box').classList.remove('show');
+
+        quiz.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span class="opt-num">${i + 1}</span><span class="opt-txt">${opt}</span>`;
+            btn.onclick = () => checkAnswer(i, btn);
+            list.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(idx, btn) {
+        const quiz = questions[currentStep];
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.disabled = true);
+
+        const feedbackBox = document.getElementById('feedback-box');
+        const resText = document.getElementById('result-text');
+        const expl = document.getElementById('explanation');
+
+        if(idx === quiz.answer) {
+            btn.classList.add('correct');
+            resText.innerText = "정답입니다! 역사적 아이러니를 완벽히 이해하셨네요. 🗺️";
+            resText.style.color = "#81c784";
+        } else {
+            btn.classList.add('wrong');
+            resText.innerText = "틀렸습니다. 지문의 국경 분쟁 상황을 다시 확인해 보세요!";
+            resText.style.color = "#e57373";
+            allBtns[quiz.answer].classList.add('correct');
+        }
+
+        expl.innerText = quiz.expl;
+        feedbackBox.classList.add('show');
+        
+        setTimeout(() => {
+            feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    }
+
+    function goToNext() {
+        currentStep++;
+        if(currentStep < questions.length) {
+            renderQuiz();
+            document.getElementById('scroll-area').scrollTop = 0;
+        } else {
+            alert("수고하셨습니다! 오늘의 지정학적 분석 학습을 성공적으로 마쳤습니다.");
+            currentStep = 0;
+            renderQuiz();
+        }
+    }
+
+    renderQuiz();
+</script>
+
+</body>
+</html>

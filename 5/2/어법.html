@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        Consumer surveys 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">indicate / indicates</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        that the majority of Americans (91%) 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">believe / believes</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        they have some control over 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">their / its</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        health, and 72% believe 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">that / what</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        food and nutrition play the 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">greatest / greatly</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        role. However, 75% of consumers 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">rely / relies</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        on media outlets 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">including / included</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        the Internet as 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">their / its</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        major sources of health and nutrition information, and only half 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">use / uses</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        medical sources. A Google search for “nutrition listservs” 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">yielded / was yielded</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        over 100,000 sites, but it is likely 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">that / what</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        many of these writings 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">are not reviewed / do not review</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        by nutrition experts. Internet sites 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">marketing / marketed</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        herbs, drugs, and health devices 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">are not monitored / do not monitor</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        by government regulatory agencies and often 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">contain / contains</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        misleading information. Reputable food companies provide 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">helpful / helpfully</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        facts about the nutrient content of their products, but commercial sites 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">devoted / devoting</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        to sales often post misleading health claims. Internet sites 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">maintained / maintaining</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        by government agencies, universities, state extension services, and medical facilities provide evidence-based information and should be the first source for public information on foods, nutrition, and health.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "indicate", cat: "수 일치", desc: "주어가 복수 명사인 Consumer surveys이므로 복수 동사 indicate가 맞습니다." },
+        { ans: "believe", cat: "수 일치", desc: "the majority of Americans(복수)를 주어로 보아 복수 동사 believe를 씁니다." },
+        { ans: "their", cat: "대명사", desc: "Americans를 지칭하므로 복수 소유격 their를 사용합니다." },
+        { ans: "that", cat: "접속사", desc: "believe의 목적어 역할을 하는 완전한 명사절을 이끄는 접속사입니다." },
+        { ans: "greatest", cat: "형용사/부사", desc: "명사 role을 수식하므로 형용사 최상급 형태가 적절합니다." },
+        { ans: "rely", cat: "수 일치", desc: "75% of consumers(복수)가 주어이므로 복수 동사 rely가 옵니다." },
+        { ans: "including", cat: "준동사(분사)", desc: "~을 포함하여라는 의미를 가진 전치사적 성격의 분사입니다." },
+        { ans: "their", cat: "대명사", desc: "consumers(복수)의 주요 출처이므로 their를 씁니다." },
+        { ans: "use", cat: "수 일치", desc: "only half(전체 소비자 중 절반)는 복수로 취급하여 use를 씁니다." },
+        { ans: "yielded", cat: "능동태/수동태", desc: "검색 결과가 사이트들을 '산출한' 능동의 관계입니다." },
+        { ans: "that", cat: "접속사", desc: "가주어 it의 진주어 역할을 하는 명사절을 이끄는 접속사입니다." },
+        { ans: "are not reviewed", cat: "능동태/수동태", desc: "글(writings)은 전문가들에 의해 '검토되는' 대상이므로 수동태를 씁니다." },
+        { ans: "marketing", cat: "준동사(분사)", desc: "허브 등을 '판매/홍보하는' 사이트라는 능동의 의미로 현재분사가 수식합니다." },
+        { ans: "are not monitored", cat: "능동태/수동태", desc: "사이트들은 규제 기관에 의해 '감시되는' 대상이므로 수동태가 맞습니다." },
+        { ans: "contain", cat: "수 일치", desc: "주어인 Internet sites에 연결되는 복수 동사입니다." },
+        { ans: "helpful", cat: "형용사/부사", desc: "명사 facts를 수식하므로 형용사 helpful이 적절합니다." },
+        { ans: "devoted", cat: "준동사(분사)", desc: "~에 전념하는, 특화된이라는 의미로 수동태 형용사처럼 쓰이는 과거분사입니다." },
+        { ans: "maintained", cat: "준동사(분사)", desc: "정부 기관 등에 의해 '관리되는' 사이트이므로 과거분사가 수식합니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

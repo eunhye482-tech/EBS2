@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        The idea of music direction, in the sense of someone 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">shaping / shaped</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        and leading a musical performance, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">goes / go</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        back to the beginnings of music. Even the gamelans of ancient Indonesia 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">had / were had</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        leaders who would 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">signal / signals</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        to the group changes of meter and tempo, beginnings and endings, and transitions from piece to piece. Yet 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">listening / listened</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        audiences are 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">rarely / rare</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        aware of any 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">musical / musically</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        leadership, and for 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">good / well</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        aesthetic reason. They need not 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">be / being</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        aware 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">to fulfill / fulfilling</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        their experience; indeed, the 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">unnecessarily / unnecessary</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        conspicuous presence of a musical leader will 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">detract / detracted</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        from 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">it / them</span></span> 
+        <div id="expl-12" class="explanation"></div>. 
+        An audience is better off, for the most part, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">taking / taken</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        in the whole of a stage work rather than 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">being / be</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        party to the techniques that 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">go / goes</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        into 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">realizing / realize</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        it. This is not 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">to say / saying</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        that when an orchestra plays alone the audience members’ eyes are not fixed on the conductor for the majority of the time; they probably are. When music is accompanying something happening on stage, however, all eyes turn to the stage, and so do everyone’s ears, too (including the music director’s).
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "shaping", cat: "준동사", desc: "someone을 뒤에서 수식하며 '형성하는' 능동의 의미를 지닌 현재분사입니다." },
+        { ans: "goes", cat: "수 일치", desc: "문장의 진짜 주어는 단수 명사인 The idea이므로 단수 동사 goes를 씁니다." },
+        { ans: "had", cat: "능동태/수동태", desc: "가멜란이 리더를 '가지고 있었다'는 능동의 과거 시제입니다." },
+        { ans: "signal", cat: "조동사/동사", desc: "조동사 would 뒤에는 동사원형이 와야 합니다." },
+        { ans: "listening", cat: "준동사", desc: "명사 audiences를 수식하며 '듣고 있는'이라는 능동의 현재분사입니다." },
+        { ans: "rarely", cat: "형용사/부사", desc: "형용사 aware를 수식하므로 '거의 ~않다'라는 의미의 부사가 적절합니다." },
+        { ans: "musical", cat: "형용사/부사", desc: "명사 leadership을 수식하므로 형용사가 적절합니다." },
+        { ans: "good", cat: "형용사/부사", desc: "명사 reason을 수식하므로 형용사가 적절합니다." },
+        { ans: "be", cat: "조동사/동사", desc: "조동사 need not 뒤에는 동사원형이 옵니다." },
+        { ans: "to fulfill", cat: "준동사", desc: "'충족시키기 위해서'라는 목적의 의미를 가진 to부정사입니다." },
+        { ans: "unnecessarily", cat: "형용사/부사", desc: "형용사 conspicuous를 수식하므로 부사 형태가 적절합니다." },
+        { ans: "detract", cat: "조동사/동사", desc: "조동사 will 뒤에는 동사원형이 와야 합니다." },
+        { ans: "it", cat: "대명사", desc: "단수 명사인 experience를 가리키므로 단수 대명사 it을 씁니다." },
+        { ans: "taking", cat: "준동사", desc: "be better off -ing (~하는 편이 더 낫다) 관용 표현입니다." },
+        { ans: "being", cat: "병렬", desc: "rather than 뒤에서 앞의 taking과 병렬 구조를 이루는 동명사 자리입니다." },
+        { ans: "go", cat: "수 일치", desc: "주격 관계대명사 that의 선행사가 복수인 techniques이므로 복수 동사 go를 씁니다." },
+        { ans: "realizing", cat: "준동사", desc: "전치사 into의 목적어 역할을 하는 동명사입니다." },
+        { ans: "to say", cat: "준동사", desc: "be동사 is 뒤에서 보어 역할을 하는 명사적 용법의 to부정사입니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

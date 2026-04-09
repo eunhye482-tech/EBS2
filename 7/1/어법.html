@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        You’ve probably heard 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">that / what</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        it 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">takes / take</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        about ten thousand hours of practice 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">to become / becoming</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        an expert in anything—a musical instrument, a sport, chess, cooking, or a foreign language. The research by K. Anders Ericsson on this topic 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">has been written / has written</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        about many times, and it 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">was made / made</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        even 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">more / most</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        famous when Malcolm Gladwell 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">described / describing</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        it in 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">his / its</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        bestselling book Outliers. However, recently, a cohort of researchers 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">reexamined / reexamining</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        the studies and research behind the 10K figure and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">said / saying</span></span> 
+        <div id="expl-9" class="explanation"></div>, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">quite / quiet</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        dramatically, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">that / what</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        the ten-thousand-hour rule 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">was / were</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        utter nonsense. Specifically, there 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">is / are</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        nothing particularly special about ten thousand hours, and while practice is 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">clearly / clear</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        important 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">to boost / boosting</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        performance, other factors may play an even 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">more / most</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        important role. What are those other factors 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">that / what</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        get us to expert levels of performance? Pure innate talent? Intelligence? Luck of the draw? Perseverance? Hard work? Yes, it’s all of that... and more. Age, experience, and environment all play a role. In other words, there’s no one certain factor that can predict or ensure mastery or optimal performance of anything.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "that", cat: "접속사", desc: "heard의 목적어 역할을 하는 완전한 명사절을 이끄는 접속사입니다." },
+        { ans: "takes", cat: "수 일치", desc: "가주어 it은 단수 취급하므로 단수 동사 takes를 씁니다." },
+        { ans: "to become", cat: "준동사", desc: "It takes (time) to-v 구문으로 '~하는 데 (시간이) 걸리다'라는 의미입니다." },
+        { ans: "has been written", cat: "능동태/수동태", desc: "연구는 작성되는 대상이므로 현재완료 수동태(has been p.p.)를 씁니다." },
+        { ans: "was made", cat: "능동태/수동태", desc: "연구가 더 유명하게 '만들어진' 것이므로 과거 수동태를 씁니다." },
+        { ans: "more", cat: "형용사/부사", desc: "이미 유명한 상태에서 더 유명해진 비교의 의미이므로 more가 적절합니다." },
+        { ans: "described", cat: "수 일치/시제", desc: "접속사 when절의 동사 자리이며, 과거의 사실을 서술하므로 과거형을 씁니다." },
+        { ans: "his", cat: "대명사", desc: "Malcolm Gladwell(남성)의 책이므로 소유격 his를 씁니다." },
+        { ans: "reexamined", cat: "수 일치/시제", desc: "문장의 본동사 자리이며 과거의 행동을 나타내는 과거 시제입니다." },
+        { ans: "said", cat: "병렬", desc: "reexamined와 and로 연결된 과거 동사 병렬 구조입니다." },
+        { ans: "quite", cat: "형용사/부사", desc: "부사 dramatically를 수식하는 '꽤/상당히'라는 의미의 부사입니다." },
+        { ans: "that", cat: "접속사", desc: "said의 목적어인 완전한 명사절을 이끄는 접속사입니다." },
+        { ans: "was", cat: "수 일치", desc: "주어가 단수 명사인 the ten-thousand-hour rule이므로 단수 동사를 씁니다." },
+        { ans: "is", cat: "수 일치", desc: "유도부사 구문에서 진짜 주어인 nothing이 단수이므로 is가 옵니다." },
+        { ans: "clearly", cat: "형용사/부사", desc: "형용사 important를 수식하므로 부사 형태가 적절합니다." },
+        { ans: "to boost", cat: "준동사", desc: "형용사 important를 수식하는 부사적 용법의 to부정사입니다." },
+        { ans: "more", cat: "형용사/부사", desc: "중요한 역할보다 '더' 중요한 역할을 뜻하므로 비교급 more를 씁니다." },
+        { ans: "that", cat: "접속사(관계사)", desc: "선행사 other factors를 수식하며 뒤에 동사가 이어지는 주격 관계대명사입니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 모의고사 - 매클루언의 기술 철학</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 나무 테두리 디자인 */
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* 빈티지 녹색 칠판 */
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 20px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        /* 지문 스타일 (전문 반영) */
+        .passage {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #ff9800;
+            word-break: break-word;
+        }
+
+        /* 질문 영역 */
+        .question-container { margin-bottom: 25px; }
+        .q-label { 
+            color: #ff9800; 
+            font-family: 'Nanum Pen Script', cursive; 
+            font-size: 2.2rem; 
+            margin-right: 8px; 
+        }
+        .q-text { 
+            color: #ffeb3b; 
+            font-size: 1.2rem; 
+            font-weight: 700; 
+            line-height: 1.4;
+        }
+
+        /* 오지선다 버튼 */
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            background: linear-gradient(to bottom, #fffde7, #fff59d);
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #fbc02d;
+            transition: all 0.1s;
+            text-align: left;
+            width: 100%;
+        }
+        .option-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #fbc02d; }
+        
+        .option-btn.correct { background: #a5d6a7 !important; box-shadow: 0 5px 0 #66bb6a; }
+        .option-btn.wrong { background: #ef9a9a !important; box-shadow: 0 5px 0 #ef5350; }
+
+        .opt-num {
+            background: #ff9800;
+            color: white;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 0.9rem; font-weight: bold;
+            margin-right: 12px; flex-shrink: 0;
+        }
+        .opt-txt { color: #432818; font-size: 1rem; font-weight: 600; }
+
+        /* 피드백 영역 */
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #ffeb3b;
+            animation: slideUp 0.4s ease;
+        }
+        .feedback-area.show { display: block; }
+        .result-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 8px; }
+        .result-desc { font-size: 0.95rem; color: #ddd; line-height: 1.5; }
+
+        .next-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 15px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #e65100;
+            cursor: pointer;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .blackboard::-webkit-scrollbar { width: 6px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="passage">
+                The strongest criticisms of the overextension of technology involve claims of dehumanization, and these arguments are not new. Canadian philosopher of the electronic age, Marshall McLuhan was primarily a techno-utopian, but he was also a critical thinker, who cautioned decades ago against too much human extension into technology. McLuhan famously claimed that every media extension of man is an amputation. For example, once we have a car, we don’t walk to the shops any more; once we have a computer hard-drive, we don’t have to remember things; and now that we have personal GPS (Global Positioning System) on our cell phones, no one can find their way about without it. Based on McLuhan’s philosophy, we are becoming post-literate because we rely on screens full of pictures, rather than print media, such as books. It is thus possible that extensions of human faculties, through techno- and bio-enhancement, will bring about arrested development in the natural evolution of higher human faculties.
+            </div>
+
+            <div id="quiz-root">
+                <div class="question-container">
+                    <span class="q-label" id="q-label">Q1.</span>
+                    <span class="q-text" id="q-text">질문 로딩 중...</span>
+                </div>
+
+                <div class="options-list" id="options-list"></div>
+
+                <div id="feedback-box" class="feedback-area">
+                    <div id="result-text" class="result-title"></div>
+                    <div id="explanation" class="result-desc"></div>
+                    <button class="next-btn" onclick="goToNext()">다음 문제 풀기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            type: "주제",
+            q: "위 글의 주제로 가장 적절한 것은?",
+            options: [
+                "The evolution of print media in the electronic age",
+                "Technology's overextension and its dehumanizing effects",
+                "Benefits of using GPS and computer hard-drives",
+                "Marshall McLuhan's journey as a techno-utopian",
+                "The history of bio-enhancement in Canadian philosophy"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 기술의 과도한 확장이 인간 고유의 능력을 상실(탈인간화)하게 만든다는 비판적 시각을 다루고 있습니다."
+        },
+        {
+            type: "제목",
+            q: "위 글의 제목으로 가장 적절한 것은?",
+            options: [
+                "The Future of Literacy: Moving from Books to Screens",
+                "Extension as Amputation: The Paradox of Technology",
+                "Why Everyone Needs a Personal GPS on Their Phones",
+                "The Natural Evolution of Higher Human Faculties",
+                "The Electronic Age: A New Era of Techno-Utopia"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 인간의 능력을 확장하는 기술이 역설적으로 본연의 기능을 '절단'한다는 매클루언의 핵심 주장을 나타낸 제목입니다."
+        },
+        {
+            type: "요지",
+            q: "위 글의 요지로 가장 적절한 것은?",
+            options: [
+                "기술의 발전은 인간의 지능을 비약적으로 발전시킨다.",
+                "GPS나 하드드라이브는 인간의 기억력을 보완하는 필수 도구이다.",
+                "기술을 통한 능력의 확장은 인간 본연의 고차원적 진화를 저해할 수 있다.",
+                "마셜 매클루언은 기술이 가져올 미래를 무조건적으로 낙관했다.",
+                "인쇄 매체보다 화면 매체가 현대인의 문해력 향상에 더 효과적이다."
+            ],
+            answer: 2,
+            expl: "정답: 3번. 기술과 생물학적 강화를 통한 인간 능력의 확장이 고차원적 인간 능력의 자연스러운 진화를 중단시킬 수 있다는 것이 요지입니다."
+        },
+        {
+            type: "함축 의미",
+            q: "밑줄 친 'every media extension of man is an amputation'이 의미하는 바로 가장 적절한 것은?",
+            options: [
+                "매체 기술이 인간의 신체를 물리적으로 손상시킨다는 뜻",
+                "기술로 특정 능력을 확장하면 본래의 능력은 퇴화하거나 사라진다는 뜻",
+                "모든 인간은 기술 없이는 일상 생활이 불가능한 장애 상태라는 뜻",
+                "새로운 매체가 등장할 때마다 사회적 불평등이 심화된다는 뜻",
+                "기술의 확장이 인간을 기계와 완벽하게 결합시킨다는 뜻"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 자동차가 걷기를 대체하고 컴퓨터가 기억을 대체하듯, 기술적 확장이 그에 대응하는 인간 본래 기능의 상실을 초래한다는 비유입니다."
+        },
+        {
+            type: "내용 일치",
+            q: "위 글의 내용과 일치하지 않는 것은?",
+            options: [
+                "마셜 매클루언은 기술의 과도한 확장에 대해 수십 년 전 경고했다.",
+                "컴퓨터 하드드라이브의 등장으로 인간은 무언가를 기억할 필요가 줄어들었다.",
+                "우리는 책보다 그림이 가득한 화면에 의존하면서 '탈문해(post-literate)' 상태가 되고 있다.",
+                "매클루언은 기술 확장이 인간의 고차원적 진화를 가속화할 것이라고 믿었다.",
+                "자동차를 갖게 된 이후로 사람들은 상점까지 더 이상 걷지 않게 되었다."
+            ],
+            answer: 3,
+            expl: "정답: 4번. 지문에 따르면 매클루언은 기술 확장이 고차원적 인간 능력의 진화를 '저해(arrested development)'할 수 있다고 우려했습니다."
+        }
+    ];
+
+    let currentStep = 0;
+
+    function renderQuiz() {
+        const quiz = questions[currentStep];
+        document.getElementById('q-label').innerText = `Q${currentStep + 1}. [${quiz.type}]`;
+        document.getElementById('q-text').innerText = quiz.q;
+        
+        const list = document.getElementById('options-list');
+        list.innerHTML = '';
+        document.getElementById('feedback-box').classList.remove('show');
+
+        quiz.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span class="opt-num">${i + 1}</span><span class="opt-txt">${opt}</span>`;
+            btn.onclick = () => checkAnswer(i, btn);
+            list.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(idx, btn) {
+        const quiz = questions[currentStep];
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.disabled = true);
+
+        const feedbackBox = document.getElementById('feedback-box');
+        const resText = document.getElementById('result-text');
+        const expl = document.getElementById('explanation');
+
+        if(idx === quiz.answer) {
+            btn.classList.add('correct');
+            resText.innerText = "정답입니다! 매클루언의 철학적 깊이를 꿰뚫어 보셨네요. 📻";
+            resText.style.color = "#81c784";
+        } else {
+            btn.classList.add('wrong');
+            resText.innerText = "틀렸습니다. 기술의 역설적인 측면을 다시 한 번 성찰해 보세요!";
+            resText.style.color = "#e57373";
+            allBtns[quiz.answer].classList.add('correct');
+        }
+
+        expl.innerText = quiz.expl;
+        feedbackBox.classList.add('show');
+        
+        setTimeout(() => {
+            feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    }
+
+    function goToNext() {
+        currentStep++;
+        if(currentStep < questions.length) {
+            renderQuiz();
+            document.getElementById('scroll-area').scrollTop = 0;
+        } else {
+            alert("수고하셨습니다! 오늘의 철학적 분석 학습을 모두 완료했습니다.");
+            currentStep = 0;
+            renderQuiz();
+        }
+    }
+
+    renderQuiz();
+</script>
+
+</body>
+</html>

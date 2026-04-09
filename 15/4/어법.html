@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        Because belief is 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">so / very</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        crucial in the placebo effect, it would 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">seem / seeming</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        that deception 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">is / are</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        necessary in order 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">to trigger / triggering</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        a patient’s trust in the 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">actual / actually</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        drug he might 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">be taking / be taken</span></span> 
+        <div id="expl-5" class="explanation"></div>. 
+        But Ted Kaptchuk, a 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">leading / led</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        placebo researcher at Harvard, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">is investigating / are investigating</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        the possibility of 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">doing / do</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        away with the element of deception. He 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">tells / tell</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        patients up front 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">that / what</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        they will 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">be taking / take</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        a placebo, but he also 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">informs / informing</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        them about how 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">powerful / powerfully</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        and effective placebos can be. In one trial with irritable bowel syndrome, it 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">was found / found</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        that roughly 59 percent of those on an open placebo treatment 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">reported / reporting</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        improvements, as compared with 35 percent of the control group 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">that / what</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">received / was received</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        no treatment. The results may seem modest, but they make the point that giving a placebo isn’t the same as doing nothing.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "so", cat: "접속사/부사", desc: "뒤의 crucial(형용사)을 수식하며 매우 ~하다는 의미를 나타냅니다." },
+        { ans: "seem", cat: "조동사/동사", desc: "조동사 would 뒤에는 동사원형이 와야 합니다." },
+        { ans: "is", cat: "수 일치", desc: "주어가 단수 명사인 deception이므로 단수 동사 is를 씁니다." },
+        { ans: "to trigger", cat: "준동사", desc: "in order to-v (~하기 위하여) 구문입니다." },
+        { ans: "actual", cat: "형용사/부사", desc: "명사인 drug를 수식하므로 형용사가 적절합니다." },
+        { ans: "be taking", cat: "능동태/수동태", desc: "환자가 약을 복용하는 능동 진행의 관계입니다." },
+        { ans: "leading", cat: "준동사(분사)", desc: "연구를 '이끄는/주요한' 연구자라는 능동 수식의 현재분사입니다." },
+        { ans: "is investigating", cat: "수 일치", desc: "주어인 Ted Kaptchuk가 단수 인명이므로 단수 동사를 씁니다." },
+        { ans: "doing", cat: "준동사", desc: "전치사 of의 목적어 역할을 하는 동명사입니다." },
+        { ans: "tells", cat: "수 일치", desc: "주어 He에 호응하는 단수 동사입니다." },
+        { ans: "that", cat: "접속사", desc: "tells의 직접 목적어 역할을 하는 완전한 명사절을 이끄는 접속사입니다." },
+        { ans: "be taking", cat: "시제/동사", desc: "미래 시점의 진행을 나타내는 능동형 미래 진행입니다." },
+        { ans: "informs", cat: "병렬", desc: "주어 He에 연결되는 tells와 informs의 동사 병렬 구조입니다." },
+        { ans: "powerful", cat: "형용사/부사", desc: "can be의 보어 자리가 앞으로 나간 것이므로 형용사가 적절합니다." },
+        { ans: "was found", cat: "능동태/수동태", desc: "가주어 it이 가리키는 사실이 '발견된' 것이므로 수동태를 씁니다." },
+        { ans: "reported", cat: "시제/동사", desc: "that절의 주어 those에 연결되는 본동사 자리로 과거형을 씁니다." },
+        { ans: "that", cat: "접속사(관계사)", desc: "선행사인 control group을 수식하는 주격 관계대명사입니다." },
+        { ans: "received", cat: "능동태/수동태", desc: "대조군이 처치를 '받은' 능동의 과거 사실을 나타냅니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

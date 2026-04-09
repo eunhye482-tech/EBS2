@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        Deep work 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">is / are</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        when you perform an activity with 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">deep / deeply</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        concentration 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">that / what</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        pushes your 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">cognitive / cognitively</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        capabilities, and by 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">doing / do</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        so 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">create / creates</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        new value and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">improve / improving</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        your skills. These efforts 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">are / is</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        hard 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">to replicate / replicating</span></span> 
+        <div id="expl-8" class="explanation"></div>; 
+        and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">to be / being</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        able to do deep work, we need a distraction-free environment. For many people though, we 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">spend / spends</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        far too much time on the other end of the scale, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">doing / done</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">what / that</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        is 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">referred / referring</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        to as shallow work. This style of working 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">is / are</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        not 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">cognitively / cognitive</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        demanding but is rather an execution of logical-type tasks that rarely 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">create / creates</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        new value (although they may still 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">be / are</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        important). We often perform these tasks while we are distracted. Shallow work has its place, both because routine-type tasks need to be done and because we cannot spend our entire time doing deep work. The problem with too much shallow work is that we feel busy, maybe even stressed, but we rarely see any output reflecting our experienced effort.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "is", cat: "수 일치", desc: "주어가 불가산 명사(Deep work)이므로 단수 동사 is를 씁니다." },
+        { ans: "deep", cat: "형용사/부사", desc: "명사인 concentration을 수식하므로 형용사가 적절합니다." },
+        { ans: "that", cat: "접속사(관계사)", desc: "선행사 concentration을 수식하며 뒤에 동사(pushes)가 이어지는 주격 관계대명사입니다." },
+        { ans: "cognitive", cat: "형용사/부사", desc: "명사인 capabilities를 수식하므로 형용사가 와야 합니다." },
+        { ans: "doing", cat: "준동사", desc: "전치사 by의 목적어 역할을 하는 동명사입니다." },
+        { ans: "create", cat: "병렬", desc: "주어 you에 연결된 perform과 and로 묶인 동사 병렬 구조입니다." },
+        { ans: "improve", cat: "병렬", desc: "create와 and로 연결되어 주어 you에 걸리는 동사원형 병렬입니다." },
+        { ans: "are", cat: "수 일치", desc: "주어가 복수 명사인 These efforts이므로 복수 동사 are를 씁니다." },
+        { ans: "to replicate", cat: "준동사", desc: "형용사 hard를 수식하는 부사적 용법의 to부정사입니다." },
+        { ans: "to be", cat: "준동사", desc: "'~할 수 있기 위해서'라는 목적의 의미를 지닌 to부정사입니다." },
+        { ans: "spend", cat: "수 일치", desc: "주어가 복수 대명사 we이므로 복수 동사 spend를 씁니다." },
+        { ans: "doing", cat: "준동사(분사구문)", desc: "우리가 일을 '하면서' 시간을 보낸다는 의미의 능동 분사구문입니다." },
+        { ans: "what", cat: "접속사", desc: "is referred의 주어가 없는 불완전한 절을 이끄는 관계대명사입니다." },
+        { ans: "referred", cat: "능동태/수동태", desc: "be referred to (~라고 불리다)라는 수동태 표현입니다." },
+        { ans: "is", cat: "수 일치", desc: "주어가 단수 명사인 This style이므로 단수 동사 is를 씁니다." },
+        { ans: "cognitively", cat: "형용사/부사", desc: "형용사인 demanding을 수식하므로 부사가 적절합니다." },
+        { ans: "create", cat: "수 일치", desc: "관계대명사 that의 선행사가 복수인 tasks이므로 복수 동사 create를 씁니다." },
+        { ans: "be", cat: "조동사/동사", desc: "조동사 may 뒤에는 동사원형이 와야 합니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

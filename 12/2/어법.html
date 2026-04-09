@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        Why 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">do / are</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        humans 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">have / having</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        the 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">counterproductive / counterproductively</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        instinct to favor natural products in the absence of 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">knowledge / know</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        of 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">their / its</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        benefits or their potential for harm? The answer 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">likely / alike</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        lies in our genes. Our species, through most of 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">its / their</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        evolutionary history, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">relied / relying</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        heavily upon experience 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">to judge / judging</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        whether ingestion of something was beneficial (i.e., nutritional or medicinal) versus 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">whether / that</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        it was 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">dangerous / dangerously</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        (i.e., poisonous). We evolved the instinct 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">to avoid / avoiding</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        plants that made us 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">sick / sickly</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">favored / favoring</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        those that made us well. 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">Treating / Treated</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        unknowns with great caution provided a 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">terrific / terrifically</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        survival advantage. Today, we trust that products of nature 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">are / is</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        safe 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">to consume / consuming</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        . But those pills coming off a pharmaceutical production line look nothing like what our instincts tell us is safe to eat. The ingredients remind us of a high school chemistry lab. Yet we are expected to consume them. Thus, we treat them with caution just as our distant ancestors regarded a new plant. When in need of a remedy, we are drawn to derivatives of our food, plant products, which we perceive to be safe, and not artificial products of science.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "do", cat: "수 일치/조동사", desc: "주어 humans에 연결된 일반동사 have의 의문문을 만들기 위한 조동사입니다." },
+        { ans: "have", cat: "준동사", desc: "조동사 do 뒤에 오는 본동사 원형 자리입니다." },
+        { ans: "counterproductive", cat: "형용사/부사", desc: "명사 instinct를 수식하므로 형용사 counterproductive가 적절합니다." },
+        { ans: "knowledge", cat: "전치사/명사", desc: "전치사 of 뒤에는 명사형인 knowledge가 와야 합니다." },
+        { ans: "their", cat: "대명사", desc: "복수 명사인 natural products를 가리키므로 복수 소유격 their를 씁니다." },
+        { ans: "likely", cat: "형용사/부사", desc: "부사로서 '아마도'라는 의미로 동사 lies를 수식합니다." },
+        { ans: "its", cat: "대명사", desc: "단수 명사인 Our species를 가리키므로 단수 소유격 its가 맞습니다." },
+        { ans: "relied", cat: "수 일치/시제", desc: "문장의 본동사 자리이며 과거의 사실을 서술하므로 과거형을 씁니다." },
+        { ans: "to judge", cat: "준동사", desc: "experience를 수식하거나 목적을 나타내는 형용사적/부사적 용법의 to부정사입니다." },
+        { ans: "whether", cat: "접속사", desc: "앞의 whether와 병렬을 이루어 '~인지 아닌지'라는 선택의 의미를 나타냅니다." },
+        { ans: "dangerous", cat: "형용사/부사", desc: "be동사 was의 보어 자리이므로 형용사 dangerous가 적절합니다." },
+        { ans: "to avoid", cat: "준동사", desc: "instinct를 수식하는 형용사적 용법의 to부정사입니다." },
+        { ans: "sick", cat: "형용사/부사", desc: "사역동사 make + 목적어 + 형용사 보어 구조입니다." },
+        { ans: "favored", cat: "병렬", desc: "과거 시제 동사 evolved와 and로 연결된 병렬 구조입니다." },
+        { ans: "Treating", cat: "준동사", desc: "문장의 주어 역할을 하는 동명사 주어입니다." },
+        { ans: "terrific", cat: "형용사/부사", desc: "명사 survival advantage를 수식하므로 형용사가 적절합니다." },
+        { ans: "are", cat: "수 일치", desc: "that절의 주어가 복수 명사인 products of nature이므로 are를 씁니다." },
+        { ans: "to consume", cat: "준동사", desc: "형용사 safe를 수식하는 부사적 용법의 to부정사입니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

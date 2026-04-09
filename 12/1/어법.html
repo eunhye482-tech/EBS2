@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        Moral outrage 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">is / are</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        the psychological tool 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">that / what</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        motivates people 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">to punish / punishing</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        wrongdoers, even at cost or risk to 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">themselves / them</span></span> 
+        <div id="expl-3" class="explanation"></div>. 
+        It is a “commitment device,” something 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">that / what</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        commits people to punishment, even though 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">trying / tried</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        to punish someone can be 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">dangerous / dangerously</span></span> 
+        <div id="expl-6" class="explanation"></div>. 
+        When we witness 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">unjust / unjustly</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        harm, whether someone 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">committing / committed</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        interpersonal violence or obvious cheating, we have an 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">embodied / embodying</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        physical reaction. We get 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">angry / angrily</span></span> 
+        <div id="expl-10" class="explanation"></div>, 
+        our blood pressure spikes, our heart 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">beats / beat</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        faster; we thirst for retribution. Outrage leads 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">us / ourselves</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        to ignore the irrationality of 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">risking / risked</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        our own safety to punish someone. In any single situation, there 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">is / are</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        rarely an immediate personal benefit for meting out punishment, and often there 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">is / are</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        real risk, because the person you 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">are serving / are served</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        justice against could lash out at you or get revenge in the future. But the powerful feeling of outrage leads us to momentarily forget this unfavorable evaluation and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">get / getting</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        involved in a situation we would be better off avoiding, and science reveals how this feeling and forgetting is essential for maintaining a cooperative society.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "is", cat: "수 일치", desc: "주어가 단수 명사인 Moral outrage이므로 단수 동사 is를 씁니다." },
+        { ans: "that", cat: "접속사(관계사)", desc: "선행사 psychological tool을 수식하며 뒤에 동사가 이어지는 주격 관계대명사입니다." },
+        { ans: "to punish", cat: "준동사", desc: "motivate + 목적어 + to부정사 구조로 '목적어가 ~하도록 동기부여하다'는 뜻입니다." },
+        { ans: "themselves", cat: "대명사", desc: "처벌하는 주체와 위험을 감수하는 대상이 같으므로 재귀대명사 복수형을 씁니다." },
+        { ans: "that", cat: "접속사(관계사)", desc: "선행사 something을 수식하는 주격 관계대명사입니다." },
+        { ans: "trying", cat: "준동사", desc: "though절 내부의 주어 역할을 하는 동명사 주어입니다." },
+        { ans: "dangerous", cat: "형용사/부사", desc: "be동사 can be의 보어 자리이므로 형용사 dangerous가 적절합니다." },
+        { ans: "unjust", cat: "형용사/부사", desc: "명사 harm을 수식하므로 형용사가 필요합니다." },
+        { ans: "committing", cat: "준동사(분사)", desc: "폭력을 '행하고 있는' 사람이라는 능동 수식의 현재분사입니다." },
+        { ans: "embodied", cat: "준동사(분사)", desc: "신체화된(몸으로 나타나는) 반응이라는 의미로 명사를 수식하는 과거분사입니다." },
+        { ans: "angry", cat: "형용사/부사", desc: "get은 2형식 동사로 보어 자리에 형용사 보어를 취합니다." },
+        { ans: "beats", cat: "수 일치", desc: "주어인 our heart가 단수이므로 단수 동사 beats를 씁니다." },
+        { ans: "us", cat: "대명사", desc: "주어(Outrage)와 목적어(사람들)가 다르므로 일반 대명사 목적격을 씁니다." },
+        { ans: "risking", cat: "준동사", desc: "전치사 of의 목적어 역할을 하는 동명사 자리입니다." },
+        { ans: "is", cat: "수 일치", desc: "유도부사 구문의 진짜 주어인 an immediate personal benefit이 단수이므로 is를 씁니다." },
+        { ans: "is", cat: "수 일치", desc: "뒤에 오는 주어 real risk가 단수이므로 단수 동사 is가 적절합니다." },
+        { ans: "are serving", cat: "능동태/수동태", desc: "당신이 정의를 집행하고 있는 중이라는 능동 진행형 문맥입니다." },
+        { ans: "get", cat: "병렬", desc: "to forget과 and로 연결되어 leads us to에 걸리는 동사원형 병렬 구조입니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

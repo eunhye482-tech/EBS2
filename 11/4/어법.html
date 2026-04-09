@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        Many factors 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">contribute / contributes</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        to Americans’ growing waistlines, but one observation in particular cannot 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">be overlooked / overlook</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        : The incidence of obesity 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">has increased / has been increased</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        in parallel with 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">increasing / increased</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        portion sizes. Consider this: Adults today consume an average of 300 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">more / most</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        calories per day 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">than / as</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        they 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">did / were</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        in the year 1985. Is this just a coincidence, or 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">do / are</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        larger portion sizes have something 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">to do / doing</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        with it? In almost every eating situation, we 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">are now confronted / now confront</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        by huge portions, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">which / what</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        are 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">perceived / perceiving</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        as “normal” or “a great value.” Americans have created the perception 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">that / what</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        large portion sizes 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">are / is</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        appropriate, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">creating / created</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        an environment of portion distortion. We find portion distortions in restaurants, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">where / which</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        the jumbo-sized portions are consistently 250 percent larger than the regular portions. We even find portion distortions in our homes, where the sizes of our bowls and glasses 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">have steadily increased / have been steadily increased</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        and where the surface area of the average dinner plate 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">has increased / has been increased</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        36 percent since 1960. Research shows that people unintentionally consume more calories when offered larger portions. Consuming larger portion sizes can contribute to positive energy balance, which, over time, leads to weight gain and ultimately can result in obesity.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "contribute", cat: "수 일치", desc: "주어가 복수 명사인 Many factors이므로 복수 동사 contribute를 씁니다." },
+        { ans: "be overlooked", cat: "능동태/수동태", desc: "관찰(observation)은 간과되는 대상이므로 수동태(be p.p.)가 적절합니다." },
+        { ans: "has increased", cat: "능동태/수동태", desc: "increase는 자동사로 쓰여 '증가하다'라는 능동의 완료 시제로 충분합니다." },
+        { ans: "increasing", cat: "준동사(분사)", desc: "portion sizes를 수식하며 '증가하는'이라는 능동의 진행 의미를 지닌 현재분사입니다." },
+        { ans: "more", cat: "형용사/부사", desc: "뒤의 than과 어울려 비교를 나타내는 형용사입니다." },
+        { ans: "than", cat: "접속사", desc: "비교급(more)과 짝을 이루는 접속사입니다." },
+        { ans: "did", cat: "대동사", desc: "앞의 일반동사 consume을 대신하는 과거형 대동사입니다." },
+        { ans: "do", cat: "수 일치/조동사", desc: "일반동사(have)가 포함된 의문문에서 주어(larger portion sizes)에 맞춘 조동사입니다." },
+        { ans: "to do", cat: "준동사", desc: "have something to do with (~와 관련이 있다) 관용 표현입니다." },
+        { ans: "are now confronted", cat: "능동태/수동태", desc: "우리가 거대한 양에 '직면하게 되는' 것이므로 수동태가 적절합니다." },
+        { ans: "which", cat: "접속사(관계사)", desc: "선행사 portions를 부연 설명하며 뒤가 불완전한 관계대명사 계속적 용법입니다." },
+        { ans: "perceived", cat: "능동태/수동태", desc: "거대한 양이 '인식되는' 것이므로 수동태가 맞습니다." },
+        { ans: "that", cat: "접속사", desc: "perception과 동격 관계를 이루는 완전한 명사절을 이끄는 접속사입니다." },
+        { ans: "are", cat: "수 일치", desc: "동격절 내의 주어가 복수(portion sizes)이므로 복수 동사를 씁니다." },
+        { ans: "creating", cat: "준동사(분사구문)", desc: "앞 문장의 결과로 환경을 '만들어내다'는 의미의 능동 분사구문입니다." },
+        { ans: "where", cat: "접속사(관계사)", desc: "선행사 restaurants를 장소적 배경으로 수식하는 관계부사입니다." },
+        { ans: "have steadily increased", cat: "능동태/수동태", desc: "크기(sizes)가 스스로 증가했다는 의미의 자동사 현재완료입니다." },
+        { ans: "has increased", cat: "능동태/수동태", desc: "면적(surface area)이 증가했다는 자동사적 표현으로 수동태가 불필요합니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

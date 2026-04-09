@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 - 문장 삽입 모의고사 (준거 집단 편)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 18px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        .question-header {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .q-label { color: #ff9800; font-family: 'Nanum Pen Script', cursive; font-size: 2.2rem; margin-right: 8px; }
+        .q-text { color: #ffeb3b; font-size: 1.0rem; font-weight: 700; line-height: 1.3; }
+
+        .box-sentence {
+            background: #fff9c4;
+            color: #333;
+            padding: 15px;
+            border: 2px dashed #fbc02d;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .passage {
+            font-size: 1.0rem; 
+            line-height: 2.1;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 18px;
+            border-radius: 8px;
+        }
+
+        .q-num {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            background: #ff9800;
+            color: white;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            vertical-align: middle;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .q-num:hover { transform: scale(1.1); background: #f57c00; }
+        .q-num.correct { background: #4caf50 !important; border: 2px solid white; }
+        .q-num.wrong { background: #f44336 !important; border: 2px solid white; opacity: 0.8; }
+        .q-num.disabled { pointer-events: none; }
+
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #ffeb3b;
+        }
+        .feedback-area.show { display: block; }
+        
+        .next-btn {
+            margin-top: 12px; width: 100%; padding: 12px;
+            background: #ff9800; color: white; border: none;
+            border-radius: 10px; font-size: 1.0rem; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 0 #e65100;
+        }
+
+        .blackboard::-webkit-scrollbar { width: 4px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="question-header">
+                <span class="q-label" id="q-label">Q1.</span>
+                <span class="q-text">제시된 문장이 들어갈 번호를 본문에서 클릭하세요.</span>
+            </div>
+
+            <div class="box-sentence" id="box-sentence"></div>
+            <div class="passage" id="passage-container"></div>
+
+            <div id="feedback-box" class="feedback-area">
+                <div id="result-text" style="font-size: 1.1rem; font-weight: bold; margin-bottom: 8px;"></div>
+                <div id="explanation" style="color: #ddd; line-height: 1.5; font-size: 0.9rem;"></div>
+                <button class="next-btn" onclick="nextQuestion()">다음 문제</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            box: "However, reference groups can also have comparison effects and associative effects on self-appraisals.",
+            parts: [
+                "An in-group can become a reference group used as the frame of reference for evaluating behavior.",
+                "Members of a volunteer organization evaluate themselves by group standards and feel proud.",
+                "This reflects the normative effect of a reference group where members share the same view.",
+                "If parents have high self-esteem, you are likely to share that norm through imitation.",
+                "If most of your classmates shine in academic achievement, you are likely to compare yourself with them.",
+                "As a result, you may have a negative self-evaluation, feeling that your performance is not up to par."
+            ],
+            answer: 4, // ④번 위치
+            expl: "준거 집단을 모방하는 규범적 효과(③번 뒤)에 대한 설명이 끝난 후, '하지만(However)'이라며 비교 효과와 연합 효과라는 '또 다른 효과'를 소개하는 ④번 위치가 정답입니다."
+        },
+        {
+            box: "If other members of your reference group (say, your parents) have high self-esteem, you, too, are likely to share that norm and have high self-esteem.",
+            parts: [
+                "An in-group can become a reference group for evaluating one’s own behavior.",
+                "Members of a volunteer organization feel proud by following group standards.",
+                "This positive self-evaluation reflects the normative effect of a reference group whose members share the same view.",
+                "The normative effect basically involves imitating the reference group.",
+                "However, reference groups can also have comparison effects on self-appraisals.",
+                "If classmates shine, you may feel your academic performance is not up to par."
+            ],
+            answer: 3, // ③번 위치
+            expl: "규범적 효과(normative effect)에 대한 정의(②번 뒤) 바로 다음에, 부모님의 자존감을 모방하는 구체적인 예시를 제시하는 ③번 위치가 가장 적합합니다."
+        },
+        {
+            box: "If most of your classmates shine in academic achievement, you are likely to compare yourself with them.",
+            parts: [
+                "Reference groups provide a frame of reference for evaluating behavior and contribution.",
+                "The normative effect involves imitating the shared norms and views of the group members.",
+                "However, reference groups can also have comparison effects and associative effects on self-appraisals.",
+                "As a result, you may have a negative self-evaluation, feeling that your performance is not up to par.",
+                "Being associated with the brilliant group, though, makes you feel proud of yourself.",
+                "This phenomenon is often described as “basking in reflected glory.”"
+            ],
+            answer: 3, // ③번 위치
+            expl: "비교 효과(comparison effect)가 언급된 문장(②번 뒤) 직후에, 우수한 학급 친구들과 자신을 비교하게 되는 구체적 사례를 넣는 ③번 위치가 정답입니다."
+        },
+        {
+            box: "Being associated with the brilliant group, though, makes you feel proud of yourself, “basking in reflected glory.”",
+            parts: [
+                "If classmates shine, you are likely to compare yourself with them and have a negative self-evaluation.",
+                "This comparison effect highlights the perceived gap between one's current state and group standards.",
+                "It can lead to a sense of inadequacy if the group's achievement is too far beyond reach.",
+                "The associative effect provides a counter-balance to the negative feelings of comparison.",
+                "By identifying with high-achievers, individuals can boost their own self-image.",
+                "Ultimately, reference groups shape identity through a complex interplay of these various forces."
+            ],
+            answer: 0, // ①번 위치 (문맥상 대조를 위해 맨 앞 활용)
+            expl: "우수한 친구들과 비교하여 열등감을 느끼는 상황(①번 앞)과 대조적으로, 그 집단에 속해 있다는 사실만으로 자부심을 느끼는 '연합 효과'를 설명하는 ①번 위치가 정답입니다."
+        },
+        {
+            box: "Members of a volunteer organization, for example, may evaluate themselves by the standards of the group and feel proud about their contribution.",
+            parts: [
+                "An in-group can become a reference group, a group that is used as the frame of reference for evaluating one’s own behavior.",
+                "This positive self-evaluation reflects the normative effect of a reference group whose members share the same view.",
+                "If other members have high self-esteem, you are likely to share that norm and have high self-esteem.",
+                "The normative effect basically involves imitating the reference group.",
+                "However, reference groups can also have comparison effects on self-appraisals.",
+                "Comparison can sometimes lead to a lowered sense of self-worth if expectations are not met."
+            ],
+            answer: 1, // ①번 위치
+            expl: "준거 집단에 대한 정의(①번 앞)가 나온 직후, 자원봉사 단체라는 구체적인 '예시(for example)'를 통해 행동 평가가 이루어지는 과정을 설명하는 ①번 위치가 정답입니다."
+        }
+    ];
+
+    let currentIdx = 0;
+    const labels = ["①", "②", "③", "④", "⑤"];
+
+    function render() {
+        const q = questions[currentIdx];
+        document.getElementById('q-label').innerText = `Q${currentIdx + 1}.`;
+        document.getElementById('box-sentence').innerText = q.box;
+        document.getElementById('feedback-box').classList.remove('show');
+
+        const container = document.getElementById('passage-container');
+        container.innerHTML = '';
+
+        q.parts.forEach((text, i) => {
+            const txtSpan = document.createElement('span');
+            txtSpan.innerText = text + " ";
+            container.appendChild(txtSpan);
+
+            if (i < 5) {
+                const numSpan = document.createElement('span');
+                numSpan.className = 'q-num';
+                numSpan.innerText = labels[i];
+                numSpan.onclick = () => check(i, numSpan);
+                container.appendChild(numSpan);
+            }
+        });
+        document.getElementById('scroll-area').scrollTop = 0;
+    }
+
+    function check(idx, el) {
+        const q = questions[currentIdx];
+        const all = document.querySelectorAll('.q-num');
+        all.forEach(n => n.classList.add('disabled'));
+
+        const res = document.getElementById('result-text');
+        const correctLabel = labels[q.answer];
+
+        if (idx === q.answer) {
+            el.classList.add('correct');
+            res.innerText = "정답입니다! 사회심리학적 통찰력이 뛰어나시네요. 🤝";
+            res.style.color = "#81c784";
+        } else {
+            el.classList.add('wrong'); // 선택한 오답 빨간색
+            all[q.answer].classList.add('correct'); // 실제 정답 번호 초록색 하이라이트
+            res.innerText = `틀렸습니다. 정답은 ${correctLabel}번입니다.`;
+            res.style.color = "#e57373";
+        }
+
+        document.getElementById('explanation').innerText = q.expl;
+        document.getElementById('feedback-box').classList.add('show');
+        
+        setTimeout(() => {
+            document.getElementById('feedback-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 150);
+    }
+
+    function nextQuestion() {
+        currentIdx = (currentIdx + 1) % questions.length;
+        render();
+    }
+
+    render();
+</script>

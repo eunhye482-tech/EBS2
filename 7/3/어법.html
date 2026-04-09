@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        In 2012, the Yale School of Architecture 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">held / was held</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        a symposium 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">called / calling</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        “Is Drawing Dead?” The bold title 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">reflects / reflect</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        a growing sense 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">that / what</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        the architect’s freehand sketch 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">is being displaced / is displacing</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        by the computer. The transition from sketchpad to screen 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">entails / entail</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        , many architects believe, a loss of creativity, of adventurousness. Thanks to the precision and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">apparent / apparently</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        completeness of screen renderings, a designer 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">working / worked</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        at a computer 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">has / have</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        a tendency 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">to lock / locking</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        in, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">visually / visual</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        and cognitively, on a design at an early stage. He bypasses much of the 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">reflective / reflectively</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        and exploratory playfulness that 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">springs / spring</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        from the uncertainty and ambiguity of sketching. Researchers term this phenomenon “premature fixation” and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">trace / traces</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">its / their</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        cause to “the disincentive for design changes once a large amount of detail and interconnectedness 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">is built / builds</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        too quickly into a CAD (Computer-Aided Design) model.” The designer at the computer also 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">tends / tend</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        to emphasize formal experimentation at the expense of expressiveness. By weakening an architect’s “personal, emotional connection with the work,” a renowned American architect and designer Michael Graves 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">argues / argue</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        , CAD software produces designs that, “while complex and interesting in their own way,” often “lack the emotional content of a design derived from hand.”
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "held", cat: "능동태/수동태", desc: "학교가 심포지엄을 '개최했다'는 능동의 과거 시제입니다." },
+        { ans: "called", cat: "준동사(분사)", desc: "~라고 '불리는' 심포지엄이므로 과거분사가 수식합니다." },
+        { ans: "reflects", cat: "수 일치", desc: "주어가 단수 명사인 The bold title이므로 단수 동사 reflects를 씁니다." },
+        { ans: "that", cat: "접속사", desc: "sense와 동격 관계인 완전한 명사절을 이끄는 접속사입니다." },
+        { ans: "is being displaced", cat: "능동태/수동태", desc: "스케치가 컴퓨터에 의해 '대체되고 있는' 수동 진행형입니다." },
+        { ans: "entails", cat: "수 일치", desc: "주어가 단수 명사인 The transition이므로 단수 동사 entails가 맞습니다." },
+        { ans: "apparent", cat: "형용사/부사", desc: "명사인 completeness를 수식하므로 형용사가 적절합니다." },
+        { ans: "working", cat: "준동사(분사)", desc: "컴퓨터에서 '작업하는' 디자이너라는 능동 수식의 현재분사입니다." },
+        { ans: "has", cat: "수 일치", desc: "문장의 주어인 a designer가 단수이므로 has를 씁니다." },
+        { ans: "to lock", cat: "준동사", desc: "tendency를 수식하는 형용사적 용법의 to부정사입니다." },
+        { ans: "visually", cat: "형용사/부사", desc: "동사구(lock in)를 수식하므로 부사 형태가 와야 합니다." },
+        { ans: "reflective", cat: "형용사/부사", desc: "명사 playfulness를 수식하며 뒤의 exploratory와 병렬을 이루는 형용사입니다." },
+        { ans: "springs", cat: "수 일치", desc: "주격 관계대명사 that의 선행사가 단수인 playfulness이므로 단수 동사를 씁니다." },
+        { ans: "trace", cat: "병렬", desc: "주어 Researchers에 연결되는 term(동사1)과 trace(동사2)의 병렬 구조입니다." },
+        { ans: "its", cat: "대명사", desc: "단수 명사인 this phenomenon을 가리키는 소유격 대명사입니다." },
+        { ans: "is built", cat: "능동태/수동태", desc: "세부사항과 상호연결성이 모델에 '구축되는' 수동의 관계입니다." },
+        { ans: "tends", cat: "수 일치", desc: "주어가 단수인 The designer이므로 단수 동사 tends를 씁니다." },
+        { ans: "argues", cat: "수 일치", desc: "주어인 Michael Graves가 단수 인명이므로 단수 동사 argues를 씁니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

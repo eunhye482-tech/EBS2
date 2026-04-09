@@ -1,0 +1,180 @@
+
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        If you suffer from social angst, awkwardness, or dread, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">know / knowing</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        that this is a perfectly 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">normal / normally</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        response. No matter what it 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">looks / is looked</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        like, a lot of people 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">are / is</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        dealing with internal anxiety in social situations. But it is actually 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">possible / possibly</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        to build your social muscle and use 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">it / them</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        to boost your connections—and your anxiety is giving you clues to 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">what / that</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        icebreakers and lifelines other people might be grateful for you 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">to extend / extend</span></span>. 
+        <div id="expl-7" class="explanation"></div>
+        Truly listen to 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">what / that</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        your anxiety is 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">signaling / signaled</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        to you about where you feel 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">uncertain / uncertainly</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        or insecure, and practice empathy by 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">offering / offered</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        a hand to others who might 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">be / are</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        in the same boat. Remember that 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">flipping / flipped</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        anxiety into compassion is something 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">inherent / inherently</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        in you—it is, in fact, what your anxiety was 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">designed / designing</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        to do for you. Together, compassion and empathy 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">can buffer / can be buffered</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        against bad anxiety. You can use your anxiety 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">to be / being</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        more outward-facing. The outcome? The spread of compassion for your fellow human beings, other species, and the planet!
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "know", cat: "수 일치/동사", desc: "If절 이후 주절의 명령문 형태로 동사원형이 와야 합니다." },
+        { ans: "normal", cat: "형용사/부사", desc: "명사 response를 수식하므로 형용사 normal이 적절합니다." },
+        { ans: "looks", cat: "능동태/수동태", desc: "look은 자동사로 수동태로 쓰지 않습니다." },
+        { ans: "are", cat: "수 일치", desc: "주어가 a lot of people(복수)이므로 are를 씁니다." },
+        { ans: "possible", cat: "형용사/부사", desc: "be동사 is의 보어 자리이므로 형용사가 와야 합니다." },
+        { ans: "it", cat: "대명사", desc: "단수 명사인 your social muscle을 가리킵니다." },
+        { ans: "what", cat: "접속사", desc: "to 뒤의 명사절에서 icebreakers와 lifelines를 수식하는 의문형용사입니다." },
+        { ans: "to extend", cat: "준동사", desc: "grateful for A to B 구조로 to부정사가 오는 것이 자연스럽습니다." },
+        { ans: "what", cat: "접속사", desc: "signaling의 목적어가 없는 불완전한 문장을 이끄는 관계대명사입니다." },
+        { ans: "signaling", cat: "준동사(분사)", desc: "불안이 신호를 '보내고 있는' 능동의 진행 상태입니다." },
+        { ans: "uncertain", cat: "형용사/부사", desc: "feel은 2형식 감각동사로 보어 자리에 형용사를 취합니다." },
+        { ans: "offering", cat: "준동사", desc: "전치사 by 뒤에 오는 동명사 목적어입니다." },
+        { ans: "be", cat: "수 일치", desc: "조동사 might 뒤에는 동사원형 be가 와야 합니다." },
+        { ans: "flipping", cat: "준동사", desc: "문장의 주어 역할을 하는 동명사입니다." },
+        { ans: "inherent", cat: "형용사/부사", desc: "something을 뒤에서 수식하는 형용사입니다." },
+        { ans: "designed", cat: "능동태/수동태", desc: "불안은 그렇게 하도록 '설계된' 것이므로 수동태가 맞습니다." },
+        { ans: "can buffer", cat: "능동태/수동태", desc: "연민과 공감이 불안을 완화하는 능동의 관계입니다." },
+        { ans: "to be", cat: "준동사", desc: "use A to B (~하기 위해 A를 사용하다) 구문입니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        Here’s an application of metaphors to research papers: Below-grade-level readers in my urban middle school 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">have / has</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        a great deal of difficulty 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">doing / to do</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        research. Their answer when 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">assigned / assigning</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        to do “a report” 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">is / are</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        to come to the media center and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">copy / copying</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        verbatim everything in the encyclopedia article or 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">whatever / that</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        source they 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">have located / have been located</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        , be it Internet, print, or 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">whatever / whichever</span></span> 
+        <div id="expl-7" class="explanation"></div>. 
+        To try 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">to get / getting</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        the students 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">to understand / understand</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        why 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">it / that</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        isn’t 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">necessary / necessarily</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        to copy everything in the articles, I use a comparison to a supermarket. I ask 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">them / themselves</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        if everything in the supermarket 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">is / are</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        useful, and we discuss this, with the usual conclusion 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">being / is</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        that it is, but we don’t buy everything all the time. Then I ask them why they don’t buy everything each time they go and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">how / that</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        they determine 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">what / that</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        to buy when they go with 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">their / its</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        parents. Someone usually mentions that they have a list. From that point on, I lead a discussion about how whatever their teachers have asked for is their “shopping list” for their research, and they should just read for that information and write it down in note format. It sometimes helps them to understand that copying everything is a wasteful endeavor.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "have", cat: "수 일치", desc: "주어가 복수 명사인 readers이므로 복수 동사 have를 씁니다." },
+        { ans: "doing", cat: "준동사", desc: "have difficulty -ing (~하는 데 어려움을 겪다) 관용 표현입니다." },
+        { ans: "assigned", cat: "준동사(분사구문)", desc: "학생들이 과제를 '부여받았을' 때이므로 수동의 의미인 과거분사를 씁니다." },
+        { ans: "is", cat: "수 일치", desc: "주어인 Their answer가 단수이므로 단수 동사 is를 씁니다." },
+        { ans: "copy", cat: "병렬", desc: "to come과 and로 연결되어 to에 걸리는 동사원형 병렬 구조입니다." },
+        { ans: "whatever", cat: "접속사", desc: "'어떤 출처든지'라는 의미의 복합관계형용사로 쓰였습니다." },
+        { ans: "have located", cat: "능동태/수동태", desc: "그들이 출처를 '찾아낸' 능동의 현재완료 시제입니다." },
+        { ans: "whatever", cat: "대명사", desc: "'무엇이든 간에'라는 의미로 나열의 끝에 쓰였습니다." },
+        { ans: "to get", cat: "준동사", desc: "'~하기 위하여'라는 목적의 의미를 가진 to부정사입니다." },
+        { ans: "to understand", cat: "준동사", desc: "get + 목적어 + to부정사 구조로 '목적어가 ~하게 하다'는 뜻입니다." },
+        { ans: "it", cat: "대명사", desc: "to copy 이하의 진주어를 받는 가주어 it 자리입니다." },
+        { ans: "necessary", cat: "형용사/부사", desc: "be동사 isn't의 보어 자리이므로 형용사가 적절합니다." },
+        { ans: "them", cat: "대명사", desc: "학생들(them)에게 묻는 것이며 주어(I)와 목적어가 다르므로 일반 대명사를 씁니다." },
+        { ans: "is", cat: "수 일치", desc: "주어 everything은 언제나 단수 취급하므로 is를 씁니다." },
+        { ans: "being", cat: "준동사(분사구문)", desc: "with + 명사 + 분사 구문으로 '~한 채로/하면서'라는 부수 상황을 나타냅니다." },
+        { ans: "how", cat: "접속사", desc: "ask 뒤에 연결되어 '어떻게 ~하는지'를 묻는 의문사절을 이끕니다." },
+        { ans: "what", cat: "접속사", desc: "determine의 목적어 역할을 하며 '무엇을 살지'를 뜻하는 의문사입니다." },
+        { ans: "their", cat: "대명사", desc: "복수인 학생들(they)의 부모님이므로 복수 소유격 their가 맞습니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

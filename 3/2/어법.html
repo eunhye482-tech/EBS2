@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        Energy can always 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">be injected / inject</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        into an organization 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">to motivate / motivate</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        people to do things. Bonuses, promotions, other carrots, and even a few sticks 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">can get / can be gotten</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        people 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">to work / work</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        harder, for sure, but the gains 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">are / is</span></span>, 
+        <div id="expl-4" class="explanation"></div>
+        like all manipulations, short-term. Over time, such tactics cost more money and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">increase / increases</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        stress for employee and employer 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">alike / likely</span></span>, 
+        <div id="expl-6" class="explanation"></div>
+        and eventually 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">will become / will be become</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        the main reason people 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">show up / is shown up</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        for work every day. That’s not loyalty. That’s the employee version of repeat business. Loyalty among employees 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">is / are</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        when 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">they / it</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        turn down more money or benefits 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">to continue / continuing</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        working at the same company. Loyalty to a company 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">trumps / trump</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        pay and benefits. And 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">unless / if</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        you’re an astronaut, it’s not the work we do 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">that / what</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        inspires 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">us / ourselves</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        either. It’s the cause 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">that / what</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        we come to work for. We don’t want to come to work 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">to build / build</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        a wall; we want to come to work to build a cathedral.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "be injected", cat: "능동태/수동태", desc: "에너지는 주입되는 것이므로 조동사 뒤 수동태(be p.p.)가 적절합니다." },
+        { ans: "to motivate", cat: "준동사", desc: "'동기부여 하기 위해'라는 목적의 의미를 가진 to부정사 자리입니다." },
+        { ans: "can get", cat: "능동태/수동태", desc: "보너스 등이 사람들을 일하게 '만드는' 능동의 관계입니다." },
+        { ans: "to work", cat: "준동사", desc: "get + 목적어 + to부정사 구조로 목적어가 ~하게 시키다는 뜻입니다." },
+        { ans: "are", cat: "수 일치", desc: "주어가 복수 명사인 the gains이므로 복수 동사 are를 씁니다." },
+        { ans: "increase", cat: "병렬", desc: "cost(동사1)와 and로 연결되어 주어 tactics에 걸리는 동사2입니다." },
+        { ans: "alike", cat: "형용사/부사", desc: "A and B alike는 'A와 B 둘 다 똑같이'라는 부사적 표현입니다." },
+        { ans: "will become", cat: "능동태/수동태", desc: "become은 자동사로 수동태를 쓰지 않습니다." },
+        { ans: "show up", cat: "능동태/수동태", desc: "사람들이 나타나는 능동의 관계이며, 자동사이므로 수동태가 불가합니다." },
+        { ans: "is", cat: "수 일치", desc: "주어가 단수 명사인 Loyalty이므로 단수 동사 is가 맞습니다." },
+        { ans: "they", cat: "대명사", desc: "앞의 복수 명사인 employees를 가리키므로 복수 대명사 they를 씁니다." },
+        { ans: "to continue", cat: "준동사", desc: "'계속하기 위하여'라는 목적의 to부정사입니다." },
+        { ans: "trumps", cat: "수 일치", desc: "단수 주어 Loyalty에 일치시킨 단수 동사형입니다." },
+        { ans: "unless", cat: "접속사", desc: "의미상 '만약 ~이 아니라면'이 적절하므로 unless(if not)를 씁니다." },
+        { ans: "that", cat: "강조/접속사", desc: "It is ~ that 강조 구문으로 '우리를 고취하는 것은 바로 ~이다'라는 뜻입니다." },
+        { ans: "us", cat: "대명사", desc: "동사 inspire의 목적어로 일반적인 '우리'를 지칭합니다." },
+        { ans: "that", cat: "접속사(관계사)", desc: "선행사 the cause가 있고 for 뒤의 목적어가 없는 불완전한 절을 이끄는 관계대명사입니다." },
+        { ans: "to build", cat: "준동사", desc: "'지으러 오다(짓기 위해 오다)'라는 목적의 의미를 나타냅니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

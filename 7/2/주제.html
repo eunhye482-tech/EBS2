@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 모의고사 - 전략적 협상</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 나무 테두리 그라데이션 */
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* 빈티지 녹색 칠판 */
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 20px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        /* 지문 스타일 (전문 반영) */
+        .passage {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #ff9800;
+            word-break: break-word;
+        }
+
+        /* 질문 영역 포인트 */
+        .question-container { margin-bottom: 25px; }
+        .q-label { 
+            color: #ff9800; 
+            font-family: 'Nanum Pen Script', cursive; 
+            font-size: 2.2rem; 
+            margin-right: 8px; 
+        }
+        .q-text { 
+            color: #ffeb3b; 
+            font-size: 1.2rem; 
+            font-weight: 700; 
+            line-height: 1.4;
+        }
+
+        /* 오지선다 (노란색 버튼) */
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            background: linear-gradient(to bottom, #fffde7, #fff59d);
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #fbc02d;
+            transition: all 0.1s;
+            text-align: left;
+            width: 100%;
+        }
+        .option-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #fbc02d; }
+        
+        .option-btn.correct { background: #a5d6a7 !important; box-shadow: 0 5px 0 #66bb6a; }
+        .option-btn.wrong { background: #ef9a9a !important; box-shadow: 0 5px 0 #ef5350; }
+
+        .opt-num {
+            background: #ff9800;
+            color: white;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 0.9rem; font-weight: bold;
+            margin-right: 12px; flex-shrink: 0;
+        }
+        .opt-txt { color: #432818; font-size: 1rem; font-weight: 600; }
+
+        /* 하단 피드백 영역 */
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #ffeb3b;
+            animation: slideUp 0.4s ease;
+        }
+        .feedback-area.show { display: block; }
+        .result-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 8px; }
+        .result-desc { font-size: 0.95rem; color: #ddd; line-height: 1.5; }
+
+        .next-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 15px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #e65100;
+            cursor: pointer;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 스크롤바 커스텀 */
+        .blackboard::-webkit-scrollbar { width: 6px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="passage">
+                In the old Soviet Union, a famous U.S. beverage company wanted to set up a bottling plant and distribution network. The prevailing ideology in the old Soviet Union at the time stressed the importance of the group over the individual and the need to develop industrial capacity at the expense of consumer goods. Soft drinks hardly seemed to fit the country’s ideological priorities. Indeed, one government official dismissed the product as a “useless drink.” Eventually, the two sides struck a deal, but not on the basis that the drink would quench the local population’s thirst. Instead, the U.S. negotiators justified the project on the grounds that it would contribute to the country’s industrial development. They restructured the project to include a heavy training component for local workers and managers, as well as a farm that would grow certain of the drink’s ingredients. In addition, the company promised to make efforts to persuade other American companies to consider investments in the country.
+            </div>
+
+            <div id="quiz-root">
+                <div class="question-container">
+                    <span class="q-label" id="q-label">Q1.</span>
+                    <span class="q-text" id="q-text">질문 로딩 중...</span>
+                </div>
+
+                <div class="options-list" id="options-list"></div>
+
+                <div id="feedback-box" class="feedback-area">
+                    <div id="result-text" class="result-title"></div>
+                    <div id="explanation" class="result-desc"></div>
+                    <button class="next-btn" onclick="goToNext()">다음 문제 풀기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            type: "주제",
+            q: "위 글의 주제로 가장 적절한 것은?",
+            options: [
+                "The impact of soft drinks on Soviet citizens' health",
+                "Strategic negotiation to align business goals with local ideology",
+                "History of competition between U.S. and Soviet beverage companies",
+                "The failure of American investments in the Soviet Union's agriculture",
+                "Reasons why consumer goods are prioritized in socialist countries"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 이 글은 비즈니스 목표를 상대국의 이념(산업 발전)에 맞춰 재설계함으로써 성사시킨 전략적 협상을 주제로 하고 있습니다."
+        },
+        {
+            type: "제목",
+            q: "위 글의 제목으로 가장 적절한 것은?",
+            options: [
+                "Soft Drinks: A Useless Burden on the Soviet Economy",
+                "Industrial Development: The Only Way to Quench Thirst",
+                "Adapting the Message: How a Beverage Company Won the Deal",
+                "The Decline of Individualism in the Soviet Union's History",
+                "Why American Companies Failed to Persuade Soviet Managers"
+            ],
+            answer: 2,
+            expl: "정답: 3번. 청량음료 회사가 어떻게 메시지를 적응시켜 협상을 성공시켰는지를 가장 잘 나타내는 제목입니다."
+        },
+        {
+            type: "요지",
+            q: "위 글의 요지로 가장 적절한 것은?",
+            options: [
+                "소련의 관료들은 청량음료가 국민의 건강에 유익하다고 판단했다.",
+                "미국 음료 회사는 제품의 맛을 강조하여 소련 시장 진입에 성공했다.",
+                "협상 성공을 위해 제품의 본질보다 상대국의 이념적 가치에 초점을 맞췄다.",
+                "대규모 투자 이전에 현지 노동자 교육을 실시하는 것은 항상 비효율적이다.",
+                "정치적 이념은 비즈니스 협상에서 고려해야 할 가장 사소한 요소 중 하나이다."
+            ],
+            answer: 2,
+            expl: "정답: 3번. 제품 자체의 효용(갈증 해소)보다 상대국이 중시하는 산업적 가치(노동자 교육, 농장 운영 등)를 내세워 협상을 성사시킨 것이 요지입니다."
+        },
+        {
+            type: "함축 의미",
+            q: "밑줄 친 'useless drink'에 담긴 속뜻으로 가장 적절한 것은?",
+            options: [
+                "영양가가 없어 국민 건강에 아무런 도움이 되지 않는 물",
+                "소련의 주력 수출 품목인 보드카보다 경제적 가치가 낮은 액체",
+                "국가의 이념적 우선순위인 산업 발전에 기여하지 못하는 소비재",
+                "원재료가 너무 비싸서 일반 서민들이 마실 수 없는 고가의 기호품",
+                "유통 과정이 복잡하여 병 공장을 세우기에 부적합한 제품"
+            ],
+            answer: 2,
+            expl: "정답: 3번. 당시 소련은 소비재보다 산업 역량 개발을 중시했으므로, 단순한 음료인 청량음료는 국가 발전에 무용지물이라는 비판적 의미입니다."
+        },
+        {
+            type: "내용 일치",
+            q: "위 글의 내용과 일치하지 않는 것은?",
+            options: [
+                "소련의 당시 지배적 이념은 개인보다 집단의 이익을 강조했다.",
+                "정부 관료는 처음에 청량음료를 무용지물이라며 일축했다.",
+                "협상은 청량음료가 현지인의 갈증을 풀어줄 것이라는 근거로 타결되었다.",
+                "미국 회사는 현지 노동자와 관리자를 위한 집중 교육 과정을 포함시켰다.",
+                "회사는 다른 미국 기업들도 그 나라에 투자하도록 설득하기로 약속했다."
+            ],
+            answer: 2,
+            expl: "정답: 3번. 지문에 따르면 갈증 해소가 아니라 '산업 발전에 기여할 것(contribute to industrial development)'이라는 근거로 협상이 타결되었습니다."
+        }
+    ];
+
+    let currentStep = 0;
+
+    function renderQuiz() {
+        const quiz = questions[currentStep];
+        document.getElementById('q-label').innerText = `Q${currentStep + 1}. [${quiz.type}]`;
+        document.getElementById('q-text').innerText = quiz.q;
+        
+        const list = document.getElementById('options-list');
+        list.innerHTML = '';
+        document.getElementById('feedback-box').classList.remove('show');
+
+        quiz.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span class="opt-num">${i + 1}</span><span class="opt-txt">${opt}</span>`;
+            btn.onclick = () => checkAnswer(i, btn);
+            list.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(idx, btn) {
+        const quiz = questions[currentStep];
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.disabled = true);
+
+        const feedbackBox = document.getElementById('feedback-box');
+        const resText = document.getElementById('result-text');
+        const expl = document.getElementById('explanation');
+
+        if(idx === quiz.answer) {
+            btn.classList.add('correct');
+            resText.innerText = "정답입니다! 협상의 전략을 꿰뚫어 보셨네요. 🤝";
+            resText.style.color = "#81c784";
+        } else {
+            btn.classList.add('wrong');
+            resText.innerText = "틀렸습니다. 지문에서 협상이 타결된 진짜 근거를 찾아보세요!";
+            resText.style.color = "#e57373";
+            allBtns[quiz.answer].classList.add('correct');
+        }
+
+        expl.innerText = quiz.expl;
+        feedbackBox.classList.add('show');
+        
+        setTimeout(() => {
+            feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    }
+
+    function goToNext() {
+        currentStep++;
+        if(currentStep < questions.length) {
+            renderQuiz();
+            document.getElementById('scroll-area').scrollTop = 0;
+        } else {
+            alert("수고하셨습니다! 모든 수능 영어 지문 분석을 성공적으로 마쳤습니다.");
+            currentStep = 0;
+            renderQuiz();
+        }
+    }
+
+    renderQuiz();
+</script>
+
+</body>
+</html>

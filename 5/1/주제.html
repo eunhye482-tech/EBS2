@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 모의고사 - 위기 관리의 지혜</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 나무 테두리 그라데이션 */
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* 빈티지 녹색 칠판 */
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 20px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        /* 지문 스타일 (전문 반영) */
+        .passage {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #ff9800;
+            word-break: break-word;
+        }
+
+        /* 질문 영역 포인트 */
+        .question-container { margin-bottom: 25px; }
+        .q-label { 
+            color: #ff9800; 
+            font-family: 'Nanum Pen Script', cursive; 
+            font-size: 2.2rem; 
+            margin-right: 8px; 
+        }
+        .q-text { 
+            color: #ffeb3b; 
+            font-size: 1.2rem; 
+            font-weight: 700; 
+            line-height: 1.4;
+        }
+
+        /* 오지선다 (노란색 버튼) */
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            background: linear-gradient(to bottom, #fffde7, #fff59d);
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #fbc02d;
+            transition: all 0.1s;
+            text-align: left;
+            width: 100%;
+        }
+        .option-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #fbc02d; }
+        
+        .option-btn.correct { background: #a5d6a7 !important; box-shadow: 0 5px 0 #66bb6a; }
+        .option-btn.wrong { background: #ef9a9a !important; box-shadow: 0 5px 0 #ef5350; }
+
+        .opt-num {
+            background: #ff9800;
+            color: white;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 0.9rem; font-weight: bold;
+            margin-right: 12px; flex-shrink: 0;
+        }
+        .opt-txt { color: #432818; font-size: 1rem; font-weight: 600; }
+
+        /* 하단 피드백 영역 */
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #ffeb3b;
+            animation: slideUp 0.4s ease;
+        }
+        .feedback-area.show { display: block; }
+        .result-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 8px; }
+        .result-desc { font-size: 0.95rem; color: #ddd; line-height: 1.5; }
+
+        .next-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 15px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #e65100;
+            cursor: pointer;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 스크롤바 디자인 */
+        .blackboard::-webkit-scrollbar { width: 6px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="passage">
+                Many crises today, such as the Great Recession, are simply too big and too overwhelming for you to completely comprehend, much less control. Crises of this ilk are precisely the kind that can easily engulf you with destructive reactions that interfere with your ability to overcome them. Focusing on these oversized crises will exacerbate the natural psychological, emotional, and physical reactions you are going to experience. With these sorts of crises, your best chance is to identify those aspects that are within your control. Then, you can break down the bigger crisis into smaller, more manageable problems toward which you can direct your energy and find solutions. For example, think back to the Great Recession. Although you probably didn’t have the ability to influence economic policy, you were able to revisit the distribution of your investments and choose to create a more diverse portfolio.
+            </div>
+
+            <div id="quiz-root">
+                <div class="question-container">
+                    <span class="q-label" id="q-label">Q1.</span>
+                    <span class="q-text" id="q-text">질문 로딩 중...</span>
+                </div>
+
+                <div class="options-list" id="options-list"></div>
+
+                <div id="feedback-box" class="feedback-area">
+                    <div id="result-text" class="result-title"></div>
+                    <div id="explanation" class="result-desc"></div>
+                    <button class="next-btn" onclick="goToNext()">다음 문제 풀기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            type: "주제",
+            q: "위 글의 주제로 가장 적절한 것은?",
+            options: [
+                "The history of global economic crises and their causes",
+                "Strategies for managing overwhelming crises by focusing on controllable factors",
+                "The psychological impact of government economic policies on individuals",
+                "How to predict future oversized crises through investment distribution",
+                "The necessity of emotional suppression during destructive reactions"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 이 글은 거대한 위기에 직면했을 때 통제 가능한 측면을 식별하고 문제를 세분화하여 대처하는 전략을 제안합니다."
+        },
+        {
+            type: "제목",
+            q: "위 글의 제목으로 가장 적절한 것은?",
+            options: [
+                "Economic Policy: The Only Way to Solve the Great Recession",
+                "Don't Let the Crisis Control You: Focus on What You Can Manage",
+                "The Natural Cycle of Emotional and Physical Reactions to Crisis",
+                "Big Problems, Big Solutions: Why You Should Dream Larger",
+                "Why Diversifying Your Portfolio is Mandatory for Everyone"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 위기가 당신을 집어삼키게 두지 말고, 스스로 통제할 수 있는 일에 집중하라는 핵심 내용을 잘 담고 있습니다."
+        },
+        {
+            type: "요지",
+            q: "위 글의 요지로 가장 적절한 것은?",
+            options: [
+                "경제 정책에 영향력을 행사할 수 있을 만큼 사회적 지위를 높여야 한다.",
+                "거대한 위기가 닥쳤을 때 자연스럽게 나타나는 파괴적 반응을 수용해야 한다.",
+                "문제가 너무 커서 이해할 수 없을 때는 해결을 포기하고 기다리는 것이 상책이다.",
+                "대규모 위기를 관리 가능한 작은 문제들로 나누어 통제 가능한 일에 에너지를 집중해야 한다.",
+                "개인의 투자 포트폴리오 다양화는 국가적 경제 위기를 해결하는 근본적 방안이다."
+            ],
+            answer: 3,
+            expl: "정답: 4번. 위기를 더 작고 관리하기 쉬운 문제들로 나누어 에너지를 투입하고 해결책을 찾아야 한다는 것이 글의 요지입니다."
+        },
+        {
+            type: "함축 의미",
+            q: "밑줄 친 'break down the bigger crisis'가 의미하는 바로 가장 적절한 것은?",
+            options: [
+                "위기의 근본적인 원인을 찾아내어 국가 시스템을 붕괴시키다.",
+                "거대한 문제를 개인이 감당할 수 있는 수준의 조각들로 분해하다.",
+                "위기로 인해 쌓인 정서적 스트레스를 눈물로 해소하다.",
+                "더 큰 위기가 오기 전에 현재의 투자를 모두 회수하다.",
+                "복잡한 경제 이론을 일반 대중에게 쉽게 설명해주다."
+            ],
+            answer: 1,
+            expl: "정답: 2번. 개인이 통제할 수 없는 거대한 위기를 '관리가 가능한(manageable)' 작은 단위의 문제들로 나누어 접근하라는 의미입니다."
+        },
+        {
+            type: "내용 일치",
+            q: "위 글의 내용과 일치하지 않는 것은?",
+            options: [
+                "오늘날의 많은 위기는 개인이 완전히 통제하거나 이해하기에 너무 크다.",
+                "대규모 위기에만 집중하면 심리적, 감정적 반응이 더욱 악화될 수 있다.",
+                "거대한 위기를 극복하는 가장 좋은 방법은 통제 불가능한 측면을 분석하는 것이다.",
+                "경제 대공황 당시에도 개인이 투자 분배를 재검토하는 것은 가능했다.",
+                "위기를 세분화하면 해결책을 찾기 위해 에너지를 더 효율적으로 사용할 수 있다."
+            ],
+            answer: 2,
+            expl: "정답: 3번. 본문에서는 통제 불가능한 측면이 아니라 '당신의 통제 하에 있는 측면(aspects that are within your control)'을 식별해야 한다고 했습니다."
+        }
+    ];
+
+    let currentStep = 0;
+
+    function renderQuiz() {
+        const quiz = questions[currentStep];
+        document.getElementById('q-label').innerText = `Q${currentStep + 1}. [${quiz.type}]`;
+        document.getElementById('q-text').innerText = quiz.q;
+        
+        const list = document.getElementById('options-list');
+        list.innerHTML = '';
+        document.getElementById('feedback-box').classList.remove('show');
+
+        quiz.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span class="opt-num">${i + 1}</span><span class="opt-txt">${opt}</span>`;
+            btn.onclick = () => checkAnswer(i, btn);
+            list.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(idx, btn) {
+        const quiz = questions[currentStep];
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.disabled = true);
+
+        const feedbackBox = document.getElementById('feedback-box');
+        const resText = document.getElementById('result-text');
+        const expl = document.getElementById('explanation');
+
+        if(idx === quiz.answer) {
+            btn.classList.add('correct');
+            resText.innerText = "정답입니다! 위기 대처 능력이 훌륭하시군요. 💪";
+            resText.style.color = "#81c784";
+        } else {
+            btn.classList.add('wrong');
+            resText.innerText = "틀렸습니다. 지문의 해결책을 다시 확인해보세요!";
+            resText.style.color = "#e57373";
+            allBtns[quiz.answer].classList.add('correct');
+        }
+
+        expl.innerText = quiz.expl;
+        feedbackBox.classList.add('show');
+        
+        setTimeout(() => {
+            feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    }
+
+    function goToNext() {
+        currentStep++;
+        if(currentStep < questions.length) {
+            renderQuiz();
+            document.getElementById('scroll-area').scrollTop = 0;
+        } else {
+            alert("수고하셨습니다! 모든 수능 영어 지문 분석을 성공적으로 마쳤습니다.");
+            currentStep = 0;
+            renderQuiz();
+        }
+    }
+
+    renderQuiz();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 모의고사 - 건축과 CAD</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 나무 테두리 그라데이션 */
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* 빈티지 녹색 칠판 */
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 20px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        /* 지문 스타일 (전문 반영) */
+        .passage {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #ff9800;
+            word-break: break-word;
+        }
+
+        /* 질문 영역 포인트 */
+        .question-container { margin-bottom: 25px; }
+        .q-label { 
+            color: #ff9800; 
+            font-family: 'Nanum Pen Script', cursive; 
+            font-size: 2.2rem; 
+            margin-right: 8px; 
+        }
+        .q-text { 
+            color: #ffeb3b; 
+            font-size: 1.2rem; 
+            font-weight: 700; 
+            line-height: 1.4;
+        }
+
+        /* 오지선다 (노란색 버튼) */
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            background: linear-gradient(to bottom, #fffde7, #fff59d);
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #fbc02d;
+            transition: all 0.1s;
+            text-align: left;
+            width: 100%;
+        }
+        .option-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #fbc02d; }
+        
+        .option-btn.correct { background: #a5d6a7 !important; box-shadow: 0 5px 0 #66bb6a; }
+        .option-btn.wrong { background: #ef9a9a !important; box-shadow: 0 5px 0 #ef5350; }
+
+        .opt-num {
+            background: #ff9800;
+            color: white;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 0.9rem; font-weight: bold;
+            margin-right: 12px; flex-shrink: 0;
+        }
+        .opt-txt { color: #432818; font-size: 1rem; font-weight: 600; }
+
+        /* 하단 피드백 영역 */
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #ffeb3b;
+            animation: slideUp 0.4s ease;
+        }
+        .feedback-area.show { display: block; }
+        .result-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 8px; }
+        .result-desc { font-size: 0.95rem; color: #ddd; line-height: 1.5; }
+
+        .next-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 15px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #e65100;
+            cursor: pointer;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 스크롤바 커스텀 */
+        .blackboard::-webkit-scrollbar { width: 6px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="passage">
+                In 2012, the Yale School of Architecture held a symposium called “Is Drawing Dead?” The bold title reflects a growing sense that the architect’s freehand sketch is being displaced by the computer. The transition from sketchpad to screen entails, many architects believe, a loss of creativity, of adventurousness. Thanks to the precision and apparent completeness of screen renderings, a designer working at a computer has a tendency to lock in, visually and cognitively, on a design at an early stage. He bypasses much of the reflective and exploratory playfulness that springs from the uncertainty and ambiguity of sketching. Researchers term this phenomenon “premature fixation” and trace its cause to “the disincentive for design changes once a large amount of detail and interconnectedness is built too quickly into a CAD (Computer-Aided Design) model.” The designer at the computer also tends to emphasize formal experimentation at the expense of expressiveness. By weakening an architect’s “personal, emotional connection with the work,” a renowned American architect and designer Michael Graves argues, CAD software produces designs that, “while complex and interesting in their own way,” often “lack the emotional content of a design derived from hand.”
+            </div>
+
+            <div id="quiz-root">
+                <div class="question-container">
+                    <span class="q-label" id="q-label">Q1.</span>
+                    <span class="q-text" id="q-text">질문 로딩 중...</span>
+                </div>
+
+                <div class="options-list" id="options-list"></div>
+
+                <div id="feedback-box" class="feedback-area">
+                    <div id="result-text" class="result-title"></div>
+                    <div id="explanation" class="result-desc"></div>
+                    <button class="next-btn" onclick="goToNext()">다음 문제 풀기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            type: "주제",
+            q: "위 글의 주제로 가장 적절한 것은?",
+            options: [
+                "The rising popularity of CAD software in architectural education",
+                "The negative impacts of computer-aided design on architectural creativity",
+                "Techniques for integrating freehand sketches into digital models",
+                "The history of architectural symposiums at the Yale School of Architecture",
+                "Comparison between manual drawing and digital rendering for accuracy"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 이 글은 컴퓨터 설계가 건축가의 창의성, 성찰적 유희, 그리고 감성적 연결을 약화시킨다는 점을 비판적으로 다루고 있습니다."
+        },
+        {
+            type: "제목",
+            q: "위 글의 제목으로 가장 적절한 것은?",
+            options: [
+                "Drawing is Not Dead: Why CAD Models are Still Necessary",
+                "Precision vs. Playfulness: The Loss of Emotion in CAD Design",
+                "How Computer-Aided Design Enhances Formal Experimentation",
+                "The Disappearance of Freehand Sketching in Modern Art",
+                "Michael Graves: The Master of Digital Architecture"
+            ],
+            answer: 1,
+            expl: "정답: 2번. 정밀한 CAD 설계가 스케치의 유희성과 감성을 앗아간다는 지문의 핵심 내용을 잘 요약한 제목입니다."
+        },
+        {
+            type: "요지",
+            q: "위 글의 요지로 가장 적절한 것은?",
+            options: [
+                "컴퓨터 설계는 건축가에게 작업의 효율성과 정밀함을 동시에 제공한다.",
+                "조기 고착 현상은 건축 설계 단계에서 발생하는 지극히 자연스러운 과정이다.",
+                "디지털 도구의 정밀함은 건축가가 디자인 초기 단계에 너무 일찍 고착되게 만든다.",
+                "건축 설계의 복잡성은 오직 수작업 스케치를 통해서만 완벽하게 표현될 수 있다.",
+                "성공적인 건축 디자인을 위해서는 표현력보다 형식적인 실험이 선행되어야 한다."
+            ],
+            answer: 2,
+            expl: "정답: 3번. 컴퓨터 설계의 정밀함이 '조기 고착(premature fixation)'을 유발하여 창의적인 탐구를 방해한다는 것이 요지입니다."
+        },
+        {
+            type: "함축 의미",
+            q: "밑줄 친 'premature fixation'이 의미하는 바로 가장 적절한 것은?",
+            options: [
+                "충분한 검토 없이 새로운 소프트웨어를 성급하게 도입하는 것",
+                "설계 초기 단계에서 디자인을 너무 빨리 확정해버리는 현상",
+                "컴퓨터 모델링의 오류로 인해 작업이 중단되는 기술적 결함",
+                "건축가가 자신의 작업에 대해 갖는 과도한 정서적 유착 관계",
+                "스케치 패드에서 화면으로 전환하는 과정에서 겪는 인지적 혼란"
+            ],
+            answer: 1,
+            expl: "정답: 2번. '조기 고착'은 CAD 모델에 너무 많은 세부 사항이 빨리 구축되면서 디자인 변경을 꺼리게 되고 초기에 확정되는 현상을 의미합니다."
+        },
+        {
+            type: "내용 일치",
+            q: "위 글의 내용과 일치하지 않는 것은?",
+            options: [
+                "2012년 예일대에서 '드로잉은 죽었는가?'라는 주제로 심포지엄이 열렸다.",
+                "화면 렌더링의 정밀함은 디자이너가 초기 단계에서 디자인을 고정하도록 만든다.",
+                "스케치의 불확실성과 모호함은 성찰적이고 탐구적인 유희를 불러일으킨다.",
+                "CAD 모델은 복잡해질수록 건축가가 디자인을 수정하려는 동기를 높여준다.",
+                "마이클 그레이브스는 수작업 기반의 설계가 더 많은 감성적 내용을 담는다고 본다."
+            ],
+            answer: 3,
+            expl: "정답: 4번. 지문에 따르면 CAD 모델에 세부 사항이 많아지면 디자인 변경에 대한 유인이 저하(disincentive)된다고 했습니다."
+        }
+    ];
+
+    let currentStep = 0;
+
+    function renderQuiz() {
+        const quiz = questions[currentStep];
+        document.getElementById('q-label').innerText = `Q${currentStep + 1}. [${quiz.type}]`;
+        document.getElementById('q-text').innerText = quiz.q;
+        
+        const list = document.getElementById('options-list');
+        list.innerHTML = '';
+        document.getElementById('feedback-box').classList.remove('show');
+
+        quiz.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span class="opt-num">${i + 1}</span><span class="opt-txt">${opt}</span>`;
+            btn.onclick = () => checkAnswer(i, btn);
+            list.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(idx, btn) {
+        const quiz = questions[currentStep];
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.disabled = true);
+
+        const feedbackBox = document.getElementById('feedback-box');
+        const resText = document.getElementById('result-text');
+        const expl = document.getElementById('explanation');
+
+        if(idx === quiz.answer) {
+            btn.classList.add('correct');
+            resText.innerText = "정답입니다! 설계의 깊은 의미를 이해하셨군요. 📐";
+            resText.style.color = "#81c784";
+        } else {
+            btn.classList.add('wrong');
+            resText.innerText = "틀렸습니다. 지문의 비판적 관점을 다시 살펴보세요!";
+            resText.style.color = "#e57373";
+            allBtns[quiz.answer].classList.add('correct');
+        }
+
+        expl.innerText = quiz.expl;
+        feedbackBox.classList.add('show');
+        
+        setTimeout(() => {
+            feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    }
+
+    function goToNext() {
+        currentStep++;
+        if(currentStep < questions.length) {
+            renderQuiz();
+            document.getElementById('scroll-area').scrollTop = 0;
+        } else {
+            alert("수고하셨습니다! 모든 문항의 학습을 완료했습니다.");
+            currentStep = 0;
+            renderQuiz();
+        }
+    }
+
+    renderQuiz();
+</script>
+
+</body>
+</html>

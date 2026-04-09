@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 - 문장 삽입 모의고사</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 20px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        /* 주어진 문장 상자 */
+        .box-sentence {
+            background: #fff9c4;
+            color: #333;
+            padding: 18px;
+            border: 2px dashed #fbc02d;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-weight: 700;
+            line-height: 1.6;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .passage {
+            font-size: 1.15rem;
+            line-height: 2.2;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 8px;
+            word-break: break-word;
+        }
+
+        /* 클릭 가능한 번호 스타일 */
+        .q-num {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 32px;
+            height: 32px;
+            background: #ff9800;
+            color: white;
+            border-radius: 50%;
+            margin: 0 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            vertical-align: middle;
+            border: 2px solid transparent;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+        }
+
+        .q-num:hover { transform: scale(1.1); background: #f57c00; }
+        .q-num.correct { background: #4caf50 !important; border-color: #fff; transform: scale(1.2); }
+        .q-num.wrong { background: #f44336 !important; border-color: #fff; opacity: 0.8; }
+        .q-num.disabled { pointer-events: none; }
+
+        .question-header {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .q-label { color: #ff9800; font-family: 'Nanum Pen Script', cursive; font-size: 2.5rem; margin-right: 10px; }
+        .q-text { color: #ffeb3b; font-size: 1.2rem; font-weight: 700; line-height: 1.3; }
+
+        /* 피드백 및 다음 버튼 */
+        .feedback-area {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #ffeb3b;
+            animation: fadeIn 0.5s;
+        }
+        .feedback-area.show { display: block; }
+        .next-btn {
+            margin-top: 15px; width: 100%; padding: 15px;
+            background: #ff9800; color: white; border: none;
+            border-radius: 10px; font-size: 1.1rem; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 0 #e65100;
+        }
+        .next-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #e65100; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .blackboard::-webkit-scrollbar { width: 5px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="question-header">
+                <span class="q-label" id="q-label">Q1.</span>
+                <span class="q-text">문장이 들어가기 적절한 번호를 클릭하세요.</span>
+            </div>
+
+            <div class="box-sentence" id="box-sentence"></div>
+            <div class="passage" id="passage-container"></div>
+
+            <div id="feedback-box" class="feedback-area">
+                <div id="result-text" style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;"></div>
+                <div id="explanation" style="color: #ddd; line-height: 1.5; font-size: 1rem;"></div>
+                <button class="next-btn" onclick="loadNextQuestion()">다음 문제 풀기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            box: "But constant foehn winds off the Pacific Ocean make Vancouver winters mild and wet, although sunshine is scant.",
+            parts: [
+                "Even outdoors, although climate (including temperature) is usually regarded as beyond the control of man, localized temperature control is sometimes effective on a microclimate scale.",
+                "Vancouver, Canada, is a few miles north of the 49th parallel, about 60 miles farther north than Minot, North Dakota, with its legendary harsh winter temperatures.",
+                "When I had a garden there in the late 1940s, a neighbor used to say that I “cheated God” to bring in my lettuce and tomatoes earlier than anyone else.",
+                "The bed in which the vegetables grew was banked toward the south at approximately 50 degrees.",
+                "The area between the plants was covered with flat stones, gathered from the nearby beach.",
+                "This was done to maximize soil heating from the weak late winter–early spring sun."
+            ],
+            answer: 1, // ( ② ) 위치
+            expl: "지리적 조건(위도)에 따른 추위 언급 뒤에 'But'을 통해 온화한 기후를 설명하는 문장이 오는 것이 적절합니다."
+        },
+        {
+            box: "The bed in which the vegetables grew was banked toward the south at approximately 50 degrees.",
+            parts: [
+                "Even outdoors, localized temperature control is sometimes effective on a microclimate scale.",
+                "Vancouver, Canada, is a few miles north of the 49th parallel, but constant foehn winds make its winters mild.",
+                "When I had a garden there in the late 1940s, a neighbor used to say that I “cheated God” to bring in my lettuce and tomatoes earlier than anyone else.",
+                "This early harvest was possible because of a specific garden design.",
+                "The area between the plants was covered with flat stones, gathered from the nearby beach, to maximize soil heating.",
+                "These combined methods allowed the soil to warm up quickly in the weak spring sun."
+            ],
+            answer: 3, // ( ④ ) 위치
+            expl: "'specific garden design'에 대한 구체적인 예시로 정원의 각도를 조절한 내용이 나와야 합니다."
+        },
+        {
+            box: "When I had a garden there in the late 1940s, a neighbor used to say that I “cheated God” to bring in my lettuce and tomatoes earlier than anyone else.",
+            parts: [
+                "Even outdoors, although climate is usually regarded as beyond the control of man, localized temperature control is sometimes effective on a microclimate scale.",
+                "Vancouver, Canada, is a few miles north of the 49th parallel, but constant foehn winds make its winters mild.",
+                "This unique environment provides a perfect setting for individual microclimate experiments.",
+                "The bed in which the vegetables grew was banked toward the south at approximately 50 degrees.",
+                "Also, the area between the plants was covered with flat stones to maximize soil heating.",
+                "Through these efforts, the soil temperature was significantly increased."
+            ],
+            answer: 2, // ( ③ ) 위치
+            expl: "환경 설명에서 필자의 실제 실험 경험으로 화제가 전환되는 부분입니다."
+        },
+        {
+            box: "The area between the plants was also covered with flat stones, gathered from the nearby beach, to maximize soil heating.",
+            parts: [
+                "Even outdoors, localized temperature control is sometimes effective on a microclimate scale.",
+                "In my 1940s garden, I used specific methods to harvest vegetables earlier than others.",
+                "First, the garden bed was banked toward the south at approximately 50 degrees.",
+                "These physical modifications were essential for success.",
+                "My neighbor was so surprised by the result that he claimed I was 'cheating God'.",
+                "This localized control proved that man can indeed influence microclimates."
+            ],
+            answer: 2, // ( ③ ) 위치
+            expl: "'First' 이후에 두 번째 방법을 추가하는 'also' 문장이 와야 논리적입니다."
+        },
+        {
+            box: "Vancouver, Canada, is a few miles north of the 49th parallel, about 60 miles farther north than Minot, North Dakota.",
+            parts: [
+                "Even outdoors, although climate is usually regarded as beyond the control of man, localized temperature control is sometimes effective on a microclimate scale.",
+                "A prime example of this can be found in the Pacific Northwest.",
+                "But constant foehn winds off the Pacific Ocean make its winters mild and wet, although sunshine is scant.",
+                "When I had a garden there in the late 1940s, a neighbor noticed my early harvests.",
+                "I had banked my vegetable bed toward the south and used flat stones to heat the soil.",
+                "This allowed me to grow vegetables much earlier than my neighbors."
+            ],
+            answer: 1, // ( ② ) 위치
+            expl: "'But'과 'its(그곳의)'가 가리키는 구체적인 장소명이 앞에서 명시되어야 합니다."
+        }
+    ];
+
+    let currentStep = 0;
+    const labels = ["①", "②", "③", "④", "⑤"];
+
+    function renderQuestion() {
+        const q = questions[currentStep];
+        document.getElementById('q-label').innerText = `Q${currentStep + 1}.`;
+        document.getElementById('box-sentence').innerText = q.box;
+        document.getElementById('feedback-box').classList.remove('show');
+
+        const container = document.getElementById('passage-container');
+        container.innerHTML = '';
+
+        // 지문 조립 (문장 사이사이에 클릭 가능한 번호 삽입)
+        q.parts.forEach((text, i) => {
+            const spanText = document.createElement('span');
+            spanText.innerText = text + " ";
+            container.appendChild(spanText);
+
+            if (i < 5) {
+                const spanNum = document.createElement('span');
+                spanNum.className = 'q-num';
+                spanNum.innerText = labels[i];
+                spanNum.onclick = () => checkAnswer(i, spanNum);
+                container.appendChild(spanNum);
+            }
+        });
+
+        document.getElementById('scroll-area').scrollTop = 0;
+    }
+
+    function checkAnswer(selectedIdx, element) {
+        const q = questions[currentStep];
+        const allNums = document.querySelectorAll('.q-num');
+        
+        // 클릭 후 모든 번호 비활성화
+        allNums.forEach(num => num.classList.add('disabled'));
+
+        const resultText = document.getElementById('result-text');
+        if (selectedIdx === q.answer) {
+            element.classList.add('correct');
+            resultText.innerText = "정답입니다! 🎯";
+            resultText.style.color = "#81c784";
+        } else {
+            element.classList.add('wrong');
+            allNums[q.answer].classList.add('correct');
+            resultText.innerText = "틀렸습니다. 정답 위치를 확인하세요.";
+            resultText.style.color = "#e57373";
+        }
+
+        document.getElementById('explanation').innerText = q.expl;
+        document.getElementById('feedback-box').classList.add('show');
+
+        // 하단 피드백 영역으로 스크롤
+        setTimeout(() => {
+            document.getElementById('feedback-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    }
+
+    function loadNextQuestion() {
+        currentStep = (currentStep + 1) % questions.length;
+        renderQuestion();
+    }
+
+    // 초기 실행
+    renderQuestion();
+</script>
+
+</body>
+</html>

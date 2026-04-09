@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 - 문장 삽입 모의고사 (아이디어 양과 질 편)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 18px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        .question-header {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .q-label { color: #ff9800; font-family: 'Nanum Pen Script', cursive; font-size: 2.2rem; margin-right: 8px; }
+        .q-text { color: #ffeb3b; font-size: 1.0rem; font-weight: 700; line-height: 1.3; }
+
+        .box-sentence {
+            background: #fff9c4;
+            color: #333;
+            padding: 15px;
+            border: 2px dashed #fbc02d;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .passage {
+            font-size: 1.0rem; 
+            line-height: 2.1;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 18px;
+            border-radius: 8px;
+        }
+
+        .q-num {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            background: #ff9800;
+            color: white;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            vertical-align: middle;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .q-num:hover { transform: scale(1.1); background: #f57c00; }
+        .q-num.correct { background: #4caf50 !important; border: 2px solid white; }
+        .q-num.wrong { background: #f44336 !important; border: 2px solid white; opacity: 0.8; }
+        .q-num.disabled { pointer-events: none; }
+
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #ffeb3b;
+        }
+        .feedback-area.show { display: block; }
+        
+        .next-btn {
+            margin-top: 12px; width: 100%; padding: 12px;
+            background: #ff9800; color: white; border: none;
+            border-radius: 10px; font-size: 1.0rem; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 0 #e65100;
+        }
+
+        .blackboard::-webkit-scrollbar { width: 4px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="question-header">
+                <span class="q-label" id="q-label">Q1.</span>
+                <span class="q-text">제시된 문장이 들어갈 번호를 본문에서 클릭하세요.</span>
+            </div>
+
+            <div class="box-sentence" id="box-sentence"></div>
+            <div class="passage" id="passage-container"></div>
+
+            <div id="feedback-box" class="feedback-area">
+                <div id="result-text" style="font-size: 1.1rem; font-weight: bold; margin-bottom: 8px;"></div>
+                <div id="explanation" style="color: #ddd; line-height: 1.5; font-size: 0.9rem;"></div>
+                <button class="next-btn" onclick="nextQuestion()">다음 문제</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            box: "As Linus Pauling put it, “The best way to have a good idea is to have lots of ideas.”",
+            parts: [
+                "AI is a prolific idea generator. Human brainstorming groups tend to focus on the quality of creative ideas and almost immediately lean into variations of first suggestions.",
+                "But good ideas are more likely when groups focus first on quantity.",
+                "Psychologist Dean Keith Simonton called this the “equal odds rule” arguing that creative success is correlated to the total number of works created.",
+                "Many studies have confirmed that creative quality comes from quantity of ideas (what Bob Sutton called “idea ratio”).",
+                "One Stanford study pegged the number of ideas that distinguish a successful product from a failure at more than two thousand.",
+                "This is why design thinking and innovation are so focused on the processes of creating possibilities without judgment."
+            ],
+            answer: 2, // ②번 뒤 (③번 위치)
+            expl: "아이디어의 양(quantity)에 집중해야 한다는 핵심 주장(②번 앞) 바로 뒤에, 라이너스 폴링의 유명한 인용구를 통해 그 주장을 뒷받침하는 ③번 위치가 가장 적합합니다."
+        },
+        {
+            box: "Psychologist Dean Keith Simonton called this the “equal odds rule” arguing that creative success is correlated to the total number of works created.",
+            parts: [
+                "Human brainstorming groups often focus on quality over quantity, which can be counterproductive.",
+                "The best way to have a good idea is to have lots of ideas, as many innovators have noted.",
+                "Many studies have confirmed that creative quality comes from quantity of ideas, or the “idea ratio.”",
+                "One Stanford study pegged the number of ideas that distinguish a successful product at more than two thousand.",
+                "Design thinking and innovation are focused on the processes of creating possibilities without judgment.",
+                "By delaying evaluation, creators can maximize their output and eventually find a breakthrough."
+            ],
+            answer: 2, // ②번 뒤 (③번 위치)
+            expl: "아이디어의 양이 중요하다는 라이너스 폴링의 말(②번 앞)을 받아, 심리학자 시먼턴이 이를 '동등한 확률의 법칙(equal odds rule)'이라 명명했다는 설명이 오는 ③번 위치가 정답입니다."
+        },
+        {
+            box: "Many studies have confirmed that creative quality comes from quantity of ideas (what Bob Sutton at a design and innovation consulting company called “idea ratio”).",
+            parts: [
+                "Good ideas are more likely when groups focus first on quantity rather than immediate quality.",
+                "Linus Pauling argued that the best way to have a good idea is to have lots of ideas.",
+                "Simonton called this the “equal odds rule,” linking success to the total number of works created.",
+                "One Stanford study pegged the number of ideas that distinguish a successful product from a failure at more than two thousand.",
+                "This is why design thinking and innovation are so focused on creating possibilities without judgment.",
+                "Innovation processes like “idea flow” are designed to facilitate this massive volume of generation."
+            ],
+            answer: 3, // ③번 뒤 (④번 위치)
+            expl: "시먼턴의 법칙(③번 앞)에 이어, 이를 증명하는 '많은 연구들'과 밥 서튼의 '아이디어 비율' 개념을 소개하는 ④번 위치가 논리적으로 적절합니다."
+        },
+        {
+            box: "One Stanford study pegged the number of ideas that distinguish a successful product from a failure at more than two thousand.",
+            parts: [
+                "Creative success is correlated to the total number of works created, a concept known as the “equal odds rule.”",
+                "Many studies have confirmed that creative quality comes from quantity of ideas.",
+                "Bob Sutton calls this the “idea ratio,” emphasizing the statistical nature of breakthroughs.",
+                "This is why design thinking and innovation are so focused on the processes of creating possibilities without judgment.",
+                "Utley and Klebahn call this “idea flow,” a metric for measuring creative health.",
+                "Without this initial volume, the chances of finding a truly innovative solution decrease dramatically."
+            ],
+            answer: 3, // ③번 뒤 (④번 위치)
+            expl: "아이디어의 양과 질의 상관관계에 대한 일반적인 연구 언급(③번 앞) 뒤에, '2,000개 이상의 아이디어'라는 구체적인 수치를 제시한 스탠퍼드 대학의 연구 사례가 오는 ④번 위치가 정답입니다."
+        },
+        {
+            box: "This is why design thinking and innovation are so focused on the processes (what Utley and Klebahn call “idea flow”) of creating possibilities without judgment.",
+            parts: [
+                "Many studies have confirmed that creative quality comes from quantity of ideas.",
+                "One Stanford study found that successful products often require more than two thousand initial ideas.",
+                "The statistical reality of innovation demands a shift away from immediate perfectionism.",
+                "Delaying the critical eye allows for a broader exploration of the solution space.",
+                "Successful companies cultivate environments where 'bad' ideas are welcomed as stepping stones.",
+                "Ultimately, the goal is to sustain a high volume of output to increase the odds of excellence."
+            ],
+            answer: 2, // ②번 뒤 (③번 위치)
+            expl: "수천 개의 아이디어가 필요하다는 앞선 연구 결과들(②번 앞)을 근거로, '이것이 바로(This is why)' 디자인 씽킹이 판단 없는 아이디어 생성 과정에 집중하는 이유임을 설명하는 ③번 위치가 정답입니다."
+        }
+    ];
+
+    let currentIdx = 0;
+    const labels = ["①", "②", "③", "④", "⑤"];
+
+    function render() {
+        const q = questions[currentIdx];
+        document.getElementById('q-label').innerText = `Q${currentIdx + 1}.`;
+        document.getElementById('box-sentence').innerText = q.box;
+        document.getElementById('feedback-box').classList.remove('show');
+
+        const container = document.getElementById('passage-container');
+        container.innerHTML = '';
+
+        q.parts.forEach((text, i) => {
+            const txtSpan = document.createElement('span');
+            txtSpan.innerText = text + " ";
+            container.appendChild(txtSpan);
+
+            if (i < 5) {
+                const numSpan = document.createElement('span');
+                numSpan.className = 'q-num';
+                numSpan.innerText = labels[i];
+                numSpan.onclick = () => check(i, numSpan);
+                container.appendChild(numSpan);
+            }
+        });
+        document.getElementById('scroll-area').scrollTop = 0;
+    }
+
+    function check(idx, el) {
+        const q = questions[currentIdx];
+        const all = document.querySelectorAll('.q-num');
+        all.forEach(n => n.classList.add('disabled'));
+
+        const res = document.getElementById('result-text');
+        const correctLabel = labels[q.answer];
+
+        if (idx === q.answer) {
+            el.classList.add('correct');
+            res.innerText = "정답입니다! 아이디어의 바다에서 보물을 찾으셨네요. 💡";
+            res.style.color = "#81c784";
+        } else {
+            el.classList.add('wrong'); // 선택한 오답 빨간색
+            all[q.answer].classList.add('correct'); // 실제 정답 번호 초록색 하이라이트
+            res.innerText = `틀렸습니다. 정답은 ${correctLabel}번입니다.`;
+            res.style.color = "#e57373";
+        }
+
+        document.getElementById('explanation').innerText = q.expl;
+        document.getElementById('feedback-box').classList.add('show');
+        
+        setTimeout(() => {
+            document.getElementById('feedback-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 150);
+    }
+
+    function nextQuestion() {
+        currentIdx = (currentIdx + 1) % questions.length;
+        render();
+    }
+
+    render();
+</script>
+
+</body>
+</html>

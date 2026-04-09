@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        There’s a saying 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">that / what</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        “you can’t eat information.” That may be so, but the food 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">we eat / which we eat it</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        today 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">is / are</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        the fruit of thousands of years of 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">increasing / increasingly</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        high-quality information—the knowledge of how 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">to farm / farming</span></span>—
+        <div id="expl-4" class="explanation"></div>
+        what seeds, what tools and how to use 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">it / them</span></span>, 
+        <div id="expl-5" class="explanation"></div>
+        what times of year, what irrigation, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">and / or</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        what sequence of one crop after another on the same land. What we eat 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">is / are</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        solar energy, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">filtered / filtering</span></span>, 
+        <div id="expl-8" class="explanation"></div>
+        concentrated, and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">distilled / distilling</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        through the lens of human knowledge. The energy the Earth 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">receives / is received</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        from the sun each year 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">has remained / have remained</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        more or less 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">constant / constantly</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        through all of human civilization. What’s allowed us 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">to flourish / flourish</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        is our increasingly 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">sophisticated / sophisticating</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        knowledge of how to capture an 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">ever-growing / ever-grown</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        but still tiny fraction of that energy in a form that can fuel 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">our bodies / ourselves</span></span>. 
+        <div id="expl-16" class="explanation"></div>
+        Every step in the advancement 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">has brought / have brought</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        with it an increase in the amount of energy we can tap into.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "that", cat: "접속사", desc: "saying과 동격을 이루는 접속사 that입니다. 뒷문장이 완전합니다." },
+        { ans: "we eat", cat: "대명사", desc: "관계대명사가 생략된 절에서 목적어 it을 또 쓰면 중복이 됩니다." },
+        { ans: "is", cat: "수 일치", desc: "주어는 단수인 the food입니다." },
+        { ans: "increasingly", cat: "형용사/부사", desc: "형용사인 high-quality를 수식하므로 부사가 와야 합니다." },
+        { ans: "to farm", cat: "준동사", desc: "how + to부정사 구조로 '~하는 법'이라는 명사구입니다." },
+        { ans: "them", cat: "대명사", desc: "복수 명사인 seeds와 tools를 가리키므로 them이 맞습니다." },
+        { ans: "and", cat: "병렬", desc: "나열된 여러 요소들을 마무리하는 병렬 접속사입니다." },
+        { ans: "is", cat: "수 일치", desc: "What we eat(명사절 주어)은 단수 취급합니다." },
+        { ans: "filtered", cat: "준동사(분사)", desc: "에너지는 여과되는 대상이므로 과거분사를 씁니다." },
+        { ans: "distilled", cat: "병렬/분사", desc: "filtered, concentrated와 병렬을 이루는 과거분사입니다." },
+        { ans: "receives", cat: "능동태/수동태", desc: "지구가 에너지를 받는 능동의 관계입니다." },
+        { ans: "has remained", cat: "수 일치", desc: "주어는 단수인 The energy입니다." },
+        { ans: "constant", cat: "형용사/부사", desc: "remain은 2형식 동사로 보어 자리에 형용사가 필요합니다." },
+        { ans: "to flourish", cat: "준동사", desc: "allow + 목적어 + to부정사 구문입니다." },
+        { ans: "sophisticated", cat: "준동사(분사)", desc: "지식은 '정교해진' 상태이므로 과거분사를 씁니다." },
+        { ans: "ever-growing", cat: "준동사(분사)", desc: "계속해서 '성장하는' 능동/진행의 현재분사입니다." },
+        { ans: "our bodies", cat: "대명사", desc: "에너지가 연료를 공급하는 대상은 우리 몸(bodies)입니다." },
+        { ans: "has brought", cat: "수 일치", desc: "Every+단수명사 주어는 단수 동사를 씁니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

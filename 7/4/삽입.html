@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 - 문장 삽입 모의고사 (애니메이션 기법 편)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 18px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        .question-header {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .q-label { color: #ff9800; font-family: 'Nanum Pen Script', cursive; font-size: 2.2rem; margin-right: 8px; }
+        .q-text { color: #ffeb3b; font-size: 1.0rem; font-weight: 700; line-height: 1.3; }
+
+        .box-sentence {
+            background: #fff9c4;
+            color: #333;
+            padding: 15px;
+            border: 2px dashed #fbc02d;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .passage {
+            font-size: 1.0rem; 
+            line-height: 2.1;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 18px;
+            border-radius: 8px;
+        }
+
+        .q-num {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            background: #ff9800;
+            color: white;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            vertical-align: middle;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .q-num:hover { transform: scale(1.1); background: #f57c00; }
+        .q-num.correct { background: #4caf50 !important; border: 2px solid white; }
+        .q-num.wrong { background: #f44336 !important; border: 2px solid white; opacity: 0.8; }
+        .q-num.disabled { pointer-events: none; }
+
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #ffeb3b;
+        }
+        .feedback-area.show { display: block; }
+        
+        .next-btn {
+            margin-top: 12px; width: 100%; padding: 12px;
+            background: #ff9800; color: white; border: none;
+            border-radius: 10px; font-size: 1.0rem; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 0 #e65100;
+        }
+
+        .blackboard::-webkit-scrollbar { width: 4px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="question-header">
+                <span class="q-label" id="q-label">Q1.</span>
+                <span class="q-text">제시된 문장이 들어갈 번호를 본문에서 클릭하세요.</span>
+            </div>
+
+            <div class="box-sentence" id="box-sentence"></div>
+            <div class="passage" id="passage-container"></div>
+
+            <div id="feedback-box" class="feedback-area">
+                <div id="result-text" style="font-size: 1.1rem; font-weight: bold; margin-bottom: 8px;"></div>
+                <div id="explanation" style="color: #ddd; line-height: 1.5; font-size: 0.9rem;"></div>
+                <button class="next-btn" onclick="nextQuestion()">다음 문제</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            box: "However, this style of animation is very time-consuming and expensive.",
+            parts: [
+                "Limited animation is a process of making animated cartoons that does not follow a “realistic” approach.",
+                "The short cartoons and feature films of Walt Disney from the 1930s and 1940s are widely acclaimed for depicting animated simulations of reality, with exquisite detail in every frame.",
+                "“Limited” animation creates an image that uses abstract art, symbolism, and limited movement to create the same effect, but at a much lower production cost.",
+                "This style of animation depends more upon suspension of disbelief to tell a story; the story exists more in the viewer’s imagination.",
+                "The result is a new artistic style that could not have developed if animation was solely devoted to producing simulations of reality.",
+                "Without limited animation, such ground-breaking films as Yellow Submarine could never have been produced."
+            ],
+            answer: 1, // ②번 위치
+            expl: "디즈니의 정교한 리얼리즘 기법을 설명한 뒤(①번 뒤), 그 기법의 단점(시간과 비용 소모)을 지적하며 리미티드 기법이라는 대안으로 넘어가는 ②번 위치가 가장 자연스럽습니다."
+        },
+        {
+            box: "“Limited” animation creates an image that uses abstract art, symbolism, and limited movement to create the same effect, but at a much lower production cost.",
+            parts: [
+                "Walt Disney's films are acclaimed for simulations of reality, with exquisite detail in every frame.",
+                "However, this realistic style of animation is very time-consuming and expensive to produce.",
+                "This style of animation depends more upon suspension of disbelief to tell a story; the story exists more in the viewer’s imagination.",
+                "It also encourages the animators to indulge in artistic styles that are not necessarily bound to the limits of the real world.",
+                "The result is a new artistic style that could not have developed if animation was solely devoted to reality.",
+                "Without limited animation, ground-breaking films like Yellow Submarine could never have been produced."
+            ],
+            answer: 2, // ③번 위치
+            expl: "리얼리즘 기법의 비용적 한계를 언급한 문장(②번 앞) 뒤에, 그 대안인 '리미티드 애니메이션'의 정의와 경제적 이점을 소개하는 ③번 위치가 정답입니다."
+        },
+        {
+            box: "It also encourages the animators to indulge in artistic styles that are not necessarily bound to the limits of the real world.",
+            parts: [
+                "“Limited” animation creates an image using abstract art and symbolism at a lower production cost.",
+                "This style of animation depends more upon suspension of disbelief; the story exists in the viewer’s imagination.",
+                "The result is a new artistic style that could not have developed if animation was solely devoted to producing simulations of reality.",
+                "Without limited animation, such ground-breaking films as Yellow Submarine could never have been produced.",
+                "This freedom from reality allows for a diversity of visual storytelling techniques.",
+                "The evolution of the medium owes much to these non-realistic pioneers."
+            ],
+            answer: 2, // ③번 위치
+            expl: "시청자의 상상력에 의존한다는 리미티드 기법의 특징(②번 앞)에 더해, '또한(also)' 애니메이터들이 현실의 제약에서 벗어난 예술적 스타일을 즐기게 해준다는 추가 장점을 설명하는 ③번 위치가 정답입니다."
+        },
+        {
+            box: "The result is a new artistic style that could not have developed if animation was solely devoted to producing simulations of reality.",
+            parts: [
+                "Limited animation creates an image that uses abstract art and symbolism to create effects at a lower cost.",
+                "This style depends on suspension of disbelief and encourages animators to indulge in styles not bound by the real world.",
+                "Without limited animation, such ground-breaking films as Yellow Submarine could never have been produced.",
+                "This departure from strict realism opened doors for infinite creative possibilities in the industry.",
+                "Artists were no longer limited by what the human eye sees in daily life.",
+                "Instead, they could explore the depths of visual metaphor and stylized motion."
+            ],
+            answer: 2, // ③번 위치
+            expl: "리미티드 기법이 선사한 예술적 자유(②번 앞)를 요약하며, 리얼리즘에만 매몰되었다면 불가능했을 '새로운 예술 스타일'의 탄생을 선언하는 ③번 위치가 정답입니다. 뒤의 구체적 작품 예시(Yellow Submarine 등)와 자연스럽게 연결됩니다."
+        },
+        {
+            box: "Without limited animation, such ground-breaking films as Yellow Submarine, Chuck Jones’ The Dot and the Line, and many others could never have been produced.",
+            parts: [
+                "“Limited” animation creates an image that uses abstract art and limited movement at a lower cost.",
+                "It encourages the animators to indulge in artistic styles that are not bound to the limits of the real world.",
+                "The result is a new artistic style that could not have developed if animation was solely devoted to reality.",
+                "This innovative approach has profoundly influenced both independent and mainstream animation studios.",
+                "It paved the way for experimental techniques that prioritize emotional impact over visual fidelity.",
+                "Today's diverse animation landscape is a direct legacy of this influential movement."
+            ],
+            answer: 3, // ④번 위치
+            expl: "새로운 예술 스타일이 발달했다는 결론(③번 앞)에 대해, 그 스타일 덕분에 탄생할 수 있었던 구체적이고 혁신적인 작품들을 예로 들며 마무리하는 ④번 위치가 정답입니다."
+        }
+    ];
+
+    let currentIdx = 0;
+    const labels = ["①", "②", "③", "④", "⑤"];
+
+    function render() {
+        const q = questions[currentIdx];
+        document.getElementById('q-label').innerText = `Q${currentIdx + 1}.`;
+        document.getElementById('box-sentence').innerText = q.box;
+        document.getElementById('feedback-box').classList.remove('show');
+
+        const container = document.getElementById('passage-container');
+        container.innerHTML = '';
+
+        q.parts.forEach((text, i) => {
+            const txtSpan = document.createElement('span');
+            txtSpan.innerText = text + " ";
+            container.appendChild(txtSpan);
+
+            if (i < 5) {
+                const numSpan = document.createElement('span');
+                numSpan.className = 'q-num';
+                numSpan.innerText = labels[i];
+                numSpan.onclick = () => check(i, numSpan);
+                container.appendChild(numSpan);
+            }
+        });
+        document.getElementById('scroll-area').scrollTop = 0;
+    }
+
+    function check(idx, el) {
+        const q = questions[currentIdx];
+        const all = document.querySelectorAll('.q-num');
+        all.forEach(n => n.classList.add('disabled'));
+
+        const res = document.getElementById('result-text');
+        const correctLabel = labels[q.answer];
+
+        if (idx === q.answer) {
+            el.classList.add('correct');
+            res.innerText = "정답입니다! 애니메이션의 예술적 깊이를 잘 이해하셨네요. 🎬";
+            res.style.color = "#81c784";
+        } else {
+            el.classList.add('wrong'); // 선택 오답 빨간색
+            all[q.answer].classList.add('correct'); // 실제 정답 초록색 하이라이트
+            res.innerText = `틀렸습니다. 정답은 ${correctLabel}번입니다.`;
+            res.style.color = "#e57373";
+        }
+
+        document.getElementById('explanation').innerText = q.expl;
+        document.getElementById('feedback-box').classList.add('show');
+        
+        setTimeout(() => {
+            document.getElementById('feedback-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 150);
+    }
+
+    function nextQuestion() {
+        currentIdx = (currentIdx + 1) % questions.length;
+        render();
+    }
+
+    render();
+</script>
+
+</body>
+</html>

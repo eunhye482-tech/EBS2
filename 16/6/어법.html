@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        Public goods 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">are / is</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        undervalued in markets, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">which / what</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        exist for private goods but 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">rarely / rare</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        for public goods. For example, aquatic habitats such as wetlands 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">provide / provides</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        diverse benefits 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">that / what</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        are often public goods, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">including / included</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        breeding or refuge for unique species, recreation, hunting and tourism, or purification of water supplies. These benefits 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">are enjoyed / enjoy</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">simultaneously / simultaneous</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        by many people and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">are provided / provide</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        to them for “free” by the natural 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">functioning / functioned</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        of the wetlands. As a result, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">there is / there are</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        no “market” and thus no “price” for these 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">public good / public well</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        uses of wetlands. But the 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">actual / actually</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        value of these services is not zero. Because many people 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">benefit / benefits</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        from these services, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">their / its</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        value is the 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">total / totally</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        additional benefits of all individuals who enjoy provision of these services by wetlands. This value could be 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">huge / hugely</span></span> 
+        <div id="expl-16" class="explanation"></div>, 
+        even though there is no 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">apparent / apparently</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        “market price” for these wetland services. This gap between the (zero) price for wetland services and their actual value to all beneficiaries indicates how much these public goods are undervalued in markets.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "are", cat: "수 일치", desc: "주어가 복수 명사인 Public goods이므로 복수 동사 are를 씁니다." },
+        { ans: "which", cat: "접속사(관계사)", desc: "선행사 markets를 부연 설명하며 뒤에 동사 exist가 이어지는 주격 관계대명사입니다." },
+        { ans: "rarely", cat: "형용사/부사", desc: "동사 exist를 수식하여 '거의 ~하지 않다'는 의미를 나타내는 부사입니다." },
+        { ans: "provide", cat: "수 일치", desc: "주어인 wetlands가 복수이므로 복수 동사 provide를 씁니다." },
+        { ans: "that", cat: "접속사(관계사)", desc: "선행사 benefits를 수식하며 뒤에 동사가 이어지는 주격 관계대명사입니다." },
+        { ans: "including", cat: "준동사(분사)", desc: "'~을 포함하여'라는 의미의 전치사적 분사 표현입니다." },
+        { ans: "are enjoyed", cat: "능동태/수동태", desc: "혜택(benefits)은 사람들에 의해 '누려지는' 것이므로 수동태가 적절합니다." },
+        { ans: "simultaneously", cat: "형용사/부사", desc: "동사구(are enjoyed)를 수식하므로 부사가 와야 합니다." },
+        { ans: "are provided", cat: "능동태/수동태/병렬", desc: "are enjoyed와 병렬을 이루며 혜택이 '제공되는' 수동의 관계입니다." },
+        { ans: "functioning", cat: "명사/분사", desc: "자연적인 '기능'이라는 의미로 동명사/명사 형태가 적절합니다." },
+        { ans: "there is", cat: "수 일치", desc: "유도부사 구문의 진짜 주어 no 'market'이 단수이므로 is를 씁니다." },
+        { ans: "public good", cat: "명사/형용사", desc: "뒤의 명사 uses를 수식하는 형용사적 용법의 '공공재' 표현입니다." },
+        { ans: "actual", cat: "형용사/부사", desc: "명사 value를 수식하므로 형용사가 적절합니다." },
+        { ans: "benefit", cat: "수 일치", desc: "주어가 복수 명사인 many people이므로 복수 동사 benefit을 씁니다." },
+        { ans: "their", cat: "대명사", desc: "복수 명사인 these services를 가리키므로 복수 소유격 their를 씁니다." },
+        { ans: "total", cat: "형용사/부사", desc: "명사 benefits를 수식하므로 형용사가 적절합니다." },
+        { ans: "huge", cat: "형용사/부사", desc: "be동사 could be의 보어 자리이므로 형용사가 와야 합니다." },
+        { ans: "apparent", cat: "형용사/부사", desc: "명사 market price를 수식하므로 형용사가 적절합니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

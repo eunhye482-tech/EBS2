@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        Bir Tawil 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">is / are</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        a strange place. In January 1899, administrators of the British Empire 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">decided / deciding</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">to finalize / finalizing</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        a border between the countries of Egypt and Sudan. In colonial fashion, they 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">decided / were decided</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        to use the 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">conveniently / convenient</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        straight line of the twenty-second parallel of latitude. Unsurprisingly, this new 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">international / internationally</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        border arbitrarily tore through local tribes and communities, and in 1902, the British 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">drew / was drawn</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        a new line 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">to reflect / reflected</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        tribal territories. The combination of these two 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">intersecting / intersected</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        lines brought about the creation of two new areas: the large, inhabitable coastal area 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">called / calling</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        the Hala’ib Triangle and an empty, landlocked patch of desert, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">which / what</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        is Bir Tawil. 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">To keep / Keeping</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        the desirable Hala’ib, Egypt 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">understandably / understandable</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        claimed the 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">original / originally</span></span> 
+        <div id="expl-13" class="explanation"></div>, 
+        straight border of 1899, whereas Sudan—with the same goal in mind—claimed the new 1902 line. The strange result of this 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">long-standing / long-stood</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        conflict is 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">that / what</span></span> 
+        <div id="expl-15" class="explanation"></div>, 
+        to this day, both countries refuse to claim Bir Tawil, an area of land 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">roughly / rough</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        the size of London, as 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">it / they</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        would mean giving up a greater prize. This makes Bir Tawil the largest—perhaps the only—piece of land that no country wants.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "is", cat: "수 일치", desc: "주어 Bir Tawil은 고유 명사이므로 단수 동사 is를 씁니다." },
+        { ans: "decided", cat: "시제/동사", desc: "1899년이라는 과거 시점이 명시되었으므로 과거형 동사를 씁니다." },
+        { ans: "to finalize", cat: "준동사", desc: "decide는 목적어로 to부정사를 취합니다." },
+        { ans: "decided", cat: "능동태/수동태", desc: "행정관들이 직접 결정한 능동의 주체이므로 능동태를 씁니다." },
+        { ans: "conveniently", cat: "형용사/부사", desc: "형용사인 straight를 수식하므로 부사가 적절합니다." },
+        { ans: "international", cat: "형용사/부사", desc: "명사인 border를 수식하므로 형용사가 와야 합니다." },
+        { ans: "drew", cat: "능동태/수동태", desc: "영국이 선을 직접 그은 능동의 과거 사실입니다." },
+        { ans: "to reflect", cat: "준동사", desc: "'반영하기 위하여'라는 목적의 의미를 가진 to부정사입니다." },
+        { ans: "intersecting", cat: "준동사(분사)", desc: "두 선이 서로 교차하고 있는 능동/진행의 상태이므로 현재분사가 적절합니다." },
+        { ans: "called", cat: "준동사(분사)", desc: "지역이 ~라고 '불리는' 수동의 관계이므로 과거분사가 수식합니다." },
+        { ans: "which", cat: "접속사(관계사)", desc: "선행사 patch of desert를 부연 설명하는 관계대명사의 계속적 용법입니다." },
+        { ans: "To keep", cat: "준동사", desc: "'유지하기 위해서'라는 목적의 의미를 가진 부사적 용법의 to부정사입니다." },
+        { ans: "understandably", cat: "형용사/부사", desc: "동사 claimed를 수식하므로 '당연하게도'라는 뜻의 부사가 적절합니다." },
+        { ans: "original", cat: "형용사/부사", desc: "명사인 border를 수식하므로 형용사가 필요합니다." },
+        { ans: "long-standing", cat: "준동사(분사)", desc: "'오래 지속되는'이라는 의미로 굳어진 형용사적 현재분사 표현입니다." },
+        { ans: "that", cat: "접속사", desc: "be동사 is 뒤에서 보어 역할을 하는 완전한 명사절을 이끄는 접속사입니다." },
+        { ans: "roughly", cat: "형용사/부사", desc: "수치나 정도를 수식하여 '대략'이라는 의미를 나타내는 부사입니다." },
+        { ans: "it", cat: "대명사", desc: "Bir Tawil을 영유권 주장하는 행위(to claim ~)를 단수로 받았습니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

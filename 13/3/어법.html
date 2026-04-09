@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">Becoming / Become</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        aware of our internal sensations can help us 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">handle / handling</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        our own emotions. Perhaps more 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">surprisingly / surprising</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        , the body’s interoceptive faculty can also 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">bring / brings</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        us into closer contact with other people’s emotions. That’s 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">because / why</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        the brain, on 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">its / their</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        own, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">has / have</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        no direct access to the contents of other people’s minds, no way 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">to feel / feeling</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">what / that</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        others are feeling. Interpreting others’ 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">spoken / speaking</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        words and facial expressions may yield only a 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">coolly / cool</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        abstract sense of the emotions that 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">stir / stirs</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        within. The body acts as a critical conduit, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">supplying / supplied</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        the brain with the visceral information it lacks. It does so in this way: When 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">interacting / interacted</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        with other people, we 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">subtly / subtle</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        and unconsciously mimic their facial expressions, gestures, posture, and vocal pitch. Then, via the interoception of our own bodies’ signals, we 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">perceive / perceives</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        what the other person 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">is / are</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        feeling because we feel 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">it / them</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        in ourselves. We bring other people’s feelings onboard, and the body is the bridge. In an act similar to taking a bite off our partner’s plate, or borrowing an earbud to hear the song our friend is listening to, we are sampling their emotions.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "Becoming", cat: "준동사", desc: "문장의 주어 역할을 하는 동명사입니다." },
+        { ans: "handle", cat: "준동사", desc: "help + 목적어 + 동사원형(또는 to부정사) 구문입니다." },
+        { ans: "surprisingly", cat: "형용사/부사", desc: "문장 전체를 수식하는 부사 자리입니다." },
+        { ans: "bring", cat: "조동사/동사", desc: "조동사 can 뒤에는 동사원형이 와야 합니다." },
+        { ans: "because", cat: "접속사", desc: "That is because 뒤에는 원인이 옵니다. (뇌가 직접 접근할 수 없기 때문에~)" },
+        { ans: "its", cat: "대명사", desc: "단수 명사인 the brain을 가리키는 소유격 대명사입니다." },
+        { ans: "has", cat: "수 일치", desc: "주어인 the brain이 단수이므로 단수 동사 has를 씁니다." },
+        { ans: "to feel", cat: "준동사", desc: "way를 수식하는 형용사적 용법의 to부정사입니다." },
+        { ans: "what", cat: "접속사", desc: "feeling의 목적어가 없는 불완전한 절을 이끄는 관계대명사입니다." },
+        { ans: "spoken", cat: "준동사(분사)", desc: "'말해진' 단어라는 수동의 의미로 명사를 수식하는 과거분사입니다." },
+        { ans: "coolly", cat: "형용사/부사", desc: "형용사인 abstract를 수식하므로 부사 coolly가 적절합니다." },
+        { ans: "stir", cat: "수 일치", desc: "관계대명사 that의 선행사가 복수인 emotions이므로 복수 동사 stir를 씁니다." },
+        { ans: "supplying", cat: "준동사(분사구문)", desc: "몸이 뇌에 정보를 제공하는 능동의 관계이므로 현재분사를 씁니다." },
+        { ans: "interacting", cat: "준동사(분사구문)", desc: "접속사 When 뒤에서 우리가 상호작용하는 능동의 의미입니다." },
+        { ans: "subtly", cat: "형용사/부사", desc: "동사인 mimic을 수식하므로 부사 subtly가 적절합니다." },
+        { ans: "perceive", cat: "수 일치", desc: "주어가 복수 대명사인 we이므로 복수 동사 perceive를 씁니다." },
+        { ans: "is", cat: "수 일치", desc: "의문절의 주어가 단수인 the other person이므로 단수 동사 is를 씁니다." },
+        { ans: "it", cat: "대명사", desc: "상대방의 감정(what the other person is feeling)을 단수 개념으로 받았습니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

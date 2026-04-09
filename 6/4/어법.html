@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        In the escape that reading literature 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">provides / providing</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        through vicarious identification and comparison with other lives, places, and times, we 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">activate / activates</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        our imagination, that 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">uniquely / unique</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        human ability 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">to explore / exploring</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        an alternative set of ideas and experiences 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">that / what</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        are outside our present environment and that may not even 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">be / are</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        real. As opposed to perception that 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">receives / receive</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">processes / processing</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        information from the outside world—light, sound, shape—and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">finds / finding</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        meaning in 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">it / them</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        —a sunset, a symphony, a house—in imagination, the process 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">is reversed / reverses</span></span> 
+        <div id="expl-10" class="explanation"></div>. 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">Translating / Translated</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        the words we read into 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">what / that</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        they signify, we populate an inner world in 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">which / that</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        imagery 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">is created / creates</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        from the memory. For example, we read “house” and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">picture / picturing</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        a representation of a house from memory. It is our imagination, the complex interweaving of perception and memory 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">that / what</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        literature 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">activates / activate</span></span>, 
+        <div id="expl-17" class="explanation"></div>
+        releasing a latent creativity that pleases. The writer may provide the blueprint, but the reader builds literature’s many rooms, and like any satisfying occupation, literature gratifies our imaginative and creative abilities.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "provides", cat: "수 일치", desc: "관계절의 주어 reading literature(동명사구)는 단수 취급하므로 provides가 맞습니다." },
+        { ans: "activate", cat: "수 일치", desc: "문장의 진짜 주어인 we에 호응하는 복수 동사 activate를 씁니다." },
+        { ans: "uniquely", cat: "형용사/부사", desc: "형용사인 human을 수식하므로 부사 uniquely가 적절합니다." },
+        { ans: "to explore", cat: "준동사", desc: "ability를 수식하는 형용사적 용법의 to부정사입니다." },
+        { ans: "that", cat: "접속사(관계사)", desc: "선행사 ideas and experiences가 있고 주어가 없는 관계대명사 자리입니다." },
+        { ans: "be", cat: "수 일치", desc: "조동사 may 뒤에는 동사원형 be가 와야 합니다." },
+        { ans: "receives", cat: "수 일치", desc: "주격 관계대명사 that의 선행사인 perception이 단수이므로 receives를 씁니다." },
+        { ans: "processes", cat: "병렬", desc: "receives와 and로 연결되어 선행사 perception에 걸리는 동사 병렬 구조입니다." },
+        { ans: "finds", cat: "병렬", desc: "receives, processes와 함께 병렬을 이루는 세 번째 단수 동사입니다." },
+        { ans: "it", cat: "대명사", desc: "단수 명사인 information을 가리키는 대명사입니다." },
+        { ans: "is reversed", cat: "능동태/수동태", desc: "과정(process)은 거꾸로 '뒤집히는' 것이므로 수동태를 씁니다." },
+        { ans: "Translating", cat: "준동사(분사구문)", desc: "우리가 단어를 번역하면서 세계를 채우는 능동 관계의 분사구문입니다." },
+        { ans: "what", cat: "접속사", desc: "signify의 목적어가 없는 불완전한 문장을 이끄는 관계대명사입니다." },
+        { ans: "which", cat: "접속사(관계사)", desc: "전치사 in 뒤에는 관계대명사 which를 쓰며, in which는 관계부사 where의 역할을 합니다." },
+        { ans: "is created", cat: "능동태/수동태", desc: "심상(imagery)은 기억으로부터 '만들어지는' 것이므로 수동태가 맞습니다." },
+        { ans: "picture", cat: "병렬", desc: "주어 we에 연결되는 read와 and로 묶인 동사 병렬 구조입니다." },
+        { ans: "that", cat: "강조구문", desc: "It is ~ that 강조구문으로, 주어인 imagination 부분을 강조하고 있습니다." },
+        { ans: "activates", cat: "수 일치", desc: "강조절 내부의 주어 literature가 단수이므로 activates를 씁니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

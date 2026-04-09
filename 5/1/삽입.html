@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 - 문장 삽입 모의고사 (거대 위기 관리 편)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 18px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        .question-header {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .q-label { color: #ff9800; font-family: 'Nanum Pen Script', cursive; font-size: 2.2rem; margin-right: 8px; }
+        .q-text { color: #ffeb3b; font-size: 1.0rem; font-weight: 700; line-height: 1.3; }
+
+        .box-sentence {
+            background: #fff9c4;
+            color: #333;
+            padding: 15px;
+            border: 2px dashed #fbc02d;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .passage {
+            font-size: 1.0rem; 
+            line-height: 2.1;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 18px;
+            border-radius: 8px;
+        }
+
+        .q-num {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            background: #ff9800;
+            color: white;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            vertical-align: middle;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .q-num:hover { transform: scale(1.1); background: #f57c00; }
+        .q-num.correct { background: #4caf50 !important; border: 2px solid white; animation: pulse 0.5s infinite alternate; }
+        .q-num.wrong { background: #f44336 !important; border: 2px solid white; opacity: 0.8; }
+        .q-num.disabled { pointer-events: none; }
+
+        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.1); } }
+
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #ffeb3b;
+        }
+        .feedback-area.show { display: block; }
+        
+        .next-btn {
+            margin-top: 12px; width: 100%; padding: 12px;
+            background: #ff9800; color: white; border: none;
+            border-radius: 10px; font-size: 1.0rem; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 0 #e65100;
+        }
+
+        .blackboard::-webkit-scrollbar { width: 4px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="question-header">
+                <span class="q-label" id="q-label">Q1.</span>
+                <span class="q-text">문장이 들어갈 번호를 클릭하세요.</span>
+            </div>
+
+            <div class="box-sentence" id="box-sentence"></div>
+            <div class="passage" id="passage-container"></div>
+
+            <div id="feedback-box" class="feedback-area">
+                <div id="result-text" style="font-size: 1.1rem; font-weight: bold; margin-bottom: 8px;"></div>
+                <div id="explanation" style="color: #ddd; line-height: 1.5; font-size: 0.9rem;"></div>
+                <button class="next-btn" onclick="nextQuestion()">다음 문제</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            box: "Focusing on these oversized crises will exacerbate the natural psychological, emotional, and physical reactions you are going to experience.",
+            parts: [
+                "Many crises today, such as the Great Recession, are simply too big and too overwhelming for you to completely comprehend, much less control.",
+                "Crises of this ilk are precisely the kind that can easily engulf you with destructive reactions that interfere with your ability to overcome them.",
+                "With these sorts of crises, your best chance is to identify those aspects that are within your control.",
+                "Then, you can break down the bigger crisis into smaller, more manageable problems toward which you can direct your energy and find solutions.",
+                "For example, think back to the Great Recession.",
+                "Although you probably didn’t have the ability to influence economic policy, you were able to revisit the distribution of your investments and choose to create a more diverse portfolio."
+            ],
+            answer: 2, // ③번 위치
+            expl: "주어진 문장의 'these oversized crises'는 앞 문장의 'Crises of this ilk(이런 종류의 위기)'를 가리킵니다. 또한, 이 문장이 제시된 후 ②번 뒤(③번 위치)부터 해결책('best chance')이 나오기 시작하는 것이 논리적입니다."
+        },
+        {
+            box: "With these sorts of crises, your best chance is to identify those aspects that are within your control.",
+            parts: [
+                "Many crises today are simply too big for you to comprehend, much less control.",
+                "Crises of this ilk can easily engulf you with destructive reactions that interfere with your ability to overcome them.",
+                "Focusing on these oversized crises will exacerbate the natural psychological and emotional reactions you experience.",
+                "Then, you can break down the bigger crisis into smaller, more manageable problems toward which you can direct your energy.",
+                "For example, think back to the Great Recession.",
+                "Although you couldn’t influence economic policy, you were able to revisit the distribution of your investments."
+            ],
+            answer: 3, // ④번 위치
+            expl: "거대 위기에 대한 부정적 반응을 설명한 뒤(③번 앞), 해결책의 첫 단계로 '통제 가능한 측면을 식별하라'는 문장이 오는 ④번 위치가 정답입니다. 뒤의 'Then'과 이어집니다."
+        },
+        {
+            box: "Then, you can break down the bigger crisis into smaller, more manageable problems toward which you can direct your energy and find solutions.",
+            parts: [
+                "Many crises today, such as the Great Recession, are simply too big and too overwhelming for you to control.",
+                "Crises of this ilk are precisely the kind that can easily engulf you with destructive reactions.",
+                "Focusing on these oversized crises will exacerbate the psychological reactions you are going to experience.",
+                "With these sorts of crises, your best chance is to identify those aspects that are within your control.",
+                "For example, think back to the Great Recession.",
+                "Although you couldn’t influence economic policy, you could create a more diverse portfolio."
+            ],
+            answer: 4, // ⑤번 위치
+            expl: "통제 가능한 측면을 찾으라는 지시(④번 앞) 뒤에, 그 다음 단계(Then)인 '문제 세분화'를 설명하는 ⑤번 위치가 적절합니다."
+        },
+        {
+            box: "For example, think back to the Great Recession.",
+            parts: [
+                "Many crises today are simply too big for you to completely comprehend, much less control.",
+                "Crises of this ilk can easily engulf you with destructive reactions.",
+                "With these sorts of crises, your best chance is to identify those aspects that are within your control.",
+                "Then, you can break down the bigger crisis into smaller, more manageable problems.",
+                "Although you probably didn’t have the ability to influence economic policy, you were able to revisit the distribution of your investments.",
+                "This practical step allowed individuals to regain a sense of stability amidst global turmoil."
+            ],
+            answer: 4, // ⑤번 위치
+            expl: "위기를 세분화하여 대처하라는 일반적 조언 뒤에, 'Great Recession'이라는 구체적인 사례를 도입하는 ⑤번 위치가 정답입니다."
+        },
+        {
+            box: "Crises of this ilk are precisely the kind that can easily engulf you with destructive reactions that interfere with your ability to overcome them.",
+            parts: [
+                "Many crises today, such as the Great Recession, are simply too big and too overwhelming for you to completely comprehend, much less control.",
+                "Focusing on these oversized crises will exacerbate the natural psychological, emotional, and physical reactions you are going to experience.",
+                "With these sorts of crises, your best chance is to identify those aspects that are within your control.",
+                "Then, you can break down the bigger crisis into smaller, more manageable problems toward which you can direct your energy.",
+                "For example, think back to the Great Recession.",
+                "You were able to revisit the distribution of your investments and choose to create a more diverse portfolio."
+            ],
+            answer: 1, // ②번 위치
+            expl: "첫 문장에서 언급한 거대 위기를 'Crises of this ilk(이런 종류의 위기)'로 받아 설명하며, 그것이 인간에게 미치는 파괴적 영향을 부연하는 ②번 위치가 적합합니다."
+        }
+    ];
+
+    let currentIdx = 0;
+    const labels = ["①", "②", "③", "④", "⑤"];
+
+    function render() {
+        const q = questions[currentIdx];
+        document.getElementById('q-label').innerText = `Q${currentIdx + 1}.`;
+        document.getElementById('box-sentence').innerText = q.box;
+        document.getElementById('feedback-box').classList.remove('show');
+
+        const container = document.getElementById('passage-container');
+        container.innerHTML = '';
+
+        q.parts.forEach((text, i) => {
+            const txtSpan = document.createElement('span');
+            txtSpan.innerText = text + " ";
+            container.appendChild(txtSpan);
+
+            if (i < 5) {
+                const numSpan = document.createElement('span');
+                numSpan.className = 'q-num';
+                numSpan.innerText = labels[i];
+                numSpan.onclick = () => check(i, numSpan);
+                container.appendChild(numSpan);
+            }
+        });
+        document.getElementById('scroll-area').scrollTop = 0;
+    }
+
+    function check(idx, el) {
+        const q = questions[currentIdx];
+        const all = document.querySelectorAll('.q-num');
+        all.forEach(n => n.classList.add('disabled'));
+
+        const res = document.getElementById('result-text');
+        const correctLabel = labels[q.answer];
+
+        if (idx === q.answer) {
+            el.classList.add('correct');
+            res.innerText = "정답입니다! 위기 관리 능력이 탁월하시네요. 📈";
+            res.style.color = "#81c784";
+        } else {
+            el.classList.add('wrong'); // 고른 오답 빨간색
+            all[q.answer].classList.add('correct'); // 실제 정답 초록색 하이라이트
+            res.innerText = `틀렸습니다. 정답은 ${correctLabel}번입니다.`;
+            res.style.color = "#e57373";
+        }
+
+        document.getElementById('explanation').innerText = q.expl;
+        document.getElementById('feedback-box').classList.add('show');
+        
+        setTimeout(() => {
+            document.getElementById('feedback-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 150);
+    }
+
+    function nextQuestion() {
+        currentIdx = (currentIdx + 1) % questions.length;
+        render();
+    }
+
+    render();
+</script>
+
+</body>
+</html>

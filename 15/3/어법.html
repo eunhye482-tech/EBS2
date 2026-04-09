@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        The standard school mathematics curriculum 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">doesn’t / don't</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        stress enough 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">that / what</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        mathematics 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">is / are</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        all about abstraction. Mathematicians 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">study / studies</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        specific objects but, usually, they 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">aim / aims</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">to cluster / clustering</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">them / it</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        together and study them all at the same time. This 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">saves / save</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        huge amounts of time and effort because they 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">must prove / must be proved</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        properties only once, for the whole class of objects, instead of 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">studying / study</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        each object 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">individually / individual</span></span> 
+        <div id="expl-10" class="explanation"></div>. 
+        Even more 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">importantly / important</span></span> 
+        <div id="expl-11" class="explanation"></div>, 
+        this guarantees 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">that / what</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        every object within a class 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">has / have</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        a particular property, even the objects 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">that / what</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        haven’t 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">been defined / defined</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        yet. Often, when mathematicians want 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">to prove / proving</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        that an important object behaves in a particular way, they prove instead that it 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">belongs / is belonged</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        to a class already known to have this property. We reason similarly in everyday life: since all fruits have seeds, and an apple is a fruit, then an apple must have seeds.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "doesn’t", cat: "수 일치", desc: "주어가 단수 명사인 curriculum이므로 단수 동사 doesn't를 씁니다." },
+        { ans: "that", cat: "접속사", desc: "stress의 목적어 역할을 하는 완전한 명사절을 이끄는 접속사입니다." },
+        { ans: "is", cat: "수 일치", desc: "학문명인 mathematics는 형태는 복수형이나 항상 단수 취급합니다." },
+        { ans: "study", cat: "수 일치", desc: "주어가 복수 명사인 Mathematicians이므로 복수 동사 study를 씁니다." },
+        { ans: "aim", cat: "수 일치", desc: "주어가 복수 대명사인 they이므로 복수 동사 aim을 씁니다." },
+        { ans: "to cluster", cat: "준동사", desc: "aim은 주로 to부정사를 목적어로 취하여 '~하는 것을 목표로 하다'는 뜻입니다." },
+        { ans: "them", cat: "대명사", desc: "앞의 복수 명사인 specific objects를 가리키므로 복수형 them이 적절합니다." },
+        { ans: "saves", cat: "수 일치", desc: "주어인 지시 대명사 This가 앞 문장 내용을 가리키는 단수이므로 saves를 씁니다." },
+        { ans: "must prove", cat: "능동태/수동태", desc: "수학자들이 직접 성질을 '증명해야' 하는 것이므로 능동태가 맞습니다." },
+        { ans: "studying", cat: "준동사", desc: "전치사 instead of의 목적어 역할을 하는 동명사입니다." },
+        { ans: "individually", cat: "형용사/부사", desc: "동사 study를 수식하므로 부사 형태가 적절합니다." },
+        { ans: "importantly", cat: "형용사/부사", desc: "문장 전체를 수식하며 문맥을 전환하는 부사적 표현입니다." },
+        { ans: "that", cat: "접속사", desc: "guarantees의 목적어 역할을 하는 완전한 명사절을 이끄는 접속사입니다." },
+        { ans: "has", cat: "수 일치", desc: "every로 시작하는 주어는 항상 단수 취급하므로 단수 동사 has를 씁니다." },
+        { ans: "that", cat: "접속사(관계사)", desc: "선행사 objects를 수식하며 뒤에 주어가 없는 주격 관계대명사입니다." },
+        { ans: "been defined", cat: "능동태/수동태", desc: "대상들이 아직 '정의되지' 않은 수동의 상태이므로 수동태를 씁니다." },
+        { ans: "to prove", cat: "준동사", desc: "want는 목적어로 to부정사를 취합니다." },
+        { ans: "belongs", cat: "능동태/수동태", desc: "belong to(~에 속하다)는 자동사로 수동태를 쓰지 않습니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

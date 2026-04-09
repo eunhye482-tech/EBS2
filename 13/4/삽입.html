@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 - 문장 삽입 모의고사 (기술 확장과 절단 편)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 18px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        .question-header {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .q-label { color: #ff9800; font-family: 'Nanum Pen Script', cursive; font-size: 2.2rem; margin-right: 8px; }
+        .q-text { color: #ffeb3b; font-size: 1.0rem; font-weight: 700; line-height: 1.3; }
+
+        .box-sentence {
+            background: #fff9c4;
+            color: #333;
+            padding: 15px;
+            border: 2px dashed #fbc02d;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .passage {
+            font-size: 1.0rem; 
+            line-height: 2.1;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 18px;
+            border-radius: 8px;
+        }
+
+        .q-num {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            background: #ff9800;
+            color: white;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            vertical-align: middle;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .q-num:hover { transform: scale(1.1); background: #f57c00; }
+        .q-num.correct { background: #4caf50 !important; border: 2px solid white; }
+        .q-num.wrong { background: #f44336 !important; border: 2px solid white; opacity: 0.8; }
+        .q-num.disabled { pointer-events: none; }
+
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #ffeb3b;
+        }
+        .feedback-area.show { display: block; }
+        
+        .next-btn {
+            margin-top: 12px; width: 100%; padding: 12px;
+            background: #ff9800; color: white; border: none;
+            border-radius: 10px; font-size: 1.0rem; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 0 #e65100;
+        }
+
+        .blackboard::-webkit-scrollbar { width: 4px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="question-header">
+                <span class="q-label" id="q-label">Q1.</span>
+                <span class="q-text">제시된 문장이 들어갈 번호를 본문에서 클릭하세요.</span>
+            </div>
+
+            <div class="box-sentence" id="box-sentence"></div>
+            <div class="passage" id="passage-container"></div>
+
+            <div id="feedback-box" class="feedback-area">
+                <div id="result-text" style="font-size: 1.1rem; font-weight: bold; margin-bottom: 8px;"></div>
+                <div id="explanation" style="color: #ddd; line-height: 1.5; font-size: 0.9rem;"></div>
+                <button class="next-btn" onclick="nextQuestion()">다음 문제</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            box: "McLuhan famously claimed that every media extension of man is an amputation.",
+            parts: [
+                "The strongest criticisms of technology overextension involve dehumanization, and these arguments are not new.",
+                "Marshall McLuhan was a techno-utopian but also a critical thinker who cautioned against too much human extension.",
+                "For example, once we have a car, we don’t walk any more; once we have a computer, we don’t have to remember things.",
+                "Now that we have personal GPS on our cell phones, no one can find their way about without it.",
+                "Based on McLuhan’s philosophy, we are becoming post-literate because we rely on screens rather than print.",
+                "Techno-enhancement will bring about arrested development in the natural evolution of higher human faculties."
+            ],
+            answer: 2, // ②번 뒤 (③번 위치)
+            expl: "맥루한의 비판적 시각을 소개한 문장(②번 앞) 뒤에, 그의 핵심 주장인 '매체 확장은 곧 절단'이라는 명제를 제시하는 ③번 위치가 정답입니다. 뒤에 자동차와 컴퓨터 등의 구체적인 '절단(amputation)' 예시가 이어집니다."
+        },
+        {
+            box: "For example, once we have a car, we don’t walk to the shops any more; once we have a computer hard-drive, we don’t have to remember things.",
+            parts: [
+                "The strongest criticisms of the overextension of technology involve claims of dehumanization.",
+                "Marshall McLuhan famously claimed that every media extension of man is an amputation.",
+                "Now that we have personal GPS on our cell phones, no one can find their way about without it.",
+                "Based on McLuhan’s philosophy, we are becoming post-literate because we rely on screens.",
+                "It is possible that techno-enhancement will bring about arrested development in human faculties.",
+                "This paradox of progress suggests that as we gain power, we lose fundamental skills."
+            ],
+            answer: 2, // ②번 뒤 (③번 위치)
+            expl: "확장이 곧 절단이라는 일반적 원리(②번 앞)에 대해 자동차와 컴퓨터 하드드라이브라는 첫 번째 구체적 사례를 드는 ③번 위치가 정답입니다."
+        },
+        {
+            box: "Now that we have personal GPS (Global Positioning System) on our cell phones, no one can find their way about without it.",
+            parts: [
+                "McLuhan cautioned against too much human extension into technology.",
+                "He claimed that every media extension of man is an amputation.",
+                "Once we have a car, we don’t walk; once we have a computer, we don’t have to remember things.",
+                "Based on McLuhan’s philosophy, we are becoming post-literate because we rely on screens.",
+                "Extensions of human faculties will bring about arrested development in natural evolution.",
+                "Our increasing dependence on digital navigation is a prime example of this cognitive atrophy."
+            ],
+            answer: 3, // ③번 뒤 (④번 위치)
+            expl: "자동차와 기억에 관한 사례(③번 앞)에 이어, GPS라는 또 다른 현대적 '절단'의 사례를 추가로 제시하는 ④번 위치가 정답입니다."
+        },
+        {
+            box: "Based on McLuhan’s philosophy, we are becoming post-literate because we rely on screens full of pictures, rather than print media, such as books.",
+            parts: [
+                "Every media extension of man is an amputation, according to Marshall McLuhan.",
+                "Cars stop us from walking, and computer drives stop us from remembering.",
+                "Now that we have GPS on our cell phones, no one can find their way about without it.",
+                "It is thus possible that techno-enhancement will bring about arrested development in higher faculties.",
+                "This shift from words to images alters the very structure of our thought processes.",
+                "The depth of traditional reading is being replaced by the rapid scanning of digital content."
+            ],
+            answer: 3, // ③번 뒤 (④번 위치)
+            expl: "기술에 의한 기능 상실 사례들(③번 앞)을 토대로, 맥루한의 철학을 문자 해득 이후의 시대(post-literate)라는 관점으로 확장하여 설명하는 ④번 위치가 적합합니다."
+        },
+        {
+            box: "It is thus possible that extensions of human faculties, through techno- and bio-enhancement, will bring about arrested development in the natural evolution of higher human faculties.",
+            parts: [
+                "Now that we have GPS on our cell phones, no one can find their way about without it.",
+                "Based on McLuhan’s philosophy, we are becoming post-literate because we rely on screens.",
+                "This intellectual regression is a direct result of our reliance on external digital tools.",
+                "The evolution of our minds is being sidetracked by the convenience of modern gadgets.",
+                "We are trading our innate biological potential for the immediate power of technology.",
+                "Ultimately, we must ask if the tools we built are now building us in their image."
+            ],
+            answer: 2, // ②번 뒤 (③번 위치)
+            expl: "기술 의존으로 인해 인간이 '탈문자화'되고 있다는 분석(②번 앞)을 정리하며, 기술적 강화가 인간의 자연스러운 진화를 '방해(arrested development)'할 수 있다는 최종 결론을 내리는 ③번 위치가 정답입니다."
+        }
+    ];
+
+    let currentIdx = 0;
+    const labels = ["①", "②", "③", "④", "⑤"];
+
+    function render() {
+        const q = questions[currentIdx];
+        document.getElementById('q-label').innerText = `Q${currentIdx + 1}.`;
+        document.getElementById('box-sentence').innerText = q.box;
+        document.getElementById('feedback-box').classList.remove('show');
+
+        const container = document.getElementById('passage-container');
+        container.innerHTML = '';
+
+        q.parts.forEach((text, i) => {
+            const txtSpan = document.createElement('span');
+            txtSpan.innerText = text + " ";
+            container.appendChild(txtSpan);
+
+            if (i < 5) {
+                const numSpan = document.createElement('span');
+                numSpan.className = 'q-num';
+                numSpan.innerText = labels[i];
+                numSpan.onclick = () => check(i, numSpan);
+                container.appendChild(numSpan);
+            }
+        });
+        document.getElementById('scroll-area').scrollTop = 0;
+    }
+
+    function check(idx, el) {
+        const q = questions[currentIdx];
+        const all = document.querySelectorAll('.q-num');
+        all.forEach(n => n.classList.add('disabled'));
+
+        const res = document.getElementById('result-text');
+        const correctLabel = labels[q.answer];
+
+        if (idx === q.answer) {
+            el.classList.add('correct');
+            res.innerText = "정답입니다! 기술과 인간의 관계를 깊이 통찰하셨네요. 📱";
+            res.style.color = "#81c784";
+        } else {
+            el.classList.add('wrong'); // 선택 오답 빨간색
+            all[q.answer].classList.add('correct'); // 실제 정답 초록색 하이라이트
+            res.innerText = `틀렸습니다. 정답은 ${correctLabel}번입니다.`;
+            res.style.color = "#e57373";
+        }
+
+        document.getElementById('explanation').innerText = q.expl;
+        document.getElementById('feedback-box').classList.add('show');
+        
+        setTimeout(() => {
+            document.getElementById('feedback-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 150);
+    }
+
+    function nextQuestion() {
+        currentIdx = (currentIdx + 1) % questions.length;
+        render();
+    }
+
+    render();
+</script>

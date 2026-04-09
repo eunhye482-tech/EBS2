@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        In academia, you 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">are taught / are teaching</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">to write / writing</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        up your results thus: “I came up with a hypothesis, then I did this experiment, and then I did 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">another / other</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        experiment, then I 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">tested / testing</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        my ideas some more, and so on until [dramatic fanfare] ta-da! I proved this.” If you 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">wrote / write</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        this way online, very 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">few / little</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        of your readers 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">would make / would be made</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        it to your dramatic conclusion, no matter how 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">exciting / excited</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        or groundbreaking it was. Online, we don’t have the patience 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">to wait / waiting</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        for your big reveal at the end. Instead, you need 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">to tell / telling</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        us up front: “I proved this! And here’s 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">how / what</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        I know 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">it / itself</span></span> 
+        <div id="expl-11" class="explanation"></div>...” 
+        Your readership may still dwindle and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">trail / trailing</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        off over the course of your writing, but at least the vast majority 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">know / knows</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">what / that</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        it is you’ve achieved from the very beginning. A few more of 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">them / themselves</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        may stay along for the ride if the opening line—the “hook,” in journalistic terms—is 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">particularly / particular</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        interesting. If you grab their attention early, you can more 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">likely / like</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        convince more readers to stay for the whole story.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "are taught", cat: "능동태/수동태", desc: "당신이 배우는(가르침을 받는) 대상이므로 수동태를 씁니다." },
+        { ans: "to write", cat: "준동사", desc: "be taught to-v 구문으로 '~하도록 배우다'라는 의미입니다." },
+        { ans: "another", cat: "대명사", desc: "뒤에 단수 명사(experiment)가 오므로 '또 다른 하나'를 뜻하는 another가 적절합니다." },
+        { ans: "tested", cat: "병렬", desc: "과거형 동사 came, did와 연결된 병렬 구조입니다." },
+        { ans: "wrote", cat: "가정법", desc: "현재 사실과 반대되거나 일어날 가능성이 희박한 일을 가정하는 가정법 과거(if+주어+과거동사)입니다." },
+        { ans: "few", cat: "수 일치", desc: "셀 수 있는 명사인 readers를 수식하며 '거의 없는'을 뜻하는 few를 씁니다." },
+        { ans: "would make", cat: "능동태/수동태", desc: "독자들이 결과에 도달하는 능동의 관계이며 가정법 과거의 주절 형태입니다." },
+        { ans: "exciting", cat: "준동사(분사)", desc: "결론이 흥분감을 주는 주체이므로 능동의 현재분사를 씁니다." },
+        { ans: "to wait", cat: "준동사", desc: "명사 patience를 수식하는 형용사적 용법의 to부정사입니다." },
+        { ans: "to tell", cat: "준동사", desc: "need는 목적어로 to부정사를 취합니다." },
+        { ans: "how", cat: "접속사", desc: "know의 목적어 역할을 하며 '어떻게'의 의미를 지닌 의문사절을 이끕니다." },
+        { ans: "it", cat: "대명사", desc: "앞에 나온 사실(I proved this)을 가리키는 일반 대명사입니다." },
+        { ans: "trail", cat: "병렬", desc: "조동사 may 뒤에서 dwindle과 and로 연결된 동사원형 병렬입니다." },
+        { ans: "know", cat: "수 일치", desc: "주어인 the vast majority는 문맥상 구성원들을 뜻하므로 복수 동사 know를 씁니다." },
+        { ans: "what", cat: "접속사", desc: "achieved의 목적어가 없는 불완전한 절을 이끄는 관계대명사입니다." },
+        { ans: "them", cat: "대명사", desc: "주어(A few more)와 목적어가 가리키는 대상이 다르므로 일반 대명사를 씁니다." },
+        { ans: "particularly", cat: "형용사/부사", desc: "형용사 interesting을 수식하므로 부사 형태가 적절합니다." },
+        { ans: "likely", cat: "형용사/부사", desc: "부사로서 '아마도/가능성 있게'의 의미로 쓰여 동사 convince를 수식합니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 - 문장 삽입 모의고사 (오픈 라벨 플라세보 편)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 18px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        .question-header {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .q-label { color: #ff9800; font-family: 'Nanum Pen Script', cursive; font-size: 2.2rem; margin-right: 8px; }
+        .q-text { color: #ffeb3b; font-size: 1.0rem; font-weight: 700; line-height: 1.3; }
+
+        .box-sentence {
+            background: #fff9c4;
+            color: #333;
+            padding: 15px;
+            border: 2px dashed #fbc02d;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .passage {
+            font-size: 1.0rem; 
+            line-height: 2.1;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 18px;
+            border-radius: 8px;
+        }
+
+        .q-num {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            background: #ff9800;
+            color: white;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            vertical-align: middle;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .q-num:hover { transform: scale(1.1); background: #f57c00; }
+        .q-num.correct { background: #4caf50 !important; border: 2px solid white; }
+        .q-num.wrong { background: #f44336 !important; border: 2px solid white; opacity: 0.8; }
+        .q-num.disabled { pointer-events: none; }
+
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #ffeb3b;
+        }
+        .feedback-area.show { display: block; }
+        
+        .next-btn {
+            margin-top: 12px; width: 100%; padding: 12px;
+            background: #ff9800; color: white; border: none;
+            border-radius: 10px; font-size: 1.0rem; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 0 #e65100;
+        }
+
+        .blackboard::-webkit-scrollbar { width: 4px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="question-header">
+                <span class="q-label" id="q-label">Q1.</span>
+                <span class="q-text">제시된 문장이 들어갈 번호를 본문에서 클릭하세요.</span>
+            </div>
+
+            <div class="box-sentence" id="box-sentence"></div>
+            <div class="passage" id="passage-container"></div>
+
+            <div id="feedback-box" class="feedback-area">
+                <div id="result-text" style="font-size: 1.1rem; font-weight: bold; margin-bottom: 8px;"></div>
+                <div id="explanation" style="color: #ddd; line-height: 1.5; font-size: 0.9rem;"></div>
+                <button class="next-btn" onclick="nextQuestion()">다음 문제</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            box: "But Ted Kaptchuk, a leading placebo researcher at Harvard, is investigating the possibility of doing away with the element of deception.",
+            parts: [
+                "Because belief is so crucial in the placebo effect, it would seem that deception is necessary to trigger trust.",
+                "In his approach, he tells patients up front that they will be taking a placebo.",
+                "He also informs them about how powerful and effective placebos can be to manage their expectations.",
+                "In one trial with irritable bowel syndrome, 59 percent of those on an open placebo treatment reported improvements.",
+                "In contrast, only 35 percent of the control group that received no treatment reported the same results.",
+                "The results make the point that giving a placebo isn’t the same as doing nothing."
+            ],
+            answer: 1, // ①번 뒤 (②번 위치)
+            expl: "기망(deception)이 필수적이라는 일반적인 통념(①번 앞)에 대해, '하지만(But)' 테드 캡척이 기망 없이도 플라세보 효과가 가능한지 조사하고 있다는 반대되는 연구 방향을 제시하는 ②번 위치가 정답입니다."
+        },
+        {
+            box: "He tells patients up front that they will be taking a placebo, but he also informs them about how powerful and effective placebos can be.",
+            parts: [
+                "Deception was long thought to be necessary for the placebo effect to work on patients.",
+                "Ted Kaptchuk is investigating the possibility of doing away with the element of deception in clinical trials.",
+                "In one trial with irritable bowel syndrome, 59 percent of those on an open placebo treatment reported improvements.",
+                "This was significantly higher than the 35 percent reported by the control group that received no treatment.",
+                "The results may seem modest, but they underscore the biological power of suggestion.",
+                "Giving a placebo isn’t the same as doing nothing, even when the patient knows it is a placebo."
+            ],
+            answer: 2, // ②번 뒤 (③번 위치)
+            expl: "기망 없는 실험 가능성을 조사한다는 언급(②번 앞) 뒤에, 구체적으로 환자에게 미리 알리면서도 그 효과를 설명해준다는 '방법론'을 제시하는 ③번 위치가 정답입니다."
+        },
+        {
+            box: "In one trial with irritable bowel syndrome, it was found that roughly 59 percent of those on an open placebo treatment reported improvements.",
+            parts: [
+                "Kaptchuk tells patients up front that they will be taking a placebo while explaining its power.",
+                "This open approach aims to maintain ethical standards without losing therapeutic benefits.",
+                "Roughly 35 percent of the control group that received no treatment reported improvements as well.",
+                "The difference between these two groups proves that the placebo effect is more than just a psychological trick.",
+                "It suggests that the brain can trigger healing processes based on the ritual of treatment alone.",
+                "This finding has profound implications for how we deliver medical care in the future."
+            ],
+            answer: 2, // ②번 뒤 (③번 위치)
+            expl: "기망 없는 실험 방법 설명(②번 앞)에 이어, 그 방법이 실제로 효과가 있었음을 증명하는 '구체적인 실험 수치(59%)'를 제시하는 ③번 위치가 정답입니다."
+        },
+        {
+            box: "The results may seem modest, but they make the point that giving a placebo isn’t the same as doing nothing.",
+            parts: [
+                "Roughly 59 percent of those on an open placebo treatment reported improvements in their condition.",
+                "As compared with 35 percent of the control group that received no treatment at all.",
+                "This 24 percent difference highlights the therapeutic value of the medical encounter itself.",
+                "Open-label placebos could potentially reduce the reliance on certain addictive medications.",
+                "The study challenges the traditional requirement of secrecy in placebo administration.",
+                "Further research is needed to determine the long-term sustainability of these effects."
+            ],
+            answer: 2, // ②번 뒤 (③번 위치)
+            expl: "실험군(59%)과 대조군(35%)의 수치를 비교한 뒤(②번 앞), 이 결과가 주는 시사점(플라세보를 주는 것이 아무것도 안 하는 것과는 다르다)을 정리하는 ③번 위치가 정답입니다."
+        },
+        {
+            box: "In contrast, roughly 35 percent of the control group that received no treatment reported improvements.",
+            parts: [
+                "Ted Kaptchuk inform patients about how powerful and effective placebos can be.",
+                "In one trial with irritable bowel syndrome, roughly 59 percent of those on an open placebo treatment reported improvements.",
+                "The results make the point that giving a placebo isn’t the same as doing nothing.",
+                "This statistical gap remains significant even after accounting for various environmental factors.",
+                "It proves that the expectation of recovery is a potent force in biological healing.",
+                "The mind-body connection is thus quantified through this innovative experimental design."
+            ],
+            answer: 2, // ②번 뒤 (③번 위치)
+            expl: "오픈 플라세보 처치를 받은 59%의 수치(②번 앞)에 대해, '그에 비해(In contrast)' 아무 처치도 받지 않은 대조군의 수치(35%)를 비교 대상으로 제시하는 ③번 위치가 정답입니다."
+        }
+    ];
+
+    let currentIdx = 0;
+    const labels = ["①", "②", "③", "④", "⑤"];
+
+    function render() {
+        const q = questions[currentIdx];
+        document.getElementById('q-label').innerText = `Q${currentIdx + 1}.`;
+        document.getElementById('box-sentence').innerText = q.box;
+        document.getElementById('feedback-box').classList.remove('show');
+
+        const container = document.getElementById('passage-container');
+        container.innerHTML = '';
+
+        q.parts.forEach((text, i) => {
+            const txtSpan = document.createElement('span');
+            txtSpan.innerText = text + " ";
+            container.appendChild(txtSpan);
+
+            if (i < 5) {
+                const numSpan = document.createElement('span');
+                numSpan.className = 'q-num';
+                numSpan.innerText = labels[i];
+                numSpan.onclick = () => check(i, numSpan);
+                container.appendChild(numSpan);
+            }
+        });
+        document.getElementById('scroll-area').scrollTop = 0;
+    }
+
+    function check(idx, el) {
+        const q = questions[currentIdx];
+        const all = document.querySelectorAll('.q-num');
+        all.forEach(n => n.classList.add('disabled'));
+
+        const res = document.getElementById('result-text');
+        const correctLabel = labels[q.answer];
+
+        if (idx === q.answer) {
+            el.classList.add('correct');
+            res.innerText = "정답입니다! 긍정적인 믿음의 힘을 완벽히 이해하셨네요. 💊";
+            res.style.color = "#81c784";
+        } else {
+            el.classList.add('wrong'); // 선택한 오답 빨간색
+            all[q.answer].classList.add('correct'); // 실제 정답 번호 초록색 하이라이트
+            res.innerText = `틀렸습니다. 정답은 ${correctLabel}번입니다.`;
+            res.style.color = "#e57373";
+        }
+
+        document.getElementById('explanation').innerText = q.expl;
+        document.getElementById('feedback-box').classList.add('show');
+        
+        setTimeout(() => {
+            document.getElementById('feedback-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 150);
+    }
+
+    function nextQuestion() {
+        currentIdx = (currentIdx + 1) % questions.length;
+        render();
+    }
+
+    render();
+</script>
+
+</body>
+</html>

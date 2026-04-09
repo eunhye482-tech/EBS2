@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수능 영어 - 문장 삽입 모의고사 (수학적 추상화 편)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wood-frame {
+            flex: 1;
+            margin: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8d6e63 0%, #5d4037 30%, #3e2723 50%, #5d4037 70%, #8d6e63 100%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 2px 2px 5px rgba(255,255,255,0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .blackboard {
+            flex: 1;
+            background-color: #1e3a29;
+            background-image: 
+                url('https://www.transparenttextures.com/patterns/chalkboard.png'),
+                radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+            border: 4px solid #2d1b18;
+            border-radius: 10px;
+            padding: 18px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+        }
+
+        .question-header {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .q-label { color: #ff9800; font-family: 'Nanum Pen Script', cursive; font-size: 2.2rem; margin-right: 8px; }
+        .q-text { color: #ffeb3b; font-size: 1.0rem; font-weight: 700; line-height: 1.3; }
+
+        .box-sentence {
+            background: #fff9c4;
+            color: #333;
+            padding: 15px;
+            border: 2px dashed #fbc02d;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .passage {
+            font-size: 1.0rem; 
+            line-height: 2.1;
+            text-align: justify;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 18px;
+            border-radius: 8px;
+        }
+
+        .q-num {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            background: #ff9800;
+            color: white;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            vertical-align: middle;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .q-num:hover { transform: scale(1.1); background: #f57c00; }
+        .q-num.correct { background: #4caf50 !important; border: 2px solid white; }
+        .q-num.wrong { background: #f44336 !important; border: 2px solid white; opacity: 0.8; }
+        .q-num.disabled { pointer-events: none; }
+
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #ffeb3b;
+        }
+        .feedback-area.show { display: block; }
+        
+        .next-btn {
+            margin-top: 12px; width: 100%; padding: 12px;
+            background: #ff9800; color: white; border: none;
+            border-radius: 10px; font-size: 1.0rem; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 0 #e65100;
+        }
+
+        .blackboard::-webkit-scrollbar { width: 4px; }
+        .blackboard::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="wood-frame">
+        <div class="blackboard" id="scroll-area">
+            <div class="question-header">
+                <span class="q-label" id="q-label">Q1.</span>
+                <span class="q-text">제시된 문장이 들어갈 번호를 본문에서 클릭하세요.</span>
+            </div>
+
+            <div class="box-sentence" id="box-sentence"></div>
+            <div class="passage" id="passage-container"></div>
+
+            <div id="feedback-box" class="feedback-area">
+                <div id="result-text" style="font-size: 1.1rem; font-weight: bold; margin-bottom: 8px;"></div>
+                <div id="explanation" style="color: #ddd; line-height: 1.5; font-size: 0.9rem;"></div>
+                <button class="next-btn" onclick="nextQuestion()">다음 문제</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            box: "This saves huge amounts of time and effort because they must prove properties only once, for the whole class of objects, instead of studying each object individually.",
+            parts: [
+                "The standard school mathematics curriculum doesn’t stress enough that mathematics is all about abstraction.",
+                "Mathematicians study specific objects but, usually, they aim to cluster them together and study them all at the same time.",
+                "Even more importantly, this guarantees that every object within a class has a particular property, even the objects that haven’t been defined yet.",
+                "Often, when mathematicians want to prove that an important object behaves in a particular way, they prove instead that it belongs to a class already known to have this property.",
+                "We reason similarly in everyday life: since all fruits have seeds, and an apple is a fruit, then an apple must have seeds.",
+                "Abstraction thus allows for a level of predictive power that individual observation cannot provide."
+            ],
+            answer: 2, // ②번 뒤 (③번 위치)
+            expl: "수학자들이 개별 대상이 아닌 그룹('cluster')을 동시에 연구한다는 전략적 접근(②번 앞) 뒤에, 그로 인해 얻는 '시간과 노력의 절약'이라는 구체적인 이점을 설명하는 ③번 위치가 정답입니다."
+        },
+        {
+            box: "Even more importantly, this guarantees that every object within a class has a particular property, even the objects that haven’t been defined yet.",
+            parts: [
+                "Mathematics is all about abstraction, but school curricula often fail to emphasize this point.",
+                "By studying objects in clusters, mathematicians save huge amounts of time and effort.",
+                "Often, when mathematicians want to prove that an important object behaves in a particular way, they prove instead that it belongs to a class already known to have this property.",
+                "We reason similarly in everyday life, applying general rules to specific instances like fruits and apples.",
+                "This predictive nature of mathematics is what makes it such a powerful tool for scientific inquiry.",
+                "Individual cases become predictable once the overarching category is understood."
+            ],
+            answer: 2, // ②번 뒤 (③번 위치)
+            expl: "시간과 노력의 절약(②번 앞)이라는 실무적 이점 뒤에, 아직 정의되지 않은 대상조차 같은 속성을 갖게 된다는 '훨씬 더 중요한(Even more importantly)' 논리적 보장을 제시하는 ③번 위치가 정답입니다."
+        },
+        {
+            box: "Often, when mathematicians want to prove that an important object behaves in a particular way, they prove instead that it belongs to a class already known to have this property.",
+            parts: [
+                "By clustering objects, mathematicians ensure that all members of a class share properties, even future ones.",
+                "This guarantees that every object within a class has a particular property, providing a solid foundation for further proof.",
+                "We reason similarly in everyday life: since all fruits have seeds, and an apple is a fruit, then an apple must have seeds.",
+                "This shortcut is essential for complex problem solving where direct proof might be too cumbersome.",
+                "The power of classification lies in its ability to transfer knowledge across a vast range of examples.",
+                "Mathematical rigor is thus maintained while expanding the reach of known theories."
+            ],
+            answer: 2, // ②번 뒤 (③번 위치)
+            expl: "분류를 통한 속성의 보장(②번 앞)이 끝난 후, 이를 실제로 활용하여 특정 대상의 행동을 증명하는 '방법론적 실례'를 보여주는 ③번 위치가 정답입니다. 뒤의 일상생활 비유와 잘 연결됩니다."
+        },
+        {
+            box: "We reason similarly in everyday life: since all fruits have seeds, and an apple is a fruit, then an apple must have seeds.",
+            parts: [
+                "Mathematicians save effort by proving properties for a whole class rather than individual objects.",
+                "This guarantees that every object within a class has a particular property, even the objects that haven’t been defined yet.",
+                "They often prove an object's behavior by showing it belongs to a class already known to have that property.",
+                "This cognitive economy allows us to navigate the world without constant, granular verification.",
+                "Generalization is not just a mathematical tool, but a fundamental human survival strategy.",
+                "Our brains are wired to find patterns and apply them to new, similar situations."
+            ],
+            answer: 3, // ③번 뒤 (④번 위치)
+            expl: "수학적 증명 방식의 효율성(③번 앞)에 대한 설명을 마친 후, '우리도 일상에서 비슷하게 추론한다(We reason similarly)'며 친숙한 사례(사과와 과일)를 드는 ④번 위치가 정답입니다."
+        },
+        {
+            box: "Mathematicians study specific objects but, usually, they aim to cluster them together and study them all at the same time.",
+            parts: [
+                "The standard school mathematics curriculum doesn’t stress enough that mathematics is all about abstraction.",
+                "This saves huge amounts of time and effort because they must prove properties only once for the whole class.",
+                "Even more importantly, this guarantees that every object within a class has a particular property.",
+                "Often, they prove an object's behavior by showing it belongs to a known class.",
+                "We reason similarly in everyday life with simple examples like fruits and seeds.",
+                "The shift from concrete counting to abstract categorization is the hallmark of mathematical maturity."
+            ],
+            answer: 1, // ①번 뒤 (②번 위치)
+            expl: "수학이 추상화에 관한 것이라는 도입부(①번 앞) 뒤에, 수학자들이 실제로 개별 대상보다는 '그룹화(cluster)'하여 연구한다는 구체적인 추상화 행위를 설명하는 ②번 위치가 정답입니다."
+        }
+    ];
+
+    let currentIdx = 0;
+    const labels = ["①", "②", "③", "④", "⑤"];
+
+    function render() {
+        const q = questions[currentIdx];
+        document.getElementById('q-label').innerText = `Q${currentIdx + 1}.`;
+        document.getElementById('box-sentence').innerText = q.box;
+        document.getElementById('feedback-box').classList.remove('show');
+
+        const container = document.getElementById('passage-container');
+        container.innerHTML = '';
+
+        q.parts.forEach((text, i) => {
+            const txtSpan = document.createElement('span');
+            txtSpan.innerText = text + " ";
+            container.appendChild(txtSpan);
+
+            if (i < 5) {
+                const numSpan = document.createElement('span');
+                numSpan.className = 'q-num';
+                numSpan.innerText = labels[i];
+                numSpan.onclick = () => check(i, numSpan);
+                container.appendChild(numSpan);
+            }
+        });
+        document.getElementById('scroll-area').scrollTop = 0;
+    }
+
+    function check(idx, el) {
+        const q = questions[currentIdx];
+        const all = document.querySelectorAll('.q-num');
+        all.forEach(n => n.classList.add('disabled'));
+
+        const res = document.getElementById('result-text');
+        const correctLabel = labels[q.answer];
+
+        if (idx === q.answer) {
+            el.classList.add('correct');
+            res.innerText = "정답입니다! 수학적 추상화의 힘을 완벽히 이해하셨네요. 🍎";
+            res.style.color = "#81c784";
+        } else {
+            el.classList.add('wrong'); // 선택한 오답 빨간색
+            all[q.answer].classList.add('correct'); // 실제 정답 초록색 하이라이트
+            res.innerText = `틀렸습니다. 정답은 ${correctLabel}번입니다.`;
+            res.style.color = "#e57373";
+        }
+
+        document.getElementById('explanation').innerText = q.expl;
+        document.getElementById('feedback-box').classList.add('show');
+        
+        setTimeout(() => {
+            document.getElementById('feedback-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 150);
+    }
+
+    function nextQuestion() {
+        currentIdx = (currentIdx + 1) % questions.length;
+        render();
+    }
+
+    render();
+</script>
+
+</body>
+</html>

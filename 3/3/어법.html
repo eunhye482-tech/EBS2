@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        In the early 1960s the great American writer James Baldwin 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">wrote / has written</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        : “People 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">are trapped / are trapping</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        in history, and history is 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">trapped / trapping</span></span> 
+        <div id="expl-2" class="explanation"></div>
+        in them.” He was 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">speaking / spoken</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        to race 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">when / which</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        he penned those words. But the statement is 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">equally / equal</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        true if the word “people” 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">is replaced / replaces</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        with “all of life on Earth, present and past,” for each strand of DNA, in each of our cells, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">is / are</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        an ancient record of biological history, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">written / writing</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        in simple code and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">passed / passing</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        down from generation to generation. One could say 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">that / what</span></span> 
+        <div id="expl-10" class="explanation"></div>
+        DNA is nothing but history, one with a physical manifestation that 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">was slowly blended / slowly blended</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        and accumulated over countless eons by the most pitiless of all phenomena—natural selection. DNA is a history 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">that / what</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        is inside 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">us / ourselves</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        —and yet 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">one / it</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        that is our master as well, the blueprint for our bodies, and dictator of 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">what / that</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        we will pass on to our children, gifts that can 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">be / are</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        blessings or deadly time bombs. We are 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">indeed / actual</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        trapped in this particular vehicle of history as much as it is trapped in us.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "wrote", cat: "수 일치/시제", desc: "1960년대라는 명확한 과거 시점이 있으므로 단순 과거형을 씁니다." },
+        { ans: "are trapped", cat: "능동태/수동태", desc: "사람들이 역사 속에 '갇혀 있는' 상태이므로 수동태가 적절합니다." },
+        { ans: "trapped", cat: "능동태/수동태", desc: "역사가 사람들에게 '갇힌' 것이므로 수동태 보어 형용사로 쓰였습니다." },
+        { ans: "speaking", cat: "능동태/수동태", desc: "그가 말을 하고 있는 주체이므로 능동의 진행형(was speaking)을 씁니다." },
+        { ans: "when", cat: "접속사", desc: "'~할 때'라는 시간을 나타내는 부사절 접속사입니다." },
+        { ans: "equally", cat: "형용사/부사", desc: "형용사 true를 수식하므로 부사 equally가 필요합니다." },
+        { ans: "is replaced", cat: "능동태/수동태", desc: "단어가 다른 말로 '교체되는' 수동의 관계입니다." },
+        { ans: "is", cat: "수 일치", desc: "주어는 단수 명사인 each strand입니다." },
+        { ans: "written", cat: "준동사(분사)", desc: "기록(record)은 코드로 '쓰여진' 것이므로 과거분사를 씁니다." },
+        { ans: "passed", cat: "병렬", desc: "written과 and로 연결되어 record를 수식하는 과거분사 병렬 구조입니다." },
+        { ans: "that", cat: "접속사", desc: "say의 목적어 역할을 하는 완전한 명사절을 이끄는 접속사입니다." },
+        { ans: "was slowly blended", cat: "능동태/수동태", desc: "물리적 현상이 오랜 시간 '혼합된' 것이므로 수동태를 씁니다." },
+        { ans: "that", cat: "접속사(관계사)", desc: "선행사 history를 수식하는 주격 관계대명사입니다." },
+        { ans: "us", cat: "대명사", desc: "일반적인 사람들을 가리키는 목적격 대명사 us가 적절합니다." },
+        { ans: "one", cat: "대명사", desc: "앞에 나온 부정 대명사(a history)를 반복해서 가리키는 부정 대명사 one입니다." },
+        { ans: "what", cat: "접속사", desc: "pass on의 목적어가 없는 불완전한 문장을 이끄는 관계대명사입니다." },
+        { ans: "be", cat: "수 일치", desc: "조동사 can 뒤에는 동사원형 be가 와야 합니다." },
+        { ans: "indeed", cat: "형용사/부사", desc: "동사/문장 전체를 수식하는 부사 자리입니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>

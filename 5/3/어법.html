@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>문법 칠판 모의고사</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            padding: 10px; 
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .chalkboard {
+            width: 100%;
+            max-width: 480px; 
+            background-color: #1e4d2b; 
+            border: 10px solid #5d4037; 
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            min-height: 95vh;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 { 
+            text-align: center; 
+            font-size: 1.2rem; 
+            color: #fff176; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            text-align: left;
+            word-wrap: break-word;
+            letter-spacing: -0.2px;
+        }
+
+        .quiz-container {
+            display: inline;
+            margin: 0 1px;
+        }
+
+        .quiz-option {
+            background-color: rgba(255, 241, 118, 0.25);
+            color: #fff176;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 241, 118, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .explanation {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid #fbc02d;
+            line-height: 1.4;
+        }
+
+        .active-expl { display: block; }
+        .correct-ans { color: #d32f2f; font-weight: bold; }
+        .cat-tag { color: #1565c0; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<div class="chalkboard">
+    <h2>Grammar Specialist</h2>
+    
+    <div class="passage">
+        My business partner Charles and I 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(0)">embraced / were embraced</span></span> 
+        <div id="expl-0" class="explanation"></div>
+        the servant leader’s way of 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(1)">doing / do</span></span> 
+        <div id="expl-1" class="explanation"></div>
+        things. In other words, nothing was beneath 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(2)">us / ourselves</span></span> 
+        <div id="expl-2" class="explanation"></div>. 
+        We led by example and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(3)">did / done</span></span> 
+        <div id="expl-3" class="explanation"></div>
+        the work. When any new salesman 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(4)">came / comes</span></span> 
+        <div id="expl-4" class="explanation"></div>
+        into the store, he would 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(5)">look / looking</span></span> 
+        <div id="expl-5" class="explanation"></div>
+        around, 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(6)">notice / noticed</span></span> 
+        <div id="expl-6" class="explanation"></div>
+        Charles 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(7)">polishing / polished</span></span> 
+        <div id="expl-7" class="explanation"></div>
+        some corner of the floor and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(8)">me / I</span></span> 
+        <div id="expl-8" class="explanation"></div>
+        covered in flour, and 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(9)">assume / assumed</span></span> 
+        <div id="expl-9" class="explanation"></div>
+        the decision-maker was not 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(10)">present / presently</span></span> 
+        <div id="expl-10" class="explanation"></div>. 
+        He’d then hand off 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(11)">whatever / that</span></span> 
+        <div id="expl-11" class="explanation"></div>
+        he was 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(12)">selling / sold</span></span> 
+        <div id="expl-12" class="explanation"></div>
+        to me and say, “Can you give this to the owner?” Now, if Charles and I had 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(13)">remained / been remained</span></span> 
+        <div id="expl-13" class="explanation"></div>
+        in the bakery for too long, we wouldn’t 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(14)">have been / be</span></span> 
+        <div id="expl-14" class="explanation"></div>
+        able to grow and scale, so I’m not 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(15)">saying / said</span></span> 
+        <div id="expl-15" class="explanation"></div>
+        you should be sweeping the floors forever. It’s more about modeling 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(16)">what’s / that's</span></span> 
+        <div id="expl-16" class="explanation"></div>
+        important. If cleanliness and details 
+        <span class="quiz-container"><span class="quiz-option" onclick="toggleExpl(17)">are / is</span></span> 
+        <div id="expl-17" class="explanation"></div>
+        important, be sure you aren’t above doing the work and pitching in. Come into your workspace and ask how you can help. If it’s clear your team is in the weeds, jump in without asking.
+    </div>
+</div>
+
+<script>
+    const data = [
+        { ans: "embraced", cat: "능동태/수동태", desc: "나와 파트너가 직접 받아들였다는 능동의 과거 시제입니다." },
+        { ans: "doing", cat: "준동사", desc: "전치사 of의 목적어 역할을 하는 동명사 자리입니다." },
+        { ans: "us", cat: "대명사", desc: "전치사 beneath의 목적어로 일반적인 목적격 대명사 us가 적절합니다." },
+        { ans: "did", cat: "병렬", desc: "led(동사1)와 and로 연결되어 과거 시점을 나타내는 동사2입니다." },
+        { ans: "came", cat: "시제", desc: "글 전체의 과거 시점에 맞춰 과거형 동사를 씁니다." },
+        { ans: "look", cat: "준동사", desc: "조동사 would 뒤에는 동사원형이 와야 합니다." },
+        { ans: "notice", cat: "병렬", desc: "would에 걸리는 look과 notice, assume의 병렬 구조입니다." },
+        { ans: "polishing", cat: "준동사", desc: "지각동사 notice + 목적어 + 현재분사(~하고 있는 것을 발견하다) 구문입니다." },
+        { ans: "me", cat: "대명사", desc: "notice의 목적어 자리이므로 목적격인 me가 맞습니다." },
+        { ans: "assume", cat: "병렬", desc: "look, notice와 병렬을 이루는 동사원형입니다." },
+        { ans: "present", cat: "형용사/부사", desc: "be동사 was 뒤에서 '존재하는/출석한'이라는 뜻의 형용사 보어입니다." },
+        { ans: "whatever", cat: "접속사", desc: "hand off의 목적어 역할을 하며 '무엇이든지'라는 의미의 복합관계대명사입니다." },
+        { ans: "selling", cat: "능동태/수동태", desc: "그가 판매하고 있는 것이므로 능동 진행형이 적절합니다." },
+        { ans: "remained", cat: "능동태/수동태", desc: "remain은 자동사로 수동태를 쓰지 않습니다." },
+        { ans: "have been", cat: "시제", desc: "과거 사실에 반대되는 가정을 나타내는 가정법 과거완료(wouldn't have p.p.)입니다." },
+        { ans: "saying", cat: "능동태/수동태", desc: "내가 그렇게 말하고 있는 것이 아니라는 능동 진행형입니다." },
+        { ans: "what’s", cat: "접속사", desc: "modeling의 목적어 역할을 하는 명사절에서 주어 역할을 하는 관계대명사 what입니다." },
+        { ans: "are", cat: "수 일치", desc: "주어가 A and B(cleanliness and details)로 복수이므로 are를 씁니다." }
+    ];
+
+    function toggleExpl(index) {
+        const explDiv = document.getElementById(`expl-${index}`);
+        const item = data[index];
+        explDiv.innerHTML = `
+            <span class="cat-tag">#${item.cat}</span><br>
+            정답: <span class="correct-ans">${item.ans}</span> | ${item.desc}
+        `;
+        explDiv.classList.toggle('active-expl');
+    }
+</script>
+
+</body>
+</html>
