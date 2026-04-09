@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EBS2 수능 마스터</title>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        
+        :root {
+            --bg-color: #0A0E17;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --accent-color: #00E5FF;
+            --text-main: #FFFFFF;
+            --text-sub: #A0AAB5;
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container { width: 100%; max-width: 480px; }
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin: 0;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 4px;
+        }
+
+        .step-header { display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 25px; }
+        .step-title { font-size: 1.2rem; font-weight: 600; color: var(--accent-color); }
+        .btn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        
+        .btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 22px 5px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn:active { transform: scale(0.92); background-color: rgba(255,255,255,0.1); border-color: var(--accent-color); }
+        .type-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .type-btn { font-size: 1rem; padding: 25px 10px; border-color: rgba(0, 229, 255, 0.2); }
+        .badge { font-size: 0.7rem; color: var(--text-sub); margin-bottom: 4px; text-transform: uppercase; }
+        .back-btn { position: absolute; left: 0; background: none; border: none; color: var(--text-sub); font-size: 1.8rem; cursor: pointer; padding: 5px; line-height: 1; }
+        
+        .page { display: none; }
+        .active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header><h1>EBS2</h1></header>
+
+    <div id="step1" class="page active">
+        <div class="step-header"><div class="step-title">강의 선택</div></div>
+        <div class="btn-grid">
+            <script>
+                const lessons = [3, 4, 5, 6, 7, 11, 12, 13, 14, 15, 16, 17];
+                lessons.forEach(l => {
+                    document.write(`<div class="btn" onclick="goStep2(${l})"><span class="badge">Lesson</span>${l}강</div>`);
+                });
+            </script>
+        </div>
+    </div>
+
+    <div id="step2" class="page">
+        <div class="step-header">
+            <button class="back-btn" onclick="showPage('step1')">‹</button>
+            <div class="step-title"><span id="display-lesson">0</span>강 번호 선택</div>
+        </div>
+        <div class="btn-grid" id="set-container"></div>
+    </div>
+
+    <div id="step3" class="page">
+        <div class="step-header">
+            <button class="back-btn" onclick="showPage('step2')">‹</button>
+            <div class="step-title"><span id="display-info">0강 / 0번</span></div>
+        </div>
+        <div class="btn-grid type-grid" id="type-links"></div>
+    </div>
+</div>
+
+<script>
+    let selectedLesson = 0;
+    let selectedSet = 0;
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    function goStep2(lesson) {
+        selectedLesson = lesson;
+        document.getElementById('display-lesson').innerText = lesson;
+        const setContainer = document.getElementById('set-container');
+        setContainer.innerHTML = '';
+        const maxSet = (lesson === 16) ? 6 : 4;
+        for(let i=1; i<=maxSet; i++) {
+            setContainer.innerHTML += `<div class="btn" onclick="goStep3(${i})"><span class="badge">No.</span>${i}</div>`;
+        }
+        showPage('step2');
+    }
+
+    function goStep3(setNum) {
+        selectedSet = setNum;
+        document.getElementById('display-info').innerText = `${selectedLesson}강 / ${selectedSet}번`;
+        const types = [
+            {n:'주제찾기', f:'주제.html'}, {n:'문장삽입', f:'삽입.html'}, 
+            {n:'글의순서', f:'순서.html'}, {n:'어법성판단', f:'어법.html'}, 
+            {n:'어휘적절성', f:'어휘.html'}, {n:'빈칸추론', f:'빈칸.html'}
+        ];
+        const container = document.getElementById('type-links');
+        container.innerHTML = ''; 
+        types.forEach(t => {
+            // ✅ 핵심 수정: index.html이 EBS2 폴더 안에 있으므로 EBS2/ 경로를 삭제함
+            // 경로 예시: ./3/1/빈칸.html
+            const url = "./" + selectedLesson + "/" + selectedSet + "/" + t.f;
+            container.innerHTML += `<a href="${url}" class="btn type-btn">${t.n}</a>`;
+        });
+        showPage('step3');
+    }
+</script>
+
+</body>
+</html>
