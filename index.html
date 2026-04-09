@@ -5,85 +5,200 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>EBS2 수능 마스터</title>
     <style>
+        /* 기본 스타일 초기화 및 고급 폰트 적용 */
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         
         :root {
-            --bg-color: #0A0E17;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --border-color: rgba(255, 255, 255, 0.1);
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --accent-color: #00E5FF;
+            /* 과감한 색상 팔레트 정의 */
+            --bg-deep-navy: #050810;     /* 아주 깊은 남색 배경 */
+            --card-dark-purple: #101025;  /* 어두운 보라색 카드 배경 */
+            --border-purple: #3A3A5A;     /* 은은한 보라색 테두리 */
+            
+            /* 그라데이션 (보라색 계열) */
+            --gradient-purple: linear-gradient(135deg, #6200EA 0%, #AA00FF 100%); 
+            --gradient-purple-hover: linear-gradient(135deg, #7C4DFF 0%, #D500F9 100%);
+            
+            /* 네온 포인트 컬러 */
+            --color-orange: #FF6D00;      /* 강력한 주황색 (Lesson, Set Badge) */
+            --color-cyan: #00E5FF;        /* 밝은 하늘색 (유형 선택 포인트) */
+            
+            /* 텍스트 컬러 */
             --text-main: #FFFFFF;
-            --text-sub: #A0AAB5;
+            --text-sub: #8F9BB3;
         }
 
         body {
-            font-family: 'Pretendard', sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            background-color: var(--bg-deep-navy);
             color: var(--text-main);
             margin: 0;
             padding: 20px;
             display: flex;
             justify-content: center;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .app-container { width: 100%; max-width: 480px; }
-        header { text-align: center; margin-bottom: 30px; }
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 35px;
+            margin-top: 15px;
+            position: relative;
+        }
+
         header h1 {
-            font-size: 3.5rem;
+            font-size: 1.8rem;
             font-weight: 900;
             margin: 0;
-            background: var(--primary-gradient);
+            background: var(--gradient-purple);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: 4px;
+            letter-spacing: -0.5px;
         }
 
-        .step-header { display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 25px; }
-        .step-title { font-size: 1.2rem; font-weight: 600; color: var(--accent-color); }
-        .btn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        
-        .btn {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 22px 5px;
-            font-size: 1.1rem;
+        header::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 3px;
+            background: var(--color-cyan);
+            margin: 10px auto 0;
+            border-radius: 2px;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 25px;
+            padding: 0 10px;
+        }
+
+        .step-title {
+            font-size: 1.15rem;
             font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.3px;
+        }
+
+        /* 공통 버튼 스타일 */
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .btn {
+            background-color: var(--card-dark-purple);
+            border: 2px solid var(--border-purple);
+            border-radius: 20px;
+            padding: 25px 10px;
+            font-size: 1.3rem;
+            font-weight: 800;
             color: var(--text-main);
             text-align: center;
             text-decoration: none;
             cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .btn:active { transform: scale(0.92); background-color: rgba(255,255,255,0.1); border-color: var(--accent-color); }
-        .type-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .type-btn { font-size: 1rem; padding: 25px 10px; border-color: rgba(0, 229, 255, 0.2); }
-        .badge { font-size: 0.7rem; color: var(--text-sub); margin-bottom: 4px; text-transform: uppercase; }
-        .back-btn { position: absolute; left: 0; background: none; border: none; color: var(--text-sub); font-size: 1.8rem; cursor: pointer; padding: 5px; line-height: 1; }
+        /* 버튼 호버/액티브 (보라색 그라데이션 테두리 및 그림자) */
+        .btn:active, .btn.selected {
+            transform: scale(0.96);
+            border-color: #AA00FF;
+            box-shadow: 0 0 15px rgba(170, 0, 255, 0.5);
+            background-image: var(--gradient-purple-hover);
+        }
+
+        /* 유형 선택 버튼 전용 (2열, 하늘색 포인트) */
+        .type-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .type-btn {
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 22px 10px;
+            color: var(--text-main);
+            border-color: var(--border-purple);
+        }
         
-        .page { display: none; }
-        .active { display: block; animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .type-btn:active {
+            border-color: var(--color-cyan);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+            background-image: none;
+            background-color: rgba(0, 229, 255, 0.1);
+            color: var(--color-cyan);
+        }
+
+        /* 강/세트 표시 배지 (주황색 포인트) */
+        .badge {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-orange);
+            margin-bottom: 6px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* 뒤로가기 버튼 */
+        .back-btn {
+            position: absolute;
+            left: 0;
+            background: none;
+            border: none;
+            color: var(--text-sub);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 10px;
+            line-height: 1;
+        }
+
+        /* 화면 전환 처리 */
+        .page { display: none; opacity: 0; }
+        .active { display: block; opacity: 1; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <header><h1>EBS2</h1></header>
+    <header>
+        <h1>EBS2 수능 마스터</h1>
+    </header>
 
     <div id="step1" class="page active">
-        <div class="step-header"><div class="step-title">강의 선택</div></div>
+        <div class="step-header">
+            <div class="step-title">강의 선택</div>
+        </div>
         <div class="btn-grid">
             <script>
+                // 3, 4, 5, 6, 7, 11, 12, 13, 14, 15, 16, 17
                 const lessons = [3, 4, 5, 6, 7, 11, 12, 13, 14, 15, 16, 17];
                 lessons.forEach(l => {
-                    document.write(`<div class="btn" onclick="goStep2(${l})"><span class="badge">Lesson</span>${l}강</div>`);
+                    document.write(`
+                        <div class="btn" onclick="goStep2(${l})">
+                            <span class="badge">Lesson</span>
+                            ${l}강
+                        </div>
+                    `);
                 });
             </script>
         </div>
@@ -91,18 +206,24 @@
 
     <div id="step2" class="page">
         <div class="step-header">
-            <button class="back-btn" onclick="showPage('step1')">‹</button>
-            <div class="step-title"><span id="display-lesson">0</span>강 번호 선택</div>
+            <button class="back-btn" onclick="showPage('step1')">✕</button>
+            <div class="step-title"><span id="display-lesson" style="color:var(--color-orange)">3</span>강 - 세트 선택</div>
         </div>
-        <div class="btn-grid" id="set-container"></div>
+        <div class="btn-grid">
+            <div class="btn" onclick="goStep3(1)"><span class="badge">Set</span>1</div>
+            <div class="btn" onclick="goStep3(2)"><span class="badge">Set</span>2</div>
+            <div class="btn" onclick="goStep3(3)"><span class="badge">Set</span>3</div>
+            <div class="btn" onclick="goStep3(4)"><span class="badge">Set</span>4</div>
+        </div>
     </div>
 
     <div id="step3" class="page">
         <div class="step-header">
-            <button class="back-btn" onclick="showPage('step2')">‹</button>
-            <div class="step-title"><span id="display-info">0강 / 0번</span></div>
+            <button class="back-btn" onclick="showPage('step2')">✕</button>
+            <div class="step-title"><span id="display-info" style="color:var(--color-cyan)">3강 / Set 1</span> 유형</div>
         </div>
-        <div class="btn-grid type-grid" id="type-links"></div>
+        <div class="btn-grid type-grid" id="type-links">
+            </div>
     </div>
 </div>
 
@@ -110,40 +231,42 @@
     let selectedLesson = 0;
     let selectedSet = 0;
 
+    // 페이지 전환 함수
     function showPage(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
+        const targetPage = document.getElementById(pageId);
+        targetPage.classList.add('active');
+        // 스크롤 맨 위로 이동
         window.scrollTo(0, 0);
     }
 
+    // 1단계 -> 2단계: 강 선택
     function goStep2(lesson) {
         selectedLesson = lesson;
         document.getElementById('display-lesson').innerText = lesson;
-        const setContainer = document.getElementById('set-container');
-        setContainer.innerHTML = '';
-        const maxSet = (lesson === 16) ? 6 : 4;
-        for(let i=1; i<=maxSet; i++) {
-            setContainer.innerHTML += `<div class="btn" onclick="goStep3(${i})"><span class="badge">No.</span>${i}</div>`;
-        }
         showPage('step2');
     }
 
+    // 2단계 -> 3단계: 세트 선택 및 링크 생성
     function goStep3(setNum) {
         selectedSet = setNum;
-        document.getElementById('display-info').innerText = `${selectedLesson}강 / ${selectedSet}번`;
+        document.getElementById('display-info').innerText = `${selectedLesson}강 / Set ${selectedSet}`;
+        
         const types = [
             {n:'주제찾기', f:'주제.html'}, {n:'문장삽입', f:'삽입.html'}, 
             {n:'글의순서', f:'순서.html'}, {n:'어법성판단', f:'어법.html'}, 
             {n:'어휘적절성', f:'어휘.html'}, {n:'빈칸추론', f:'빈칸.html'}
         ];
+
         const container = document.getElementById('type-links');
-        container.innerHTML = ''; 
+        container.innerHTML = ''; // 초기화
+
         types.forEach(t => {
-            // ✅ 핵심 수정: index.html이 EBS2 폴더 안에 있으므로 EBS2/ 경로를 삭제함
-            // 경로 예시: ./3/1/빈칸.html
-            const url = "./" + selectedLesson + "/" + selectedSet + "/" + t.f;
+            // 실제 파일 경로 예시: 3/1/빈칸.html
+            const url = `${selectedLesson}/${selectedSet}/${t.f}`;
             container.innerHTML += `<a href="${url}" class="btn type-btn">${t.n}</a>`;
         });
+
         showPage('step3');
     }
 </script>
