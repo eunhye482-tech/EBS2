@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>English Master #32 - 25년 3월 고2</title>
+    <style>
+        :root { 
+            --lavender-light: #F3E5F5; 
+            --purple-pale: #E1BEE7; 
+            --purple-main: #9575CD; 
+            --purple-dark: #673AB7;
+            --pink-soft: #FFF0F6;
+        }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; background: #F8F7FA; display: flex; justify-content: center; min-height: 100vh; }
+        .phone-container { width: 100%; max-width: 450px; background: white; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
+        .header { padding: 12px; text-align: center; font-weight: bold; color: var(--purple-dark); border-bottom: 1px solid #eee; background: white; font-size: 0.95rem; position: sticky; top: 0; z-index: 10; }
+        #display-area { flex: 1; padding: 20px; display: flex; flex-direction: column; }
+        
+        .hidden { display: none !important; }
+        
+        .btn-intro-step { background: var(--purple-main); color: white; padding: 16px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; }
+
+        .main-title-card { width: 100%; background: linear-gradient(135deg, #B39DDB 0%, #9575CD 100%); padding: 35px 20px; border-radius: 20px; color: white; margin-bottom: 20px; box-sizing: border-box; text-align: center; }
+        .intro-summary { background: var(--lavender-light); padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 2px solid var(--purple-pale); font-size: 0.92rem; line-height: 1.6; color: #444; }
+        .intro-topic { background: var(--pink-soft); padding: 18px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #F8BBD0; text-align: center; }
+        .topic-kor { font-weight: bold; color: #D81B60; display: block; margin-bottom: 5px; }
+        .topic-eng { font-size: 0.85rem; color: #888; font-style: italic; }
+
+        .sentence-box { background: var(--lavender-light); padding: 20px; border-radius: 20px; font-size: 1.1rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 15px; border: 2px solid var(--purple-pale); text-align: center; cursor: pointer; line-height: 1.5; }
+        .kor-box { background: #FFF5F7; padding: 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; color: #D81B60; margin-bottom: 15px; border: 2px solid #F8BBD0; text-align: center; line-height: 1.6; }
+        
+        .voca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .voca-item { background: #fff; padding: 10px; border-radius: 10px; font-size: 0.82rem; border: 1px solid var(--purple-pale); cursor: pointer; text-align: center; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: #333; }
+        .voca-item.revealed { background: var(--purple-main); color: white; }
+        
+        .blank-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; padding: 10px; background: #fdfdfd; border-radius: 15px; }
+        .word-blank { border-bottom: 2px solid var(--purple-main); min-width: 35px; text-align: center; font-size: 1rem; color: transparent; cursor: pointer; padding: 0 2px; }
+        .word-blank.revealed { color: var(--purple-dark); border-bottom-color: transparent; font-weight: bold; }
+
+        .btn-check { background: #f0f0f0; padding: 12px; border-radius: 12px; border: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; width: 100%; font-size: 0.9rem; color: #555; }
+        .trans-content { display: none; padding: 15px; background: #fafafa; border-radius: 15px; border-left: 5px solid var(--purple-main); font-size: 0.9rem; margin-bottom: 10px; color: #444; }
+        
+        .nav-btns-fixed { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; margin-top: auto; position: sticky; bottom: 0; gap: 10px; align-items: center; }
+        .btn-prev { background: #EDF2F7; color: #718096; border-radius: 15px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; height: 55px; flex: 1; display: flex; align-items: center; justify-content: center; }
+        .btn-next { background: var(--purple-main); color: white; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; height: 55px; flex: 1.5; display: flex; align-items: center; justify-content: center; margin-top: 0; }
+    </style>
+</head>
+<body>
+<div class="phone-container">
+    <div class="header" id="header-title">English Master #32</div>
+    <div id="display-area"></div>
+    <div id="nav-area" class="nav-btns-fixed hidden">
+        <button class="btn-prev" onclick="prevSentence()">PREV</button>
+        <button class="btn-next" onclick="nextSentence()" id="main-next-btn">NEXT</button>
+    </div>
+</div>
+
+<script>
+    const prepositions = ["of", "to", "into", "by", "between", "with", "from"];
+    const fullData = [
+        { en: "Scholars of myth have long argued that myth gives structure and meaning to human life; that meaning is amplified when a myth evolves into a world.", ko: "신화학자들은 신화가 인간의 삶에 구조와 의미를 부여하며, 신화가 하나의 세계로 진화할 때 그 의미가 증폭된다고 오랫동안 주장해 왔습니다.", voca: ["Scholars:학자들", "myth:신화", "structure:구조", "meaning:의미", "amplified:증폭된", "evolves into:~로 진화하다", "🍎", "🍎", "🍎", "🍎"] },
+        { en: "A virtual world’s ability to fulfill needs grows when lots and lots of people believe in the world.", ko: "가상 세계가 욕구를 충족시키는 능력은 수많은 사람들이 그 세계를 믿을 때 커집니다.", voca: ["virtual:가상의", "ability:능력", "fulfill needs:욕구를 충족시키다", "grows:성장하다", "believe in:~을 믿다", "🍎", "🍎", "🍎", "🍎", "🍎"] },
+        { en: "Conversely, a virtual world cannot be long sustained by a mere handful of adherents.", ko: "반대로, 가상 세계는 단지 소수의 추종자들에 의해서는 오래 지속될 수 없습니다.", voca: ["Conversely:반대로", "sustained:지속된", "mere:단지/불과한", "handful:소수/한 움큼", "adherents:추종자들", "🍎", "🍎", "🍎", "🍎", "🍎"] },
+        { en: "Consider the difference between a global sport and a game I invent with my nine friends and play regularly.", ko: "글로벌 스포츠와 내가 아홉 명의 친구와 발명해서 정기적으로 하는 게임의 차이를 생각해 보십시오.", voca: ["difference:차이", "invent:발명하다", "regularly:정기적으로", "global sport:세계적 스포츠", "🍎", "🍎", "🍎", "🍎", "🍎", "🍎"] },
+        { en: "My game might be a great game, one that is completely immersive, one that consumes all of my group’s time and attention.", ko: "내 게임은 훌륭한 게임일 수 있고, 완전히 몰입하게 하며, 내 집단의 모든 시간과 주의를 소비하게 하는 게임일 수 있습니다.", voca: ["completely:완전히", "immersive:몰입하게 하는", "consumes:소비하다", "attention:주의/관심", "group:집단", "🍎", "🍎", "🍎", "🍎", "🍎"] },
+        { en: "If its reach is limited to the ten of us, though, then it’s ultimately just a weird hobby, and it has limited social function.", ko: "하지만 그것의 범위가 우리 열 명으로 제한된다면, 그것은 궁극적으로 그냥 이상한 취미일 뿐이고 제한된 사회적 기능을 가질 뿐입니다.", voca: ["reach:범위/도달", "limited:제한된", "ultimately:궁극적으로", "weird hobby:이상한 취미", "social function:사회적 기능", "🍎", "🍎", "🍎", "🍎", "🍎"] },
+        { en: "For a virtual world to provide lasting, wide-ranging value, its participants must be a large enough group to be considered a society.", ko: "가상 세계가 지속적이고 광범위한 가치를 제공하려면, 그 참여자들은 하나의 사회로 간주될 만큼 충분히 큰 집단이어야 합니다.", voca: ["provide:제공하다", "lasting:지속적인", "wide-ranging:광범위한", "participants:참여자들", "considered:간주되는", "society:사회", "🍎", "🍎", "🍎", "🍎"] },
+        { en: "When that threshold is reached, psychological value can turn into wide-ranging social value.", ko: "그 임계치에 도달했을 때, 심리적 가치는 광범위한 사회적 가치로 변할 수 있습니다.", voca: ["threshold:임계치/문턱", "reached:도달한", "psychological:심리적인", "turn into:~로 변하다", "social value:사회적 가치", "🍎", "🍎", "🍎", "🍎", "🍎"] }
+    ];
+
+    let currentMode = 'INTRO';
+    let currentIdx = 0;
+    const synth = window.speechSynthesis;
+
+    function render() {
+        const area = document.getElementById('display-area');
+        const nav = document.getElementById('nav-area');
+        const header = document.getElementById('header-title');
+        area.innerHTML = '';
+
+        if (currentMode === 'INTRO') {
+            header.innerText = "English Master #32";
+            nav.classList.add('hidden');
+            area.innerHTML = `
+                <div class="main-title-card"><h1>From Myth<br>to Society</h1><p>2025년 3월 고2 32번</p></div>
+                
+                <div class="intro-summary">
+                    <p>• <b>📍 서론:</b> 신화가 세계관으로 진화하여 많은 사람들이 믿을 때 그 의미가 증폭됨.</p>
+                    <p>• <b>📍 본론:</b> 소수만이 즐기는 게임은 취미일 뿐이지만, 참여자가 늘어나 '사회'를 형성하면 광범위한 가치를 지님.</p>
+                    <p>• <b>📍 결론:</b> 가상 세계가 사회적 임계치를 넘어서면 심리적 만족을 넘어 실질적인 사회적 가치를 창출함.</p>
+                </div>
+                <div class="intro-topic">
+                    <span class="topic-kor">주제: 가상 세계가 사회적 가치를 얻기 위해 필요한 참여자 수의 중요성</span>
+                    <span class="topic-eng">Topic: The importance of the number of participants for a virtual world to gain social value</span>
+                </div>
+                <button class="btn-intro-step" onclick="startStep(2)">STEP 2: 문장 학습 시작 ▶</button>
+                <button class="btn-intro-step" style="background:#9C27B0;" onclick="startStep(3)">STEP 3: 영작 연습 시작 ▶</button>
+            `;
+        } else {
+            const stepNum = currentMode === 'STEP2' ? 2 : 3;
+            header.innerText = `STEP ${stepNum} (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+            
+            const item = fullData[currentIdx];
+            if (currentMode === 'STEP2') {
+                area.innerHTML = `<div class="sentence-box" onclick="playTTS('${item.en.replace(/'/g, "\\'")}')">${item.en}</div><div class="voca-grid" id="voca-area"></div><button class="btn-check" onclick="toggleView('trans-area')">해석 확인</button><div id="trans-area" class="trans-content">${item.ko}</div>`;
+                fillVoca(item.voca, '🍎', "#FF3B30");
+            } else {
+                area.innerHTML = `<div class="kor-box">${item.ko}</div><div class="blank-area" id="blank-area"></div><div class="voca-grid" id="voca-area"></div><button class="btn-check" onclick="toggleView('trans-area')">정답 확인</button><div id="trans-area" class="trans-content">${item.en}</div>`;
+                fillBlanks(item.en);
+                fillVoca(item.voca, '🍇', "#9C27B0");
+            }
+        }
+    }
+
+    function fillVoca(vList, emo, col) {
+        const area = document.getElementById('voca-area');
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'voca-item';
+            if (vList[i] && vList[i].includes(':')) {
+                const [en, ko] = vList[i].split(':');
+                div.innerText = en;
+                div.onclick = function() { this.classList.toggle('revealed'); this.innerText = this.classList.contains('revealed') ? ko : en; };
+            } else {
+                div.innerText = emo; div.style.color = col; div.style.cursor = "default";
+            }
+            area.appendChild(div);
+        }
+    }
+
+    function fillBlanks(s) {
+        const area = document.getElementById('blank-area');
+        s.split(' ').forEach(w => {
+            const span = document.createElement('span');
+            const cw = w.replace(/[.,';]/g, "").toLowerCase();
+            if(prepositions.includes(cw)) { span.innerText = w; span.style.margin="0 4px"; span.style.fontWeight="bold"; }
+            else { span.className = 'word-blank'; span.innerText = w; span.onclick = function() { this.classList.add('revealed'); playTTS(w.replace(/[.,';]/g, "")); }; }
+            area.appendChild(span);
+        });
+    }
+
+    function startStep(s) { currentMode = 'STEP' + s; currentIdx = 0; render(); }
+    function nextSentence() { if (currentIdx < fullData.length - 1) { currentIdx++; render(); } else { currentMode = 'INTRO'; render(); } }
+    function prevSentence() { if (currentIdx > 0) { currentIdx--; render(); } else { currentMode = 'INTRO'; render(); } }
+    function playTTS(t) { synth.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; synth.speak(u); }
+    function toggleView(id) { const el = document.getElementById(id); el.style.display = (el.style.display === 'block') ? 'none' : 'block'; }
+    window.onload = render;
+</script>
+</body>
+</html>

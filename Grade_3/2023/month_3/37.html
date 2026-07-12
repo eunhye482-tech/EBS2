@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English Master #37 - Official Version</title>
+    <style>
+        :root { 
+            --lavender-light: #F3E5F5; 
+            --purple-pale: #E1BEE7; 
+            --purple-main: #9575CD; 
+            --purple-dark: #673AB7;
+            --pink-soft: #FFF0F6;
+        }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; background: #F8F7FA; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
+        .phone-container { width: 100%; max-width: 450px; height: 100%; background: white; display: flex; flex-direction: column; position: relative; }
+        .header { padding: 12px; text-align: center; font-weight: bold; color: var(--purple-dark); border-bottom: 1px solid #eee; background: white; font-size: 0.95rem; }
+        #display-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        /* 공통 스타일 */
+        .hidden { display: none !important; }
+        .btn-next { background: var(--purple-main); color: white; padding: 16px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: auto; }
+        .btn-prev { background: #EDF2F7; color: #718096; padding: 16px; border-radius: 15px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; width: 30%; margin-right: 10px; }
+
+        /* STEP 1: 인트로 */
+        .main-title-card { width: 100%; background: linear-gradient(135deg, #B39DDB 0%, #9575CD 100%); padding: 35px 20px; border-radius: 20px; color: white; margin-bottom: 20px; box-sizing: border-box; text-align: center; box-shadow: 0 4px 10px rgba(149,117,205,0.3); }
+        .intro-summary { background: var(--lavender-light); padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 2px solid var(--purple-pale); font-size: 0.92rem; line-height: 1.6; }
+        .intro-topic { background: var(--pink-soft); padding: 18px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #F8BBD0; }
+
+        /* 학습 카드 스타일 */
+        .sentence-box { background: var(--lavender-light); padding: 20px; border-radius: 20px; font-size: 1.1rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 15px; border: 2px solid var(--purple-pale); text-align: center; cursor: pointer; line-height: 1.5; }
+        .kor-box { background: #FFF5F7; padding: 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; color: #D81B60; margin-bottom: 15px; border: 2px solid #F8BBD0; text-align: center; line-height: 1.6; }
+        
+        /* 단어 그리드 */
+        .voca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .voca-item { background: #fff; padding: 10px; border-radius: 10px; font-size: 0.82rem; border: 1px solid var(--purple-pale); cursor: pointer; text-align: center; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .voca-item.revealed { background: var(--purple-main); color: white; }
+        
+        /* STEP 3 전용: 빈칸 스타일 */
+        .blank-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; padding: 10px; background: #fdfdfd; border-radius: 15px; }
+        .word-blank { border-bottom: 2px solid var(--purple-main); min-width: 35px; text-align: center; font-size: 1rem; color: transparent; cursor: pointer; padding: 0 2px; }
+        .word-blank.revealed { color: var(--purple-dark); border-bottom-color: transparent; font-weight: bold; }
+
+        .btn-check { background: #f0f0f0; padding: 12px; border-radius: 12px; border: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; width: 100%; font-size: 0.9rem; }
+        .trans-content { display: none; padding: 15px; background: #fafafa; border-radius: 15px; border-left: 5px solid var(--purple-main); font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px; }
+        .nav-btns-fixed { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; margin-top: auto; }
+    </style>
+</head>
+<body>
+<div class="phone-container">
+    <div class="header" id="header-title">English Master #37</div>
+    <div id="display-area"></div>
+    <div id="nav-area" class="nav-btns-fixed hidden">
+        <button class="btn-prev" onclick="prevSentence()">PREV</button>
+        <button class="btn-next" onclick="nextSentence()" id="main-next-btn">NEXT</button>
+    </div>
+</div>
+
+<script>
+    const fullData = [
+        { 
+            en: "A large body of research in decision science has indicated that one attribute that is regularly substituted for an explicit assessment of decision costs and benefits is an affective valuation of the prospect at hand.", 
+            ko: "의사 결정 과학의 방대한 연구에 따르면, 의사 결정 비용과 이익에 대한 명시적인 평가를 정기적으로 대체하는 한 가지 속성은 당면한 가능성에 대한 정서적 평가이다.", 
+            voca: ["body of research:방대한 연구", "decision science:의사 결정 과학", "indicated:나타냈다, 지적했다", "attribute:속성, 특성", "substituted:대체된", "explicit:명시적인", "assessment:평가", "affective valuation:정서적 평가", "prospect:가능성, 전망", "at hand:당면한, 가까이 있는"] 
+        },
+        { 
+            en: "This is often a very rational attribute to substitute—affect does convey useful signals as to the costs and benefits of outcomes.", 
+            ko: "이것은 대개 대체하기에 매우 이성적인 속성인데, 정서가 결과의 비용과 이익에 관한 유용한 신호를 정말로 전달하기 때문이다.", 
+            voca: ["often:대개, 자주", "rational:이성적인, 합리적인", "substitute:대체하다", "affect:정서, 감정", "convey:전달하다", "useful:유용한", "signals:신호들", "as to:~에 관한", "outcomes:결과들", "do:정말로(강조)"] 
+        },
+        { 
+            en: "A problem sometimes arises, however, when affective valuation is not supplemented by any analytic processing and adjustment at all.", 
+            ko: "그러나 정서적 평가가 분석적인 처리와 조정에 의해 전혀 보완되지 않을 때 가끔 문제가 발생한다.", 
+            voca: ["arises:발생하다", "however:그러나", "affective valuation:정서적 평가", "supplemented:보완된", "analytic:분석적인", "processing:처리", "adjustment:조정", "at all:전혀, 조금도", "sometimes:가끔", "🍌"] 
+        },
+        { 
+            en: "For example, sole reliance on affective valuation can make people insensitive to probabilities and to quantitative features of the outcome that should effect decisions.", 
+            ko: "예를 들어, 정서적 평가에만 전적으로 의존하는 것은 의사 결정에 영향을 미쳐야 하는 결과의 확률과 수량적 특징에 대해 사람들을 둔감하게 만들 수 있다.", 
+            voca: ["For example:예를 들어", "sole reliance:전적인 의존, 유일한 의존", "make:~하게 만들다", "insensitive:둔감한", "probabilities:확률들", "quantitative:수량적인, 양적인", "features:특징들", "outcome:결과", "effect:영향을 미치다, 초래하다", "decisions:결정들"] 
+        },
+        { 
+            en: "One study demonstrated that people’s evaluation of a situation where they might receive a shock is insensitive to the probability of receiving the shock because their thinking is swamped by affective evaluation of the situation.", 
+            ko: "한 연구는 사람들이 충격을 받을지도 모르는 상황에 대한 평가가 충격을 받을 확률에 둔감하다는 것을 보여주었는데, 왜냐하면 그들의 생각이 그 상황에 대한 정서적 평가에 의해 압도당하기 때문이다.", 
+            voca: ["demonstrated:보여주다, 증명하다", "evaluation:평가", "situation:상황", "receive:받다", "shock:충격", "insensitive:둔감한", "probability:확률", "thinking:생각, 사고", "swamped:압도당한, 늪에 빠진", "affective:정서적인"] 
+        },
+        { 
+            en: "People were willing to pay almost as much to avoid a 1 percent probability of receiving a shock as they were to pay to avoid a 99 percent probability of receiving a shock.", 
+            ko: "사람들은 99%의 충격 가능성을 피하기 위해 지불하고자 하는 것만큼이나 1%의 충격 가능성을 피하기 위해 거의 그만큼의 금액을 기꺼이 지불하고자 했다.", 
+            voca: ["willing to:기꺼이 ~하고자 하는", "pay:지불하다", "almost:거의", "as much A as B:B만큼 많은 A", "avoid:피하다", "percent:퍼센트", "probability:확률", "receiving:받는 것", "shock:충격", "🍌"] 
+        },
+        { 
+            en: "Clearly the affective reaction to the thought of receiving a shock was overwhelming the subjects’ ability to evaluate the probabilities associated.", 
+            ko: "분명히 충격을 받는다는 생각에 대한 정서적 반응이 이와 관련된 확률을 평가하는 피험자들의 능력을 압도하고 있었다.", 
+            voca: ["Clearly:분명히", "affective reaction:정서적 반응", "thought:생각", "receiving:받는 것", "shock:충격", "overwhelming:압도하고 있는", "subjects:피험자, 실험 대상자", "ability:능력", "evaluate:평가하다", "associated:관련된"] 
+        }
+    ];
+
+    let currentMode = 'INTRO';
+    let currentIdx = 0;
+    const synth = window.speechSynthesis;
+
+    function render() {
+        const area = document.getElementById('display-area');
+        const nav = document.getElementById('nav-area');
+        const header = document.getElementById('header-title');
+        area.innerHTML = '';
+
+        if (currentMode === 'INTRO') {
+            header.innerText = "English Master #37";
+            nav.classList.add('hidden');
+            area.innerHTML = `
+                <div class="main-title-card"><h1>Affective Valuation<br>and Probability Illusion</h1><p>The Overwhelming Power of Gut Feelings</p></div>
+                <div class="intro-summary">
+                    <h3>📋 지문 요약</h3>
+                    <p><b>[서론]</b> 의사 결정 과학 분야의 연구에 의하면, 인간은 비용과 이익을 복잡하고 명시적으로 계산하는 대신, 직면한 상황에 대한 주관적인 '정서적 평가(감정)'를 대안으로 자주 사용한다.</p>
+                    <p><b>[본론]</b> 정서(감정)는 결과에 대한 유용한 신호를 빠르게 보내주므로 이러한 대체는 대개 매우 이성적이다. 하지만 이 감정적 평가가 '분석적인 이성 처리와 조정'에 의해 보완되지 않을 때 심각한 도덕적·인지적 결함이 유발된다. 감정에만 전적으로 의존하게 되면, 결정을 내릴 때 반드시 고려해야 할 '발생 확률'이나 '수량적 특성'에 극도로 둔감해지기 때문이다.</p>
+                    <p><b>[결론]</b> 이를 증명하는 실험으로, 사람들은 전기 충격을 받을지도 모르는 공포스러운 상황을 마주했을 때 확률이 단 1%이든 99%이든 상관없이 그것을 회피하기 위해 거의 동일한 비용을 지불하려 했다. 즉, 충격을 받을지 모른다는 생각 자체가 유발한 강렬한 정서적 반응(공포)이, 관련된 이성적 확률을 차분하게 평가해야 할 피험자들의 인지 능력을 완전히 압도해 버린 것이다.</p>
+                </div>
+                <div class="intro-topic">
+                    <span class="topic-label">💡 Topic Sentence</span>
+                    <p style="font-size:0.85rem; font-weight:600; margin-bottom:5px;">While affective valuation provides quick and useful guidance, relying solely on emotion without analytical processing blinds people to factual probabilities and quantitative metrics during decision-making.</p>
+                    <p style="font-size:0.75rem; color:#666; margin:0;">(정서적 평가가 빠르고 유용한 지침을 제공하긴 하지만, 분석적 처리 없이 오직 감정에만 의존하는 것은 의사 결정 과정에서 사람들로 하여금 객관적인 확률과 수량적 지표를 보지 못하게 눈멀게 만든다.)</p>
+                </div>
+                <button class="btn-next" onclick="startStep(2)">STEP 2: 문장 학습 시작 ▶</button>
+                <button class="btn-next" style="margin-top:10px; background:#9C27B0;" onclick="startStep(3)">STEP 3: 영작 연습 시작 ▶</button>
+            `;
+        } else if (currentMode === 'STEP2') {
+            header.innerText = `STEP 2. 문장 학습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+            
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="sentence-box" onclick="playTTS('${item.en.replace(/'/g, "\\'")}')">${item.en}</div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">해석 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.ko}</div>
+            `;
+            fillVoca(item.voca, '🍌', "#FFD600");
+        } else if (currentMode === 'STEP3') {
+            header.innerText = `STEP 3. 영작 연습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="kor-box">${item.ko}</div>
+                <div class="blank-area" id="blank-area"></div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">정답 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.en}</div>
+            `;
+            fillBlanks(item.en);
+            fillVoca(item.voca, '🍇', "#9C27B0");
+        }
+    }
+
+    function fillVoca(vocaList, emoji, emojiColor) {
+        const container = document.getElementById('voca-area');
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'voca-item';
+            if (vocaList[i] && vocaList[i] !== '🍌' && vocaList[i] !== '🍇') {
+                const [eng, kor] = vocaList[i].split(':');
+                div.innerText = eng;
+                div.onclick = function() {
+                    this.classList.toggle('revealed');
+                    this.innerText = this.classList.contains('revealed') ? kor : eng;
+                };
+            } else {
+                div.innerText = emoji;
+                div.style.color = emojiColor;
+                div.style.cursor = "default";
+            }
+            container.appendChild(div);
+        }
+    }
+
+    function fillBlanks(s) {
+        const c = document.getElementById('blank-area');
+        const prepositions = ["in", "on", "at", "by", "for", "from", "of", "with", "to", "into", "onto", "upon", "about", "above", "across", "after", "against", "along", "among", "around", "as", "before", "behind", "below", "beneath", "beside", "between", "beyond", "during", "except", "inside", "near", "off", "outside", "over", "past", "since", "through", "throughout", "under", "underneath", "until", "up", "within", "without"];
+
+        s.split(' ').forEach(w => {
+            const sp = document.createElement('span');
+            sp.className = 'word-blank';
+            sp.innerText = w;
+            
+            const pureWord = w.toLowerCase().replace(/[.,'":;?!()“”]/g, "");
+            
+            if (prepositions.includes(pureWord)) {
+                sp.classList.add('revealed');
+                sp.style.borderBottomColor = 'transparent'; 
+            }
+
+            sp.onclick = function() {
+                this.classList.add('revealed');
+                this.style.borderBottomColor = 'transparent';
+                playTTS(w.replace(/[.,'"]/g, ""));
+            };
+            c.appendChild(sp);
+        });
+    }
+
+    function startStep(step) {
+        currentMode = 'STEP' + step;
+        currentIdx = 0;
+        render();
+    }
+
+    function nextSentence() {
+        if (currentIdx < fullData.length - 1) {
+            currentIdx++;
+            render();
+        } else {
+            currentMode = 'INTRO';
+            render();
+        }
+    }
+
+    function prevSentence() {
+        if (currentIdx > 0) {
+            currentIdx--;
+            render();
+        }
+    }
+
+    function playTTS(text) {
+        synth.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        synth.speak(utterance);
+    }
+
+    function toggleView(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    window.onload = render;
+</script>
+</body>
+</html>

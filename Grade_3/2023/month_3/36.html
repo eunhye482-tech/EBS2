@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English Master #36 - Official Version</title>
+    <style>
+        :root { 
+            --lavender-light: #F3E5F5; 
+            --purple-pale: #E1BEE7; 
+            --purple-main: #9575CD; 
+            --purple-dark: #673AB7;
+            --pink-soft: #FFF0F6;
+        }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; background: #F8F7FA; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
+        .phone-container { width: 100%; max-width: 450px; height: 100%; background: white; display: flex; flex-direction: column; position: relative; }
+        .header { padding: 12px; text-align: center; font-weight: bold; color: var(--purple-dark); border-bottom: 1px solid #eee; background: white; font-size: 0.95rem; }
+        #display-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        /* 공통 스타일 */
+        .hidden { display: none !important; }
+        .btn-next { background: var(--purple-main); color: white; padding: 16px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: auto; }
+        .btn-prev { background: #EDF2F7; color: #718096; padding: 16px; border-radius: 15px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; width: 30%; margin-right: 10px; }
+
+        /* STEP 1: 인트로 */
+        .main-title-card { width: 100%; background: linear-gradient(135deg, #B39DDB 0%, #9575CD 100%); padding: 35px 20px; border-radius: 20px; color: white; margin-bottom: 20px; box-sizing: border-box; text-align: center; box-shadow: 0 4px 10px rgba(149,117,205,0.3); }
+        .intro-summary { background: var(--lavender-light); padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 2px solid var(--purple-pale); font-size: 0.92rem; line-height: 1.6; }
+        .intro-topic { background: var(--pink-soft); padding: 18px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #F8BBD0; }
+
+        /* 학습 카드 스타일 */
+        .sentence-box { background: var(--lavender-light); padding: 20px; border-radius: 20px; font-size: 1.1rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 15px; border: 2px solid var(--purple-pale); text-align: center; cursor: pointer; line-height: 1.5; }
+        .kor-box { background: #FFF5F7; padding: 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; color: #D81B60; margin-bottom: 15px; border: 2px solid #F8BBD0; text-align: center; line-height: 1.6; }
+        
+        /* 단어 그리드 */
+        .voca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .voca-item { background: #fff; padding: 10px; border-radius: 10px; font-size: 0.82rem; border: 1px solid var(--purple-pale); cursor: pointer; text-align: center; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .voca-item.revealed { background: var(--purple-main); color: white; }
+        
+        /* STEP 3 전용: 빈칸 스타일 */
+        .blank-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; padding: 10px; background: #fdfdfd; border-radius: 15px; }
+        .word-blank { border-bottom: 2px solid var(--purple-main); min-width: 35px; text-align: center; font-size: 1rem; color: transparent; cursor: pointer; padding: 0 2px; }
+        .word-blank.revealed { color: var(--purple-dark); border-bottom-color: transparent; font-weight: bold; }
+
+        .btn-check { background: #f0f0f0; padding: 12px; border-radius: 12px; border: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; width: 100%; font-size: 0.9rem; }
+        .trans-content { display: none; padding: 15px; background: #fafafa; border-radius: 15px; border-left: 5px solid var(--purple-main); font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px; }
+        .nav-btns-fixed { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; margin-top: auto; }
+    </style>
+</head>
+<body>
+<div class="phone-container">
+    <div class="header" id="header-title">English Master #36</div>
+    <div id="display-area"></div>
+    <div id="nav-area" class="nav-btns-fixed hidden">
+        <button class="btn-prev" onclick="prevSentence()">PREV</button>
+        <button class="btn-next" onclick="nextSentence()" id="main-next-btn">NEXT</button>
+    </div>
+</div>
+
+<script>
+    const fullData = [
+        { 
+            en: "Aristotle explains that the Good for human beings consists in eudaimoniā (a Greek word combining eu meaning ”good“ with daimon meaning ”spirit,” and most often translated as ”happiness“).", 
+            ko: "아리스토텔레스는 인간을 위한 '선'은 에우다이모니아(좋은을 뜻하는 eu와 정신을 뜻하는 daimon을 결합하여, 가장 흔히 '행복'으로 번역되는 그리스어 단어)에 있다고 설명한다.", 
+            voca: ["explains:설명한다", "the Good:선(善)", "human beings:인간", "consists in:~에 있다, ~로 구성되다", "Greek word:그리스어 단어", "combining:결합하는", "meaning:뜻하는, 의미하는", "spirit:정신", "translated:번역되는", "happiness:행복"] 
+        },
+        { 
+            en: "Whereas he had argued in a purely formal way that the Good was that to which we all aim, he now gives a more substantive answer: that this universal human goal is happiness.", 
+            ko: "그가 이전에는 선이란 우리 모두가 목적으로 삼는 것이라고 순전히 형식적인 방식으로 주장했던 반면, 이제는 더 실질적인 답변을 내놓는다. 즉, 이 보편적인 인간의 목표는 행복이라는 것이다.", 
+            voca: ["Whereas:~한 반면에", "argued:주장했다", "purely:순전히", "formal:형식적인", "aim:목적으로 삼다, 겨냥하다", "gives:내놓는다, 주다", "substantive:실질적인, 명사의", "universal:보편적인", "human goal:인간의 목표", "happiness:행복"] 
+        },
+        { 
+            en: "However, he is quick to point out that this conclusion is still somewhat formal since different people have different views about what happiness is.", 
+            ko: "하지만, 그는 사람마다 행복이 무엇인지에 대해 서로 다른 견해를 가지고 있기 때문에 이 결론이 여전히 다소 형식적이라는 점을 신속하게 지적한다.", 
+            voca: ["However:하지만, 그러나", "is quick to:신속하게 ~하다", "point out:지적하다", "conclusion:결론", "still:여전히", "somewhat:다소, 어느 정도", "since:~이기 때문에", "different:서로 다른", "views:견해, 관점", "what happiness is:행복이 무엇인지"] 
+        },
+        { 
+            en: "Some people say it is worldly enjoyment while others say it is eternal salvation.", 
+            ko: "어떤 사람들은 그것이 세속적인 즐거움이라고 말하는 반면, 다른 사람들은 그것이 영원한 구원이라고 말한다.", 
+            voca: ["Some people:어떤 사람들", "say:말하다", "it:그것(행복)은", "worldly:세속적인", "enjoyment:즐거움", "while:~인 반면에", "others:다른 사람들", "eternal:영원한", "salvation:구원", "🍌"] 
+        },
+        { 
+            en: "Aristotle’s theory will turn out to be ”naturalistic“ in that it does not depend on any theological or metaphysical knowledge.", 
+            ko: "아리스토텔레스의 이론은 그것이 어떤 신학적이나 형이상학적인 지식에도 의존하지 않는다는 점에서 '자연주의적'인 것으로 드러날 것이다.", 
+            voca: ["theory:이론", "turn out to be:~인 것으로 드러나다", "naturalistic:자연주의적인", "in that:~라는 점에서", "does not depend on:~에 의존하지 않는다", "any:어떤, 조금의", "theological:신학적인", "metaphysical:형이상학적인", "knowledge:지식", "🍌"] 
+        },
+        { 
+            en: "It does not depend on knowledge of God or of metaphysical and universal moral norms.", 
+            ko: "그것은 신에 대한 지식이나 형이상학적이고 보편적인 도덕 규범에 대한 지식에 의존하지 않는다.", 
+            voca: ["depend on:~에 의존하다", "knowledge:지식", "God:신", "or:또는", "metaphysical:형이상학적인", "universal:보편적인", "moral norms:도덕 규범", "🍌", "🍌", "🍌"] 
+        },
+        { 
+            en: "It depends only on knowledge of human nature and other worldly and social realities.", 
+            ko: "그것은 오직 인간 본성과 다른 세속적이고 사회적인 현실에 대한 지식에만 의존한다.", 
+            voca: ["depends on:~에 의존하다", "only:오직", "knowledge:지식", "human nature:인간 본성", "other:다른", "worldly:세속적인", "social:사회적인", "realities:현실들", "🍌", "🍌"] 
+        },
+        { 
+            en: "For him it is the study of human nature and worldly existence that will disclose the relevant meaning of the notion of eudaimoniā.", 
+            ko: "그에게 있어서 에우다이모니아라는 개념의 적절한 의미를 드러내 줄 것은 바로 인간 본성과 세속적 존재에 대한 연구이다.", 
+            voca: ["study:연구, 공부", "human nature:인간 본성", "existence:존재", "disclose:드러내다, 밝히다", "relevant:적절한, 관련 있는", "meaning:의미", "notion:개념", "eudaimonia:에우다이모니아", "For him:그에게 있어서", "🍌"] 
+        }
+    ];
+
+    let currentMode = 'INTRO';
+    let currentIdx = 0;
+    const synth = window.speechSynthesis;
+
+    function render() {
+        const area = document.getElementById('display-area');
+        const nav = document.getElementById('nav-area');
+        const header = document.getElementById('header-title');
+        area.innerHTML = '';
+
+        if (currentMode === 'INTRO') {
+            header.innerText = "English Master #36";
+            nav.classList.add('hidden');
+            area.innerHTML = `
+                <div class="main-title-card"><h1>Aristotle's Eudaimonia<br>and Human Nature</h1><p>The Substantive Meaning of Happiness</p></div>
+                <div class="intro-summary">
+                    <h3>📋 지문 요약</h3>
+                    <p><b>[서론]</b> 아리스토텔레스는 인간이 추구하는 최고 권위의 '선(Good)'은 그리스어인 '에우다이모니아(eudaimonia)', 즉 '행복'에 있다고 규정했다. 과거에는 이를 모든 이가 지향하는 것이라는 껍데기뿐인 형식으로만 논했으나, 이제는 그 종착지가 '행복'이라는 실질적인 해답을 제시한 것이다.</p>
+                    <p><b>[본론]</b> 다만 행복의 명확한 정의는 사람마다 세속적인 즐거움으로 보기도 하고 영원한 종교적 구원으로 보기도 하기에 여전히 다소 추상적이다. 주목할 점은 아리스토텔레스의 이 학설이 신의 존재나 초자연적인 세계를 끌어들이는 신학적·형이상학적 도덕 규범에 전혀 의존하지 않는다는 사실이다.</p>
+                    <p><b>[결론]</b> 그의 행복론은 오로지 인간 본성(Human Nature)에 대한 객관적인 탐구와 우리가 살아가는 세속적·사회적 현실에만 기반을 두는 '자연주의적' 성격을 띤다. 즉, 행복의 참된 본질은 신비주의가 아니라 인간의 내면과 삶의 실재를 깊이 연구함으로써 비로소 온전히 밝혀질 수 있다.</p>
+                </div>
+                <div class="intro-topic">
+                    <span class="topic-label">💡 Topic Sentence</span>
+                    <p style="font-size:0.85rem; font-weight:600; margin-bottom:5px;">Aristotle's theory of eudaimonia provides a substantive and naturalistic approach to happiness, grounded purely in the study of human nature and worldly realities rather than theological knowledge.</p>
+                    <p style="font-size:0.75rem; color:#666; margin:0;">(아리스토텔레스의 에우다이모니아 이론은 행복에 대한 실질적이고 자연주의적인 접근을 제공하며, 신학적 지식보다는 오로지 인간 본성과 세속적 현실에 대한 연구에 기반을 둔다.)</p>
+                </div>
+                <button class="btn-next" onclick="startStep(2)">STEP 2: 문장 학습 시작 ▶</button>
+                <button class="btn-next" style="margin-top:10px; background:#9C27B0;" onclick="startStep(3)">STEP 3: 영작 연습 시작 ▶</button>
+            `;
+        } else if (currentMode === 'STEP2') {
+            header.innerText = `STEP 2. 문장 학습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+            
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="sentence-box" onclick="playTTS('${item.en.replace(/'/g, "\\'")}')">${item.en}</div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">해석 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.ko}</div>
+            `;
+            fillVoca(item.voca, '🍌', "#FFD600");
+        } else if (currentMode === 'STEP3') {
+            header.innerText = `STEP 3. 영작 연습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="kor-box">${item.ko}</div>
+                <div class="blank-area" id="blank-area"></div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">정답 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.en}</div>
+            `;
+            fillBlanks(item.en);
+            fillVoca(item.voca, '🍇', "#9C27B0");
+        }
+    }
+
+    function fillVoca(vocaList, emoji, emojiColor) {
+        const container = document.getElementById('voca-area');
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'voca-item';
+            if (vocaList[i] && vocaList[i] !== '🍌' && vocaList[i] !== '🍇') {
+                const [eng, kor] = vocaList[i].split(':');
+                div.innerText = eng;
+                div.onclick = function() {
+                    this.classList.toggle('revealed');
+                    this.innerText = this.classList.contains('revealed') ? kor : eng;
+                };
+            } else {
+                div.innerText = emoji;
+                div.style.color = emojiColor;
+                div.style.cursor = "default";
+            }
+            container.appendChild(div);
+        }
+    }
+
+    function fillBlanks(s) {
+        const c = document.getElementById('blank-area');
+        const prepositions = ["in", "on", "at", "by", "for", "from", "of", "with", "to", "into", "onto", "upon", "about", "above", "across", "after", "against", "along", "among", "around", "as", "before", "behind", "below", "beneath", "beside", "between", "beyond", "during", "except", "inside", "near", "off", "outside", "over", "past", "since", "through", "throughout", "under", "underneath", "until", "up", "within", "without"];
+
+        s.split(' ').forEach(w => {
+            const sp = document.createElement('span');
+            sp.className = 'word-blank';
+            sp.innerText = w;
+            
+            const pureWord = w.toLowerCase().replace(/[.,'":;?!()“”]/g, "");
+            
+            if (prepositions.includes(pureWord)) {
+                sp.classList.add('revealed');
+                sp.style.borderBottomColor = 'transparent'; 
+            }
+
+            sp.onclick = function() {
+                this.classList.add('revealed');
+                this.style.borderBottomColor = 'transparent';
+                playTTS(w.replace(/[.,'"]/g, ""));
+            };
+            c.appendChild(sp);
+        });
+    }
+
+    function startStep(step) {
+        currentMode = 'STEP' + step;
+        currentIdx = 0;
+        render();
+    }
+
+    function nextSentence() {
+        if (currentIdx < fullData.length - 1) {
+            currentIdx++;
+            render();
+        } else {
+            currentMode = 'INTRO';
+            render();
+        }
+    }
+
+    function prevSentence() {
+        if (currentIdx > 0) {
+            currentIdx--;
+            render();
+        }
+    }
+
+    function playTTS(text) {
+        synth.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        synth.speak(utterance);
+    }
+
+    function toggleView(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    window.onload = render;
+</script>
+</body>
+</html>

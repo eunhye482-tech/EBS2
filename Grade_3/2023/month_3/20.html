@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English Master #20 - Official Version</title>
+    <style>
+        :root { 
+            --lavender-light: #F3E5F5; 
+            --purple-pale: #E1BEE7; 
+            --purple-main: #9575CD; 
+            --purple-dark: #673AB7;
+            --pink-soft: #FFF0F6;
+        }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; background: #F8F7FA; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
+        .phone-container { width: 100%; max-width: 450px; height: 100%; background: white; display: flex; flex-direction: column; position: relative; }
+        .header { padding: 12px; text-align: center; font-weight: bold; color: var(--purple-dark); border-bottom: 1px solid #eee; background: white; font-size: 0.95rem; }
+        #display-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        /* 공통 스타일 */
+        .hidden { display: none !important; }
+        .btn-next { background: var(--purple-main); color: white; padding: 16px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: auto; }
+        .btn-prev { background: #EDF2F7; color: #718096; padding: 16px; border-radius: 15px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; width: 30%; margin-right: 10px; }
+
+        /* STEP 1: 인트로 */
+        .main-title-card { width: 100%; background: linear-gradient(135deg, #B39DDB 0%, #9575CD 100%); padding: 35px 20px; border-radius: 20px; color: white; margin-bottom: 20px; box-sizing: border-box; text-align: center; box-shadow: 0 4px 10px rgba(149,117,205,0.3); }
+        .intro-summary { background: var(--lavender-light); padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 2px solid var(--purple-pale); font-size: 0.92rem; line-height: 1.6; }
+        .intro-topic { background: var(--pink-soft); padding: 18px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #F8BBD0; }
+
+        /* 학습 카드 스타일 */
+        .sentence-box { background: var(--lavender-light); padding: 20px; border-radius: 20px; font-size: 1.1rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 15px; border: 2px solid var(--purple-pale); text-align: center; cursor: pointer; line-height: 1.5; }
+        .kor-box { background: #FFF5F7; padding: 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; color: #D81B60; margin-bottom: 15px; border: 2px solid #F8BBD0; text-align: center; line-height: 1.6; }
+        
+        /* 단어 그리드 */
+        .voca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .voca-item { background: #fff; padding: 10px; border-radius: 10px; font-size: 0.82rem; border: 1px solid var(--purple-pale); cursor: pointer; text-align: center; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .voca-item.revealed { background: var(--purple-main); color: white; }
+        
+        /* STEP 3 전용: 빈칸 스타일 */
+        .blank-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; padding: 10px; background: #fdfdfd; border-radius: 15px; }
+        .word-blank { border-bottom: 2px solid var(--purple-main); min-width: 35px; text-align: center; font-size: 1rem; color: transparent; cursor: pointer; padding: 0 2px; }
+        .word-blank.revealed { color: var(--purple-dark); border-bottom-color: transparent; font-weight: bold; }
+
+        .btn-check { background: #f0f0f0; padding: 12px; border-radius: 12px; border: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; width: 100%; font-size: 0.9rem; }
+        .trans-content { display: none; padding: 15px; background: #fafafa; border-radius: 15px; border-left: 5px solid var(--purple-main); font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px; }
+        .nav-btns-fixed { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; margin-top: auto; }
+    </style>
+</head>
+<body>
+<div class="phone-container">
+    <div class="header" id="header-title">English Master #20</div>
+    <div id="display-area"></div>
+    <div id="nav-area" class="nav-btns-fixed hidden">
+        <button class="btn-prev" onclick="prevSentence()">PREV</button>
+        <button class="btn-next" onclick="nextSentence()" id="main-next-btn">NEXT</button>
+    </div>
+</div>
+
+<script>
+    const fullData = [
+        { 
+            en: "There is no denying that engaging in argument carries certain significant risks.", 
+            ko: "논쟁에 참여하는 것이 어떤 중대한 위험을 수반한다는 것은 부인할 수 없다.", 
+            voca: ["There is no -ing:~은 부인할 수 없다", "denying:부인하는 것", "engaging in:~에 참여하는 것", "argument:논쟁", "carries:수반하다, 지니다", "certain:어떤, 확실한", "significant:중대한, 의미 있는", "risks:위험들", "🍌", "🍌"] 
+        },
+        { 
+            en: "When we argue, we exchange and examine reasons with a view toward believing what our best reasons say we should believe; sometimes we discover that our current reasons fall short, and that our beliefs are not well supported after all.", 
+            ko: "우리가 논쟁할 때, 우리의 가장 좋은 이유가 우리가 믿어야 한다고 말하는 것을 믿으려는 의도를 가지고 이유를 교환하고 검토하는데, 때로는 우리의 현재 이유가 부족하다는 것과 우리의 믿음이 결국 잘 뒷받침되지 않는다는 것을 발견한다.", 
+            voca: ["exchange:교환하다", "examine:검토하다", "reasons:이유, 근거", "with a view toward:~하려는 의도로", "current:현재의", "fall short:부족하다, 미치지 못하다", "beliefs:믿음, 신념", "supported:뒷받침되는", "after all:결국", "discover:발견하다"] 
+        },
+        { 
+            en: "Or sometimes we discover that a belief that we had dismissed as silly or obviously false in fact enjoys the support of highly compelling reasons.", 
+            ko: "또는 때로는 우리가 어리석거나 명백히 거짓이라고 치부했던 믿음이 사실은 매우 설득력 있는 이유의 뒷받침을 누리고 있다는 것을 발견한다.", 
+            voca: ["dismissed:치부했다, 일축했다", "as silly:어리석은 것으로", "obviously:명백히", "false:거짓인", "in fact:사실은", "enjoys:누리다", "support:뒷받침, 지지", "highly:매우", "compelling:설득력 있는", "reasons:이유들"] 
+        },
+        { 
+            en: "On other occasions, we discover that the reasons offered by those with whom we disagree measure up toe‑to‑toe with our own reasons.", 
+            ko: "다른 경우에는, 우리와 의견이 다른 사람들이 제시한 이유가 우리 자신의 이유와 정면으로 맞선다는(우열을 가릴 수 없다는) 것을 발견한다.", 
+            voca: ["occasions:경우, 기회", "offered:제시된, 제공된", "disagree:의견이 다르다", "measure up:부합하다, 달하다", "toe-to-toe:정면으로 맞서는", "with our own:우리 자신의 것과", "discover:발견하다", "reasons:이유들", "🍌", "🍌"] 
+        },
+        { 
+            en: "In any of these situations, an adjustment in our belief is called for; we must change what we believe, or revise it, or replace it, or suspend belief altogether.", 
+            ko: "이러한 상황 중 어느 것에서든, 우리의 믿음에 대한 조정이 요구되며, 우리는 우리가 믿는 것을 바꾸거나, 수정하거나, 대체하거나, 믿음을 완전히 유보해야 한다.", 
+            voca: ["situations:상황들", "adjustment:조정", "called for:요구되는", "must:해야 한다", "change:바꾸다", "revise:수정하다", "replace:대체하다", "suspend:유보하다, 중단하다", "altogether:완전히", "belief:믿음"] 
+        }
+    ];
+
+    let currentMode = 'INTRO';
+    let currentIdx = 0;
+    const synth = window.speechSynthesis;
+
+    function render() {
+        const area = document.getElementById('display-area');
+        const nav = document.getElementById('nav-area');
+        const header = document.getElementById('header-title');
+        area.innerHTML = '';
+
+        if (currentMode === 'INTRO') {
+            header.innerText = "English Master #20";
+            nav.classList.add('hidden');
+            area.innerHTML = `
+                <div class="main-title-card"><h1>The Risks and Rewards<br>of Argument</h1><p>2023년 3월 고3 모의고사 20번</p></div>
+                <div class="intro-summary">
+                    <h3>📋 지문 요약</h3>
+                    <p><b>[서론]</b> 논쟁에 적극적으로 참여하는 행위는 본인이 기존에 고수하던 생각이나 신념 체계가 흔들릴 수 있다는 점에서 분명 일정 수준의 중대한 위험성을 내포하고 있다.</p>
+                    <p><b>[본론]</b> 논쟁 중 타인과 근거를 교환하다 보면, 자신의 논리적 기반이 턱없이 부족함을 깨닫거나, 반대로 과거에 어리석다고 무시했던 상대방의 주장이 매우 강력한 설득력을 지니고 있음을 깨닫게 된다. 때로는 나와 다른 의견을 가진 이들의 논리가 내 것과 팽팽하게 맞서 우열을 가리기 힘든 순간을 마주하기도 한다.</p>
+                    <p><b>[결론]</b> 이러한 직면의 순간이 오면 기존 신념에 대한 전면적인 '조정'이 필수적으로 요구된다. 우리는 자신의 주장을 유연하게 바꾸거나, 수정하거나, 다른 지식으로 대체하거나, 혹은 판단을 완전히 유보하는 열린 자세를 가져야 한다.</p>
+                </div>
+                <div class="intro-topic">
+                    <span class="topic-label">💡 Topic Sentence</span>
+                    <p style="font-size:0.85rem; font-weight:600; margin-bottom:5px;">Engaging in arguments forces us to encounter compelling opposing views, which logically requires us to adjust, revise, or suspend our own beliefs.</p>
+                    <p style="font-size:0.75rem; color:#666; margin:0;">(논쟁에 참여하는 것은 우리로 하여금 설득력 있는 상대방의 견해를 마주하게 만들며, 이는 논리적으로 우리의 믿음을 조정, 수정, 혹은 전적으로 유보할 것을 요구한다.)</p>
+                </div>
+                <button class="btn-next" onclick="startStep(2)">STEP 2: 문장 학습 시작 ▶</button>
+                <button class="btn-next" style="margin-top:10px; background:#9C27B0;" onclick="startStep(3)">STEP 3: 영작 연습 시작 ▶</button>
+            `;
+        } else if (currentMode === 'STEP2') {
+            header.innerText = `STEP 2. 문장 학습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+            
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="sentence-box" onclick="playTTS('${item.en.replace(/'/g, "\\'")}')">${item.en}</div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">해석 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.ko}</div>
+            `;
+            fillVoca(item.voca, '🍌', "#FFD600");
+        } else if (currentMode === 'STEP3') {
+            header.innerText = `STEP 3. 영작 연습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="kor-box">${item.ko}</div>
+                <div class="blank-area" id="blank-area"></div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">정답 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.en}</div>
+            `;
+            fillBlanks(item.en);
+            fillVoca(item.voca, '🍇', "#9C27B0");
+        }
+    }
+
+    function fillVoca(vocaList, emoji, emojiColor) {
+        const container = document.getElementById('voca-area');
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'voca-item';
+            if (vocaList[i] && vocaList[i] !== '🍌' && vocaList[i] !== '🍇') {
+                const [eng, kor] = vocaList[i].split(':');
+                div.innerText = eng;
+                div.onclick = function() {
+                    this.classList.toggle('revealed');
+                    this.innerText = this.classList.contains('revealed') ? kor : eng;
+                };
+            } else {
+                div.innerText = emoji;
+                div.style.color = emojiColor;
+                div.style.cursor = "default";
+            }
+            container.appendChild(div);
+        }
+    }
+
+    function fillBlanks(s) {
+        const c = document.getElementById('blank-area');
+        const prepositions = ["in", "on", "at", "by", "for", "from", "of", "with", "to", "into", "onto", "upon", "about", "above", "across", "after", "against", "along", "among", "around", "as", "before", "behind", "below", "beneath", "beside", "between", "beyond", "during", "except", "inside", "near", "off", "outside", "over", "past", "since", "through", "throughout", "under", "underneath", "until", "up", "within", "without"];
+
+        s.split(' ').forEach(w => {
+            const sp = document.createElement('span');
+            sp.className = 'word-blank';
+            sp.innerText = w;
+            
+            const pureWord = w.toLowerCase().replace(/[.,'":;?!()“”]/g, "");
+            
+            if (prepositions.includes(pureWord)) {
+                sp.classList.add('revealed');
+                sp.style.borderBottomColor = 'transparent'; 
+            }
+
+            sp.onclick = function() {
+                this.classList.add('revealed');
+                this.style.borderBottomColor = 'transparent';
+                playTTS(w.replace(/[.,'"]/g, ""));
+            };
+            c.appendChild(sp);
+        });
+    }
+
+    function startStep(step) {
+        currentMode = 'STEP' + step;
+        currentIdx = 0;
+        render();
+    }
+
+    function nextSentence() {
+        if (currentIdx < fullData.length - 1) {
+            currentIdx++;
+            render();
+        } else {
+            currentMode = 'INTRO';
+            render();
+        }
+    }
+
+    function prevSentence() {
+        if (currentIdx > 0) {
+            currentIdx--;
+            render();
+        }
+    }
+
+    function playTTS(text) {
+        synth.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        synth.speak(utterance);
+    }
+
+    function toggleView(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    window.onload = render;
+</script>
+</body>
+</html>

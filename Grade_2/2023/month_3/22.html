@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>English Master #22 - 25년 3월 고2</title>
+    <style>
+        :root { 
+            --lavender-light: #F3E5F5; 
+            --purple-pale: #E1BEE7; 
+            --purple-main: #9575CD; 
+            --purple-dark: #673AB7;
+            --pink-soft: #FFF0F6;
+        }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; background: #F8F7FA; display: flex; justify-content: center; min-height: 100vh; }
+        .phone-container { width: 100%; max-width: 450px; background: white; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
+        .header { padding: 12px; text-align: center; font-weight: bold; color: var(--purple-dark); border-bottom: 1px solid #eee; background: white; font-size: 0.95rem; position: sticky; top: 0; z-index: 10; }
+        #display-area { flex: 1; padding: 20px; display: flex; flex-direction: column; }
+        
+        .hidden { display: none !important; }
+        
+        .btn-intro-step { background: var(--purple-main); color: white; padding: 16px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; }
+
+        .main-title-card { width: 100%; background: linear-gradient(135deg, #B39DDB 0%, #9575CD 100%); padding: 35px 20px; border-radius: 20px; color: white; margin-bottom: 20px; box-sizing: border-box; text-align: center; }
+        .intro-summary { background: var(--lavender-light); padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 2px solid var(--purple-pale); font-size: 0.92rem; line-height: 1.6; color: #444; }
+        .intro-topic { background: var(--pink-soft); padding: 18px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #F8BBD0; text-align: center; }
+        .topic-kor { font-weight: bold; color: #D81B60; display: block; margin-bottom: 5px; }
+        .topic-eng { font-size: 0.85rem; color: #888; font-style: italic; }
+
+        .sentence-box { background: var(--lavender-light); padding: 20px; border-radius: 20px; font-size: 1.1rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 15px; border: 2px solid var(--purple-pale); text-align: center; cursor: pointer; line-height: 1.5; }
+        .kor-box { background: #FFF5F7; padding: 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; color: #D81B60; margin-bottom: 15px; border: 2px solid #F8BBD0; text-align: center; line-height: 1.6; }
+        
+        .voca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .voca-item { background: #fff; padding: 10px; border-radius: 10px; font-size: 0.82rem; border: 1px solid var(--purple-pale); cursor: pointer; text-align: center; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: #333; }
+        .voca-item.revealed { background: var(--purple-main); color: white; }
+        
+        .blank-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; padding: 10px; background: #fdfdfd; border-radius: 15px; }
+        .word-blank { border-bottom: 2px solid var(--purple-main); min-width: 35px; text-align: center; font-size: 1rem; color: transparent; cursor: pointer; padding: 0 2px; }
+        .word-blank.revealed { color: var(--purple-dark); border-bottom-color: transparent; font-weight: bold; }
+
+        .btn-check { background: #f0f0f0; padding: 12px; border-radius: 12px; border: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; width: 100%; font-size: 0.9rem; color: #555; }
+        .trans-content { display: none; padding: 15px; background: #fafafa; border-radius: 15px; border-left: 5px solid var(--purple-main); font-size: 0.9rem; margin-bottom: 10px; color: #444; }
+        
+        .nav-btns-fixed { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; margin-top: auto; position: sticky; bottom: 0; gap: 10px; align-items: center; }
+        .btn-prev { background: #EDF2F7; color: #718096; border-radius: 15px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; height: 55px; flex: 1; display: flex; align-items: center; justify-content: center; }
+        .btn-next { background: var(--purple-main); color: white; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; height: 55px; flex: 1.5; display: flex; align-items: center; justify-content: center; margin-top: 0; }
+    </style>
+</head>
+<body>
+<div class="phone-container">
+    <div class="header" id="header-title">English Master #22</div>
+    <div id="display-area"></div>
+    <div id="nav-area" class="nav-btns-fixed hidden">
+        <button class="btn-prev" onclick="prevSentence()">PREV</button>
+        <button class="btn-next" onclick="nextSentence()" id="main-next-btn">NEXT</button>
+    </div>
+</div>
+
+<script>
+    const prepositions = ["to", "at", "with", "in", "of", "on", "into", "through", "for"];
+    const fullData = [
+        { en: "Brands that fail to grow and develop lose their relevance.", ko: "성장하고 발전하지 못하는 브랜드는 그들의 적합성(relevance)을 잃게 됩니다.", voca: ["Brands:브랜드들", "fail to:~하지 못하다", "develop:발전하다", "lose:잃다", "relevance:적합성/관련성", "grow:성장하다", "🍎", "🍎", "🍎", "🍎"] },
+        { en: "Think about the person you knew who was once on the fast track at your company, who is either no longer with the firm or, worse yet, appears to have hit a plateau in his or her career.", ko: "한때 회사의 승진 가도(fast track)에 있었지만, 더 이상 회사에 없거나 더 심하게는 경력의 정체기에 접어든 것처럼 보이는 지인을 떠올려 보십시오.", voca: ["fast track:승진 가도", "firm:회사", "plateau:정체기/고원", "career:경력", "no longer:더 이상 ~않다", "appears to:~처럼 보이다", "🍎", "🍎", "🍎", "🍎"] },
+        { en: "Assuming he or she did not make an ambitious move, more often than not, this individual is a victim of having failed to stay relevant and embrace the advances in his or her industry.", ko: "야심 찬 이직을 하지 않았다고 가정할 때, 대개 이 사람은 적합성을 유지하고 업계의 발전을 수용하는 데 실패한 희생자입니다.", voca: ["Assuming:가정할 때", "ambitious:야심 찬", "victim:희생자", "embrace:수용하다/껴안다", "advances:발전/진보", "industry:업계", "🍎", "🍎", "🍎", "🍎"] },
+        { en: "Think about the impact personal computing technology had on the first wave of executive leadership exposed to the technology.", ko: "개인용 컴퓨터 기술이 그 기술에 노출된 첫 번째 세대의 경영진 리더십에 미친 영향을 생각해 보십시오.", voca: ["impact:영향", "personal computing:개인용 컴퓨터", "executive:경영진/임원", "exposed to:~에 노출된", "first wave:첫 번째 물결(세대)", "🍎", "🍎", "🍎", "🍎", "🍎"] },
+        { en: "Those who embraced the technology were able to integrate it into their work styles and excel.", ko: "기술을 수용했던 사람들은 그것을 자신들의 업무 방식에 통합하여 탁월한 성과를 낼 수 있었습니다.", voca: ["integrated:통합했다", "work styles:업무 방식", "excel:탁월하다/뛰어나다", "Those who:~한 사람들", "🍎", "🍎", "🍎", "🍎", "🍎", "🍎"] },
+        { en: "Those who were resistant many times found few opportunities to advance their careers and in many cases were ultimately let go through early retirement for failure to stay relevant and update their skills.", ko: "저항했던 사람들은 경력을 발전시킬 기회를 거의 찾지 못했고, 많은 경우 적합성을 유지하고 기술을 업데이트하는 데 실패하여 결국 조기 퇴직을 통해 해고되었습니다.", voca: ["resistant:저항하는", "opportunities:기회", "ultimately:궁극적으로/결국", "let go:해고되다", "early retirement:조기 퇴직", "update:업데이트하다", "🍎", "🍎", "🍎", "🍎"] }
+    ];
+
+    let currentMode = 'INTRO';
+    let currentIdx = 0;
+    const synth = window.speechSynthesis;
+
+    function render() {
+        const area = document.getElementById('display-area');
+        const nav = document.getElementById('nav-area');
+        const header = document.getElementById('header-title');
+        area.innerHTML = '';
+
+        if (currentMode === 'INTRO') {
+            header.innerText = "English Master #22";
+            nav.classList.add('hidden');
+            area.innerHTML = `
+                <div class="main-title-card"><h1>Stay Relevant<br>or Fade Away</h1><p>2025년 3월 고2 22번</p></div>
+                
+                <div class="intro-summary">
+                    <p>• <b>📍 서론:</b> 변화와 성장에 실패한 브랜드나 개인은 사회적/업무적 적합성을 상실함.</p>
+                    <p>• <b>📍 본론:</b> 승진 가도를 달리던 사람들도 업계의 발전을 수용하지 못하면 경력 정체기에 빠지거나 도태됨.</p>
+                    <p>• <b>📍 결론:</b> 새로운 기술(예: PC)을 업무에 통합하고 기술을 끊임없이 업데이트하는 태도가 경력 유지의 핵심임.</p>
+                </div>
+                <div class="intro-topic">
+                    <span class="topic-kor">주제: 변화를 수용하고 기술을 업데이트하여 업계의 적합성을 유지할 필요성</span>
+                    <span class="topic-eng">Topic: The necessity of maintaining industry relevance by embracing change and updating skills</span>
+                </div>
+                <button class="btn-intro-step" onclick="startStep(2)">STEP 2: 문장 학습 시작 ▶</button>
+                <button class="btn-intro-step" style="background:#9C27B0;" onclick="startStep(3)">STEP 3: 영작 연습 시작 ▶</button>
+            `;
+        } else {
+            const stepNum = currentMode === 'STEP2' ? 2 : 3;
+            header.innerText = `STEP ${stepNum} (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+            
+            const item = fullData[currentIdx];
+            if (currentMode === 'STEP2') {
+                area.innerHTML = `<div class="sentence-box" onclick="playTTS('${item.en.replace(/'/g, "\\'")}')">${item.en}</div><div class="voca-grid" id="voca-area"></div><button class="btn-check" onclick="toggleView('trans-area')">해석 확인</button><div id="trans-area" class="trans-content">${item.ko}</div>`;
+                fillVoca(item.voca, '🍎', "#FF3B30");
+            } else {
+                area.innerHTML = `<div class="kor-box">${item.ko}</div><div class="blank-area" id="blank-area"></div><div class="voca-grid" id="voca-area"></div><button class="btn-check" onclick="toggleView('trans-area')">정답 확인</button><div id="trans-area" class="trans-content">${item.en}</div>`;
+                fillBlanks(item.en);
+                fillVoca(item.voca, '🍇', "#9C27B0");
+            }
+        }
+    }
+
+    function fillVoca(vList, emo, col) {
+        const area = document.getElementById('voca-area');
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'voca-item';
+            if (vList[i] && vList[i].includes(':')) {
+                const [en, ko] = vList[i].split(':');
+                div.innerText = en;
+                div.onclick = function() { this.classList.toggle('revealed'); this.innerText = this.classList.contains('revealed') ? ko : en; };
+            } else {
+                div.innerText = emo; div.style.color = col; div.style.cursor = "default";
+            }
+            area.appendChild(div);
+        }
+    }
+
+    function fillBlanks(s) {
+        const area = document.getElementById('blank-area');
+        s.split(' ').forEach(w => {
+            const span = document.createElement('span');
+            const cw = w.replace(/[.,'?!]/g, "").toLowerCase();
+            if(prepositions.includes(cw)) { span.innerText = w; span.style.margin="0 4px"; span.style.fontWeight="bold"; }
+            else { span.className = 'word-blank'; span.innerText = w; span.onclick = function() { this.classList.add('revealed'); playTTS(w.replace(/[.,'?!]/g, "")); }; }
+            area.appendChild(span);
+        });
+    }
+
+    function startStep(s) { currentMode = 'STEP' + s; currentIdx = 0; render(); }
+    function nextSentence() { if (currentIdx < fullData.length - 1) { currentIdx++; render(); } else { currentMode = 'INTRO'; render(); } }
+    function prevSentence() { if (currentIdx > 0) { currentIdx--; render(); } else { currentMode = 'INTRO'; render(); } }
+    function playTTS(t) { synth.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; synth.speak(u); }
+    function toggleView(id) { const el = document.getElementById(id); el.style.display = (el.style.display === 'block') ? 'none' : 'block'; }
+    window.onload = render;
+</script>
+</body>
+</html>

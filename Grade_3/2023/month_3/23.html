@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English Master #23 - Official Version</title>
+    <style>
+        :root { 
+            --lavender-light: #F3E5F5; 
+            --purple-pale: #E1BEE7; 
+            --purple-main: #9575CD; 
+            --purple-dark: #673AB7;
+            --pink-soft: #FFF0F6;
+        }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; background: #F8F7FA; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
+        .phone-container { width: 100%; max-width: 450px; height: 100%; background: white; display: flex; flex-direction: column; position: relative; }
+        .header { padding: 12px; text-align: center; font-weight: bold; color: var(--purple-dark); border-bottom: 1px solid #eee; background: white; font-size: 0.95rem; }
+        #display-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        /* 공통 스타일 */
+        .hidden { display: none !important; }
+        .btn-next { background: var(--purple-main); color: white; padding: 16px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: auto; }
+        .btn-prev { background: #EDF2F7; color: #718096; padding: 16px; border-radius: 15px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; width: 30%; margin-right: 10px; }
+
+        /* STEP 1: 인트로 */
+        .main-title-card { width: 100%; background: linear-gradient(135deg, #B39DDB 0%, #9575CD 100%); padding: 35px 20px; border-radius: 20px; color: white; margin-bottom: 20px; box-sizing: border-box; text-align: center; box-shadow: 0 4px 10px rgba(149,117,205,0.3); }
+        .intro-summary { background: var(--lavender-light); padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 2px solid var(--purple-pale); font-size: 0.92rem; line-height: 1.6; }
+        .intro-topic { background: var(--pink-soft); padding: 18px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #F8BBD0; }
+
+        /* 학습 카드 스타일 */
+        .sentence-box { background: var(--lavender-light); padding: 20px; border-radius: 20px; font-size: 1.1rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 15px; border: 2px solid var(--purple-pale); text-align: center; cursor: pointer; line-height: 1.5; }
+        .kor-box { background: #FFF5F7; padding: 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; color: #D81B60; margin-bottom: 15px; border: 2px solid #F8BBD0; text-align: center; line-height: 1.6; }
+        
+        /* 단어 그리드 */
+        .voca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .voca-item { background: #fff; padding: 10px; border-radius: 10px; font-size: 0.82rem; border: 1px solid var(--purple-pale); cursor: pointer; text-align: center; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .voca-item.revealed { background: var(--purple-main); color: white; }
+        
+        /* STEP 3 전용: 빈칸 스타일 */
+        .blank-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; padding: 10px; background: #fdfdfd; border-radius: 15px; }
+        .word-blank { border-bottom: 2px solid var(--purple-main); min-width: 35px; text-align: center; font-size: 1rem; color: transparent; cursor: pointer; padding: 0 2px; }
+        .word-blank.revealed { color: var(--purple-dark); border-bottom-color: transparent; font-weight: bold; }
+
+        .btn-check { background: #f0f0f0; padding: 12px; border-radius: 12px; border: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; width: 100%; font-size: 0.9rem; }
+        .trans-content { display: none; padding: 15px; background: #fafafa; border-radius: 15px; border-left: 5px solid var(--purple-main); font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px; }
+        .nav-btns-fixed { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; margin-top: auto; }
+    </style>
+</head>
+<body>
+<div class="phone-container">
+    <div class="header" id="header-title">English Master #23</div>
+    <div id="display-area"></div>
+    <div id="nav-area" class="nav-btns-fixed hidden">
+        <button class="btn-prev" onclick="prevSentence()">PREV</button>
+        <button class="btn-next" onclick="nextSentence()" id="main-next-btn">NEXT</button>
+    </div>
+</div>
+
+<script>
+    const fullData = [
+        { 
+            en: "Whenever possible, we should take measures to re‑socialize the information we think about.", 
+            ko: "가능할 때마다, 우리는 우리가 생각하는 정보를 재사회화하기 위한 조치를 취해야 한다.", 
+            voca: ["Whenever:할 때마다", "possible:가능한", "take measures:조치를 취하다", "re-socialize:재사회화하다", "information:정보", "think about:~에 대해 생각하다", "🍌", "🍌", "🍌", "🍌"] 
+        },
+        { 
+            en: "The continual patter we carry on in our heads is in fact a kind of internalized conversation.", 
+            ko: "우리가 머릿속에서 계속하는 끊임없는 종알거림은 사실 일종의 내면화된 대화이다.", 
+            voca: ["continual:끊임없는", "patter:종알거림, 속사포 같은 말", "carry on:계속하다", "heads:머릿속", "in fact:사실", "a kind of:일종의", "internalized:내면화된", "conversation:대화", "🍌", "🍌"] 
+        },
+        { 
+            en: "Likewise, many of the written forms we encounter at school and at work—from exams and evaluations, to profiles and case studies, to essays and proposals—are really social exchanges (questions, stories, arguments) put on paper and addressed to some imagined listener or interlocutor.", 
+            ko: "마찬가지로, 시험과 평가부터 프로필과 사례 연구, 에세이와 제안서에 이르기까지 우리가 학교와 직장에서 접하는 많은 서면 형태들은 실제로는 종이에 적혀 상상 속의 청자나 대화 상대방에게 전달되는 사회적 교환(질문, 이야기, 논쟁)이다.", 
+            voca: ["Likewise:마찬가지로", "written forms:서면 형태들", "encounter:접하다, 마주치다", "evaluations:평가들", "proposals:제안서들", "exchanges:교환들", "arguments:논쟁들", "addressed to:~에게 전달되는", "imagined:상상 속의", "interlocutor:대화 상대방"] 
+        },
+        { 
+            en: "There are significant advantages to turning such interactions at a remove back into actual social encounters.", 
+            ko: "떨어져 있는 그러한 상호작용을 다시 실제적인 사회적 만남으로 바꾸는 것에는 상당한 이점이 있다.", 
+            voca: ["significant:상당한, 중대한", "advantages:이점들", "turning A into B:A를 B로 바꾸다", "interactions:상호작용들", "at a remove:떨어져 있는", "back:다시", "actual:실제적인", "social:사회적인", "encounters:만남들", "🍌"] 
+        },
+        { 
+            en: "Research demonstrates that the brain processes the “same” information differently, and often more effectively, when other human beings are involved—whether we’re imitating them, debating them, exchanging stories with them, synchronizing and cooperating with them, teaching or being taught by them.", 
+            ko: "연구는 다른 인간이 개입될 때—우리가 그들을 모방하든, 그들과 토론하든, 그들과 이야기를 교환하든, 그들과 동조하고 협력하든, 그들을 가르치거나 그들에 의해 배워지든(배우든) 간에—뇌가 '동일한' 정보를 다르게, 그리고 종종 더 효과적으로 처리한다는 것을 보여준다.", 
+            voca: ["demonstrates:보여주다, 증명하다", "processes:처리하다", "differently:다르게", "effectively:효과적으로", "involved:개입된, 포함된", "imitating:모방하는 것", "debating:토론하는 것", "synchronizing:동조하는 것", "cooperating:협력하는 것", "being taught:배워지는 것(배우는 것)"] 
+        },
+        { 
+            en: "We are inherently social creatures, and our thinking benefits from bringing other people into our train of thought.", 
+            ko: "우리는 본질적으로 사회적 생명체이며, 우리의 생각은 다른 사람들을 우리의 일련의 생각(생각의 흐름) 속으로 끌어들이는 것으로부터 이득을 얻는다.", 
+            voca: ["inherently:본질적으로", "social:사회적인", "creatures:생명체들", "thinking:생각, 사고", "benefits:이득을 얻다", "bringing:끌어들이는 것", "other people:다른 사람들", "into:~ 속으로", "train of thought:일련의 생각, 생각의 흐름", "🍌"] 
+        }
+    ];
+
+    let currentMode = 'INTRO';
+    let currentIdx = 0;
+    const synth = window.speechSynthesis;
+
+    function render() {
+        const area = document.getElementById('display-area');
+        const nav = document.getElementById('nav-area');
+        const header = document.getElementById('header-title');
+        area.innerHTML = '';
+
+        if (currentMode === 'INTRO') {
+            header.innerText = "English Master #23";
+            nav.classList.add('hidden');
+            area.innerHTML = `
+                <div class="main-title-card"><h1>The Re-socialization<br>of Information</h1><p>2023년 3월 고3 모의고사 23번</p></div>
+                <div class="intro-summary">
+                    <h3>📋 지문 요약</h3>
+                    <p><b>[서론]</b> 우리는 사고의 효율성을 높이기 위해서 머릿속으로 처리하는 내면의 정보를 가급적 타인과의 관계 속에서 다루는 '재사회화' 조치를 취해야 한다.</p>
+                    <p><b>[본론]</b> 인간이 혼자 머릿속으로 끊임없이 종알거리는 생각은 본질적으로 내면화된 대화의 일종이다. 마찬가지로 학교나 직장에서 쓰는 보고서, 에세이, 시험지 같은 서면 서식 역시 가상의 청자를 상대로 한 사회적 교환의 산물이다. 따라서 이렇게 간접적이고 고립된 형태의 상호작용을 실제 사람을 대면하는 사회적 만남으로 되돌릴 때 엄청난 이점이 생긴다.</p>
+                    <p><b>[결론]</b> 뇌 과학 연구에 따르면 타인과 모방, 토론, 협력, 교육 등의 방식으로 엮일 때 우리의 뇌는 동일한 정보라도 훨씬 더 효과적으로 처리한다. 인간은 천성적으로 사회적 동물이기 때문에, 다른 사람을 생각의 흐름 속에 동참시킬 때 인지적 기능이 극대화된다.</p>
+                </div>
+                <div class="intro-topic">
+                    <span class="topic-label">💡 Topic Sentence</span>
+                    <p style="font-size:0.85rem; font-weight:600; margin-bottom:5px;">Because humans are inherently social creatures, our brains process information much more effectively when we re-socialize our thoughts through actual social interactions.</p>
+                    <p style="font-size:0.75rem; color:#666; margin:0;">(인간은 본질적으로 사회적 생명체이기 때문에, 실제적인 사회적 상호작용을 통해 우리의 생각을 재사회화할 때 뇌는 정보를 훨씬 더 효과적으로 처리한다.)</p>
+                </div>
+                <button class="btn-next" onclick="startStep(2)">STEP 2: 문장 학습 시작 ▶</button>
+                <button class="btn-next" style="margin-top:10px; background:#9C27B0;" onclick="startStep(3)">STEP 3: 영작 연습 시작 ▶</button>
+            `;
+        } else if (currentMode === 'STEP2') {
+            header.innerText = `STEP 2. 문장 학습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+            
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="sentence-box" onclick="playTTS('${item.en.replace(/'/g, "\\'")}')">${item.en}</div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">해석 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.ko}</div>
+            `;
+            fillVoca(item.voca, '🍌', "#FFD600");
+        } else if (currentMode === 'STEP3') {
+            header.innerText = `STEP 3. 영작 연습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="kor-box">${item.ko}</div>
+                <div class="blank-area" id="blank-area"></div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">정답 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.en}</div>
+            `;
+            fillBlanks(item.en);
+            fillVoca(item.voca, '🍇', "#9C27B0");
+        }
+    }
+
+    function fillVoca(vocaList, emoji, emojiColor) {
+        const container = document.getElementById('voca-area');
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'voca-item';
+            if (vocaList[i] && vocaList[i] !== '🍌' && vocaList[i] !== '🍇') {
+                const [eng, kor] = vocaList[i].split(':');
+                div.innerText = eng;
+                div.onclick = function() {
+                    this.classList.toggle('revealed');
+                    this.innerText = this.classList.contains('revealed') ? kor : eng;
+                };
+            } else {
+                div.innerText = emoji;
+                div.style.color = emojiColor;
+                div.style.cursor = "default";
+            }
+            container.appendChild(div);
+        }
+    }
+
+    function fillBlanks(s) {
+        const c = document.getElementById('blank-area');
+        const prepositions = ["in", "on", "at", "by", "for", "from", "of", "with", "to", "into", "onto", "upon", "about", "above", "across", "after", "against", "along", "among", "around", "as", "before", "behind", "below", "beneath", "beside", "between", "beyond", "during", "except", "inside", "near", "off", "outside", "over", "past", "since", "through", "throughout", "under", "underneath", "until", "up", "within", "without"];
+
+        s.split(' ').forEach(w => {
+            const sp = document.createElement('span');
+            sp.className = 'word-blank';
+            sp.innerText = w;
+            
+            const pureWord = w.toLowerCase().replace(/[.,'":;?!()“”]/g, "");
+            
+            if (prepositions.includes(pureWord)) {
+                sp.classList.add('revealed');
+                sp.style.borderBottomColor = 'transparent'; 
+            }
+
+            sp.onclick = function() {
+                this.classList.add('revealed');
+                this.style.borderBottomColor = 'transparent';
+                playTTS(w.replace(/[.,'"]/g, ""));
+            };
+            c.appendChild(sp);
+        });
+    }
+
+    function startStep(step) {
+        currentMode = 'STEP' + step;
+        currentIdx = 0;
+        render();
+    }
+
+    function nextSentence() {
+        if (currentIdx < fullData.length - 1) {
+            currentIdx++;
+            render();
+        } else {
+            currentMode = 'INTRO';
+            render();
+        }
+    }
+
+    function prevSentence() {
+        if (currentIdx > 0) {
+            currentIdx--;
+            render();
+        }
+    }
+
+    function playTTS(text) {
+        synth.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        synth.speak(utterance);
+    }
+
+    function toggleView(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    window.onload = render;
+</script>
+</body>
+</html>

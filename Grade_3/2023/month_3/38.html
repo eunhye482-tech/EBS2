@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English Master #38 - Official Version</title>
+    <style>
+        :root { 
+            --lavender-light: #F3E5F5; 
+            --purple-pale: #E1BEE7; 
+            --purple-main: #9575CD; 
+            --purple-dark: #673AB7;
+            --pink-soft: #FFF0F6;
+        }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; background: #F8F7FA; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
+        .phone-container { width: 100%; max-width: 450px; height: 100%; background: white; display: flex; flex-direction: column; position: relative; }
+        .header { padding: 12px; text-align: center; font-weight: bold; color: var(--purple-dark); border-bottom: 1px solid #eee; background: white; font-size: 0.95rem; }
+        #display-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        /* 공통 스타일 */
+        .hidden { display: none !important; }
+        .btn-next { background: var(--purple-main); color: white; padding: 16px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: auto; }
+        .btn-prev { background: #EDF2F7; color: #718096; padding: 16px; border-radius: 15px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; width: 30%; margin-right: 10px; }
+
+        /* STEP 1: 인트로 */
+        .main-title-card { width: 100%; background: linear-gradient(135deg, #B39DDB 0%, #9575CD 100%); padding: 35px 20px; border-radius: 20px; color: white; margin-bottom: 20px; box-sizing: border-box; text-align: center; box-shadow: 0 4px 10px rgba(149,117,205,0.3); }
+        .intro-summary { background: var(--lavender-light); padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 2px solid var(--purple-pale); font-size: 0.92rem; line-height: 1.6; }
+        .intro-topic { background: var(--pink-soft); padding: 18px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #F8BBD0; }
+
+        /* 학습 카드 스타일 */
+        .sentence-box { background: var(--lavender-light); padding: 20px; border-radius: 20px; font-size: 1.1rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 15px; border: 2px solid var(--purple-pale); text-align: center; cursor: pointer; line-height: 1.5; }
+        .kor-box { background: #FFF5F7; padding: 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; color: #D81B60; margin-bottom: 15px; border: 2px solid #F8BBD0; text-align: center; line-height: 1.6; }
+        
+        /* 단어 그리드 */
+        .voca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .voca-item { background: #fff; padding: 10px; border-radius: 10px; font-size: 0.82rem; border: 1px solid var(--purple-pale); cursor: pointer; text-align: center; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .voca-item.revealed { background: var(--purple-main); color: white; }
+        
+        /* STEP 3 전용: 빈칸 스타일 */
+        .blank-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; padding: 10px; background: #fdfdfd; border-radius: 15px; }
+        .word-blank { border-bottom: 2px solid var(--purple-main); min-width: 35px; text-align: center; font-size: 1rem; color: transparent; cursor: pointer; padding: 0 2px; }
+        .word-blank.revealed { color: var(--purple-dark); border-bottom-color: transparent; font-weight: bold; }
+
+        .btn-check { background: #f0f0f0; padding: 12px; border-radius: 12px; border: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; width: 100%; font-size: 0.9rem; }
+        .trans-content { display: none; padding: 15px; background: #fafafa; border-radius: 15px; border-left: 5px solid var(--purple-main); font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px; }
+        .nav-btns-fixed { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; margin-top: auto; }
+    </style>
+</head>
+<body>
+<div class="phone-container">
+    <div class="header" id="header-title">English Master #38</div>
+    <div id="display-area"></div>
+    <div id="nav-area" class="nav-btns-fixed hidden">
+        <button class="btn-prev" onclick="prevSentence()">PREV</button>
+        <button class="btn-next" onclick="nextSentence()" id="main-next-btn">NEXT</button>
+    </div>
+</div>
+
+<script>
+    const fullData = [
+        { 
+            en: "The linguistic resources we choose to use do not come to us as empty forms ready to be filled with our personal intentions; rather, they come to us with meanings already embedded within them.", 
+            ko: "우리가 사용하기로 선택하는 언어적 자원은 우리의 개인적인 의도로 채워질 준비가 된 빈 형태로 우리에게 오는 것이 아니다. 오히려 그것들은 이미 그 안에 의미가 내재된 채로 우리에게 온다.", 
+            voca: ["linguistic:언어적인", "resources:자원들", "choose:선택하다", "empty forms:빈 형태들", "ready:준비된", "filled with:~로 채워진", "personal:개인적인", "intentions:의도들", "rather:오히려", "embedded:내재된, 박혀 있는"] 
+        },
+        { 
+            en: "These meanings, however, are not derived from some universal, logical set of principles; rather, as with their shapes, they are built up over time from their past uses in particular contexts by particular groups of participants in the accomplishment of particular goals that, in turn, are shaped by myriad cultural, historical and institutional forces.", 
+            ko: "그러나 이러한 의미들은 어떤 보편적이고 논리적인 원칙의 집합에서 유래하는 것이 아니다. 오히려 그것들의 형태와 마찬가지로, 결과적으로 무수한 문화적, 역사적, 제도적 힘에 의해 형성되는 특정 목표의 완수 과정에서 특정 참여자 집단이 특정 맥락 속에서 과거에 사용한 것으로부터 오랜 시간에 걸쳐 축적된 것이다.", 
+            voca: ["derived from:~에서 유래하는", "universal:보편적인", "principles:원칙들", "built up:축적된, 쌓아 올려진", "particular:특정한", "contexts:맥락, 배경", "accomplishment:완수, 성취", "in turn:결과적으로", "myriad:무수한", "institutional:제도적인"] 
+        },
+        { 
+            en: "The linguistic resources we choose to use at particular communicative moments come to these moments with their conventionalized histories of meaning.", 
+            ko: "우리가 특정한 의사소통의 순간에 사용하기로 선택하는 언어적 자원은 의미의 관습화된 역사와 함께 그 순간에 도달한다.", 
+            voca: ["communicative:의사소통의", "moments:순간들", "conventionalized:관습화된", "histories:역사들", "meaning:의미", "choose:선택하다", "linguistic:언어적인", "resources:자원들", "come:오다, 도달하다", "🍌"] 
+        },
+        { 
+            en: "It is their conventionality that binds us to some degree to particular ways of realizing our collective history.", 
+            ko: "우리를 우리의 집단적 역사를 실현하는 특정한 방식으로 어느 정도 구속하는 것은 바로 그것들이 지닌 관습성이다.", 
+            voca: ["conventionality:관습성", "binds:구속하다, 묶다", "to some degree:어느 정도", "particular:특정한", "ways:방식들", "realizing:실현하는 것", "collective:집단적인", "history:역사", "It is ~ that:바로 ~이다(강조)", "🍌"] 
+        },
+        { 
+            en: "However, while our resources come with histories of meanings, how they come to mean at a particular communicative moment is always open to negotiation.", 
+            ko: "하지만 우리의 자원이 의미의 역사와 함께 올지라도, 그것들이 특정한 의사소통의 순간에 어떻게 의미를 갖게 되는지는 항상 협상의 여지가 있다.", 
+            voca: ["while:~일지라도, ~하는 동안", "histories:역사들", "mean:의미하다", "particular:특정한", "communicative:의사소통의", "moment:순간", "always:항상", "open to:~에 열려 있는", "negotiation:협상", "🍌"] 
+        },
+        { 
+            en: "Thus, in our individual uses of our linguistic resources we accomplish two actions simultaneously.", 
+            ko: "따라서, 우리는 언어적 자원을 개별적으로 사용하면서 두 가지 행동을 동시에 완수한다.", 
+            voca: ["Thus:따라서", "individual:개별적인, 개인의", "uses:사용", "linguistic:언어적인", "resources:자원들", "accomplish:완수하다, 성취하다", "two:두 가지", "actions:행동들", "simultaneously:동시에", "🍌"] 
+        },
+        { 
+            en: "We create their typical—historical—contexts of use and at the same time we position ourselves in relation to these contexts.", 
+            ko: "우리는 그것들의 전형적인—역사적인—사용 맥락을 만들어 내는 동시에, 이러한 맥락과 관련하여 우리 자신의 위치를 정한다.", 
+            voca: ["create:만들어 내다, 창조하다", "typical:전형적인", "historical:역사적인", "contexts:맥락들", "at the same time:동시에", "position:위치를 정하다, 자리 잡다", "ourselves:우리 자신을", "in relation to:~와 관련하여", "use:사용", "🍌"] 
+        }
+    ];
+
+    let currentMode = 'INTRO';
+    let currentIdx = 0;
+    const synth = window.speechSynthesis;
+
+    function render() {
+        const area = document.getElementById('display-area');
+        const nav = document.getElementById('nav-area');
+        const header = document.getElementById('header-title');
+        area.innerHTML = '';
+
+        if (currentMode === 'INTRO') {
+            header.innerText = "English Master #38";
+            nav.classList.add('hidden');
+            area.innerHTML = `
+                <div class="main-title-card"><h1>The Conventional History<br>of Linguistic Resources</h1><p>Meaning, History, and Negotiation</p></div>
+                <div class="intro-summary">
+                    <h3>📋 지문 요약</h3>
+                    <p><b>[서론]</b> 우리가 일상에서 사용하는 단어와 어휘 같은 언어적 자원은 개인의 마음대로 채워 넣을 수 있는 '깨끗하고 빈 상태'로 주어지는 것이 아니다. 언어는 이미 오랜 역사 속에서 형성된 고유의 의미를 내재한 채 우리에게 도달한다.</p>
+                    <p><b>[본론]</b> 언어의 의미는 수학 공식처럼 보편타당하고 논리적인 법칙에 의해 규정된 것이 아니다. 무수한 역사적, 문화적, 제도적 역학 관계 속에서 특정 집단이 특정 목적을 위해 반복적으로 사용해 온 과거의 맥락들이 오랜 시간에 걸쳐 관습화(Conventionalized)된 결과물이다. 이 관습성은 언어를 사용하는 우리를 과거의 역사적 맥락에 어느 정도 얽매이게 만드는 구속력을 행사한다.</p>
+                    <p><b>[결론]</b> 그러나 언어가 역사적 관습성을 지녔다고 해서 박제된 것은 아니다. 구체적인 대화의 순간에 그 언어가 정확히 어떤 의미로 쓰일지는 대화 당사자 간의 '협상(Negotiation)'에 의해 조율될 여지가 항상 열려있다. 따라서 우리는 언어를 사용함으로써 과거의 역사적 맥락을 다시 불러일으키는 동시에, 그 맥락 속에서 나 자신의 주관적 위치를 새롭게 정립하는 두 가지 행동을 동시에 수행하게 된다.</p>
+                </div>
+                <div class="intro-topic">
+                    <span class="topic-label">💡 Topic Sentence</span>
+                    <p style="font-size:0.85rem; font-weight:600; margin-bottom:5px;">Linguistic resources carrying embedded historical meanings both bind users to conventional contexts and allow them to negotiate new meanings during individual communication.</p>
+                    <p style="font-size:0.75rem; color:#666; margin:0;">(내재된 역사적 의미를 지닌 언어적 자원은 사용자를 관습적인 맥락에 구속하는 동시에, 개별적인 의사소통 과정에서 새로운 의미를 협상할 수 있도록 허용한다.)</p>
+                </div>
+                <button class="btn-next" onclick="startStep(2)">STEP 2: 문장 학습 시작 ▶</button>
+                <button class="btn-next" style="margin-top:10px; background:#9C27B0;" onclick="startStep(3)">STEP 3: 영작 연습 시작 ▶</button>
+            `;
+        } else if (currentMode === 'STEP2') {
+            header.innerText = `STEP 2. 문장 학습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+            
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="sentence-box" onclick="playTTS('${item.en.replace(/'/g, "\\'")}')">${item.en}</div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">해석 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.ko}</div>
+            `;
+            fillVoca(item.voca, '🍌', "#FFD600");
+        } else if (currentMode === 'STEP3') {
+            header.innerText = `STEP 3. 영작 연습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="kor-box">${item.ko}</div>
+                <div class="blank-area" id="blank-area"></div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">정답 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.en}</div>
+            `;
+            fillBlanks(item.en);
+            fillVoca(item.voca, '🍇', "#9C27B0");
+        }
+    }
+
+    function fillVoca(vocaList, emoji, emojiColor) {
+        const container = document.getElementById('voca-area');
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'voca-item';
+            if (vocaList[i] && vocaList[i] !== '🍌' && vocaList[i] !== '🍇') {
+                const [eng, kor] = vocaList[i].split(':');
+                div.innerText = eng;
+                div.onclick = function() {
+                    this.classList.toggle('revealed');
+                    this.innerText = this.classList.contains('revealed') ? kor : eng;
+                };
+            } else {
+                div.innerText = emoji;
+                div.style.color = emojiColor;
+                div.style.cursor = "default";
+            }
+            container.appendChild(div);
+        }
+    }
+
+    function fillBlanks(s) {
+        const c = document.getElementById('blank-area');
+        const prepositions = ["in", "on", "at", "by", "for", "from", "of", "with", "to", "into", "onto", "upon", "about", "above", "across", "after", "against", "along", "among", "around", "as", "before", "behind", "below", "beneath", "beside", "between", "beyond", "during", "except", "inside", "near", "off", "outside", "over", "past", "since", "through", "throughout", "under", "underneath", "until", "up", "within", "without"];
+
+        s.split(' ').forEach(w => {
+            const sp = document.createElement('span');
+            sp.className = 'word-blank';
+            sp.innerText = w;
+            
+            const pureWord = w.toLowerCase().replace(/[.,'":;?!()“”]/g, "");
+            
+            if (prepositions.includes(pureWord)) {
+                sp.classList.add('revealed');
+                sp.style.borderBottomColor = 'transparent'; 
+            }
+
+            sp.onclick = function() {
+                this.classList.add('revealed');
+                this.style.borderBottomColor = 'transparent';
+                playTTS(w.replace(/[.,'"]/g, ""));
+            };
+            c.appendChild(sp);
+        });
+    }
+
+    function startStep(step) {
+        currentMode = 'STEP' + step;
+        currentIdx = 0;
+        render();
+    }
+
+    function nextSentence() {
+        if (currentIdx < fullData.length - 1) {
+            currentIdx++;
+            render();
+        } else {
+            currentMode = 'INTRO';
+            render();
+        }
+    }
+
+    function prevSentence() {
+        if (currentIdx > 0) {
+            currentIdx--;
+            render();
+        }
+    }
+
+    function playTTS(text) {
+        synth.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        synth.speak(utterance);
+    }
+
+    function toggleView(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    window.onload = render;
+</script>
+</body>
+</html>

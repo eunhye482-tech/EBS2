@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English Master #40 - Official Version</title>
+    <style>
+        :root { 
+            --lavender-light: #F3E5F5; 
+            --purple-pale: #E1BEE7; 
+            --purple-main: #9575CD; 
+            --purple-dark: #673AB7;
+            --pink-soft: #FFF0F6;
+        }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; background: #F8F7FA; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
+        .phone-container { width: 100%; max-width: 450px; height: 100%; background: white; display: flex; flex-direction: column; position: relative; }
+        .header { padding: 12px; text-align: center; font-weight: bold; color: var(--purple-dark); border-bottom: 1px solid #eee; background: white; font-size: 0.95rem; }
+        #display-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        /* 공통 스타일 */
+        .hidden { display: none !important; }
+        .btn-next { background: var(--purple-main); color: white; padding: 16px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: auto; }
+        .btn-prev { background: #EDF2F7; color: #718096; padding: 16px; border-radius: 15px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; width: 30%; margin-right: 10px; }
+
+        /* STEP 1: 인트로 */
+        .main-title-card { width: 100%; background: linear-gradient(135deg, #B39DDB 0%, #9575CD 100%); padding: 35px 20px; border-radius: 20px; color: white; margin-bottom: 20px; box-sizing: border-box; text-align: center; box-shadow: 0 4px 10px rgba(149,117,205,0.3); }
+        .intro-summary { background: var(--lavender-light); padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 2px solid var(--purple-pale); font-size: 0.92rem; line-height: 1.6; }
+        .intro-topic { background: var(--pink-soft); padding: 18px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #F8BBD0; }
+
+        /* 학습 카드 스타일 */
+        .sentence-box { background: var(--lavender-light); padding: 20px; border-radius: 20px; font-size: 1.1rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 15px; border: 2px solid var(--purple-pale); text-align: center; cursor: pointer; line-height: 1.5; }
+        .kor-box { background: #FFF5F7; padding: 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; color: #D81B60; margin-bottom: 15px; border: 2px solid #F8BBD0; text-align: center; line-height: 1.6; }
+        
+        /* 단어 그리드 */
+        .voca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .voca-item { background: #fff; padding: 10px; border-radius: 10px; font-size: 0.82rem; border: 1px solid var(--purple-pale); cursor: pointer; text-align: center; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .voca-item.revealed { background: var(--purple-main); color: white; }
+        
+        /* STEP 3 전용: 빈칸 스타일 */
+        .blank-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; padding: 10px; background: #fdfdfd; border-radius: 15px; }
+        .word-blank { border-bottom: 2px solid var(--purple-main); min-width: 35px; text-align: center; font-size: 1rem; color: transparent; cursor: pointer; padding: 0 2px; }
+        .word-blank.revealed { color: var(--purple-dark); border-bottom-color: transparent; font-weight: bold; }
+
+        .btn-check { background: #f0f0f0; padding: 12px; border-radius: 12px; border: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; width: 100%; font-size: 0.9rem; }
+        .trans-content { display: none; padding: 15px; background: #fafafa; border-radius: 15px; border-left: 5px solid var(--purple-main); font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px; }
+        .nav-btns-fixed { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; margin-top: auto; }
+    </style>
+</head>
+<body>
+<div class="phone-container">
+    <div class="header" id="header-title">English Master #40</div>
+    <div id="display-area"></div>
+    <div id="nav-area" class="nav-btns-fixed hidden">
+        <button class="btn-prev" onclick="prevSentence()">PREV</button>
+        <button class="btn-next" onclick="nextSentence()" id="main-next-btn">NEXT</button>
+    </div>
+</div>
+
+<script>
+    const fullData = [
+        { 
+            en: "The rise of large, industrial cities has had social consequences that are often known as urbanism.", 
+            ko: "대규모 산업 도시의 부상은 흔히 도시화(어바니즘)로 알려진 사회적 결과를 초래했다.", 
+            voca: ["rise:부상, 발생", "large:대규모의", "industrial:산업의", "cities:도시들", "social:사회적", "consequences:결과들", "often:흔히, 자주", "known as:~로 알려진", "urbanism:도시화, 도시적 생활 양식", "🍌"] 
+        },
+        { 
+            en: "The city dissolves the informal controls of the village or small town.", 
+            ko: "도시는 마을이나 작은 마을(전통 마을)의 비공식적인 통제를 해체한다.", 
+            voca: ["city:도시", "dissolves:해체하다, 녹이다", "informal:비공식적인", "controls:통제, 규제", "village:마을, 농촌", "small town:작은 마을, 소도시", "🍌", "🍌", "🍌", "🍌"] 
+        },
+        { 
+            en: "Most urban residents are unknown to one another, and most social interactions in cities occur between people who know each other only in specific roles, such as parking attendant, store clerk, or customer.", 
+            ko: "대부분의 도시 거주자들은 서로를 알지 못하며, 도시에서의 대부분의 사회적 상호작용은 주차 안내원, 점원, 또는 고객과 같은 특정 역할로서만 서로를 아는 사람들 사이에서 일어난다.", 
+            voca: ["urban:도시의", "residents:거주자들", "unknown:알지 못하는", "one another:서로", "interactions:상호작용들", "occur:일어나다", "specific:특정, 구체적인", "roles:역할들", "parking attendant:주차 안내원", "store clerk:점원"] 
+        },
+        { 
+            en: "Individuals became more free to live as they wished, and in ways that break away from social norms.", 
+            ko: "개인들은 그들이 원하는 대로, 그리고 사회적 규범에서 벗어나는 방식으로 살기에 더 자유로워졌다.", 
+            voca: ["Individuals:개인들", "became:~이 되었다", "free:자유로운", "live:살다", "as they wished:그들이 원하는 대로", "ways:방식들", "break away from:~에서 벗어나다", "social norms:사회적 규범들", "🍌", "🍌"] 
+        },
+        { 
+            en: "In response, and because the high density of city living requires the pliant coordination of many thousands of people, urban societies have developed a wide range of methods to control urban behavior.", 
+            ko: "이에 대응하여, 그리고 고밀도의 도시 생활은 수천 명의 사람들의 유연한 조정을 필요로 하기 때문에, 도시 사회는 도시 행동을 통제하기 위해 광범위한 방법들을 개발해 왔다.", 
+            voca: ["In response:이에 대응하여", "high density:고밀도", "living:생활, 거주", "requires:필요로 하다", "pliant:유연한, 순종적인", "coordination:조정, 협력", "developed:개발해 왔다", "wide range of:광범위한", "methods:방법들", "control:통제하다"] 
+        },
+        { 
+            en: "These include regulations that control private land use, building construction and maintenance (to minimize fire risk), and the production of pollution and noise.", 
+            ko: "이것들은 사유지 사용, 건물의 건설 및 유지 관리(화재 위험을 최소화하기 위한), 그리고 오염과 소음의 발생을 통제하는 규제들을 포함한다.", 
+            voca: ["include:포함하다", "regulations:규제들", "private:사유의, 사적인", "land use:토지 사용", "construction:건설", "maintenance:유지 관리", "minimize:최소화하다", "fire risk:화재 위험", "pollution:오염", "noise:소음"] 
+        },
+        { 
+            en: "The social conditions in large, industrial cities made urban societies remove the informal controls of the village or small town, introducing restrictive measures to effectively induce coordinated urban behaviors.", 
+            ko: "대규모 산업 도시의 사회적 조건들은 도시 사회로 하여금 마을이나 작은 마을의 비공식적인 통제를 제거하게 만들었고, 조율된 도시 행동을 효과적으로 유도하기 위한 제한적인 조치들을 도입하게 했다.", 
+            voca: ["conditions:조건들, 환경", "made:~하게 만들다(사역)", "remove:제거하다, 없애다", "informal controls:비공식적인 통제", "introducing:도입하는 것", "restrictive:제한적인", "measures:조치들", "effectively:효과적으로", "induce:유도하다", "coordinated:조율된, 조직화된"] 
+        }
+    ];
+
+    let currentMode = 'INTRO';
+    let currentIdx = 0;
+    const synth = window.speechSynthesis;
+
+    function render() {
+        const area = document.getElementById('display-area');
+        const nav = document.getElementById('nav-area');
+        const header = document.getElementById('header-title');
+        area.innerHTML = '';
+
+        if (currentMode === 'INTRO') {
+            header.innerText = "English Master #40";
+            nav.classList.add('hidden');
+            area.innerHTML = `
+                <div class="main-title-card"><h1>Urbanism and Formal Social Controls</h1><p>2023년 3월 고3 모의고사 40번</p></div>
+                <div class="intro-summary">
+                    <h3>📋 지문 요약</h3>
+                    <p><b>[서론]</b> 대규모 산업 도시의 급격한 성장은 '도시화(Urbanism)'라 일컬어지는 독특한 사회적 현상과 변화들을 수반하게 되었다.</p>
+                    <p><b>[본론]</b> 고립된 전통적 농촌 마을에서 작용하던 이웃 간의 '비공식적인 통제(눈치, 소문 등)'는 거대한 도시 속에서 완전히 해체된다. 도시 거주자들은 대부분 서로를 알지 못하는 익명의 상태로 살아가며, 주차 요원이나 점원처럼 철저히 표면적이고 특정한 역할 관계 속에서만 상호작용한다. 이로 인해 개인은 규범의 굴레에서 벗어나 자기가 원하는 대로 살 수 있는 유례없는 자유를 획득했다. 그러나 수천수만 명의 사람이 초고밀도로 밀집해 살아가야 하는 도시의 특성상, 사회적 무질서를 방지하기 위한 대중의 유연한 조율과 조 정이 필수적으로 요구되기 시작했다.</p>
+                    <p><b>[결론]</b> 이에 따라 도시 사회는 비공식적 통제를 대신하여 사유지 규제, 화재 방지용 건물 공정 및 유지 보수 법안, 소음 및 환경 오염 방지 대책 등 행동을 구속하는 광범위한 '공식적인 규제 조치'들을 구축했다. 즉, 현대 산업 도시의 사회적 환경은 마을의 규제를 없앤 대신, 수많은 인구의 조직적인 행동과 안전을 강제하기 위한 법적·제도적 제한 조치들을 필연적으로 도입하게 만들었다.</p>
+                </div>
+                <div class="intro-topic">
+                    <span class="topic-label">💡 Topic Sentence</span>
+                    <p style="font-size:0.85rem; font-weight:600; margin-bottom:5px;">As industrialization dissolves informal rural controls and fosters urban anonymity, high-density cities inevitably implement formal, restrictive regulations to ensure coordinated social behaviors.</p>
+                    <p style="font-size:0.75rem; color:#666; margin:0;">(산업화가 농촌의 비공식적인 통제를 해체하고 도시의 익명성을 조장함에 따라, 고밀도 도시들은 조직적인 사회적 행동을 보장하기 위해 공식적이고 제한적인 규제들을 필연적으로 시행하게 된다.)</p>
+                </div>
+                <button class="btn-next" onclick="startStep(2)">STEP 2: 문장 학습 시작 ▶</button>
+                <button class="btn-next" style="margin-top:10px; background:#9C27B0;" onclick="startStep(3)">STEP 3: 영작 연습 시작 ▶</button>
+            `;
+        } else if (currentMode === 'STEP2') {
+            header.innerText = `STEP 2. 문장 학습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+            
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="sentence-box" onclick="playTTS('${item.en.replace(/'/g, "\\'")}')">${item.en}</div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">해석 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.ko}</div>
+            `;
+            fillVoca(item.voca, '🍌', "#FFD600");
+        } else if (currentMode === 'STEP3') {
+            header.innerText = `STEP 3. 영작 연습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="kor-box">${item.ko}</div>
+                <div class="blank-area" id="blank-area"></div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">정답 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.en}</div>
+            `;
+            fillBlanks(item.en);
+            fillVoca(item.voca, '🍇', "#9C27B0");
+        }
+    }
+
+    function fillVoca(vocaList, emoji, emojiColor) {
+        const container = document.getElementById('voca-area');
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'voca-item';
+            if (vocaList[i] && vocaList[i] !== '🍌' && vocaList[i] !== '🍇') {
+                const [eng, kor] = vocaList[i].split(':');
+                div.innerText = eng;
+                div.onclick = function() {
+                    this.classList.toggle('revealed');
+                    this.innerText = this.classList.contains('revealed') ? kor : eng;
+                };
+            } else {
+                div.innerText = emoji;
+                div.style.color = emojiColor;
+                div.style.cursor = "default";
+            }
+            container.appendChild(div);
+        }
+    }
+
+    function fillBlanks(s) {
+        const c = document.getElementById('blank-area');
+        const prepositions = ["in", "on", "at", "by", "for", "from", "of", "with", "to", "into", "onto", "upon", "about", "above", "across", "after", "against", "along", "among", "around", "as", "before", "behind", "below", "beneath", "beside", "between", "beyond", "during", "except", "inside", "near", "off", "outside", "over", "past", "since", "through", "throughout", "under", "underneath", "until", "up", "within", "without"];
+
+        s.split(' ').forEach(w => {
+            const sp = document.createElement('span');
+            sp.className = 'word-blank';
+            sp.innerText = w;
+            
+            const pureWord = w.toLowerCase().replace(/[.,'":;?!()“”]/g, "");
+            
+            if (prepositions.includes(pureWord)) {
+                sp.classList.add('revealed');
+                sp.style.borderBottomColor = 'transparent'; 
+            }
+
+            sp.onclick = function() {
+                this.classList.add('revealed');
+                this.style.borderBottomColor = 'transparent';
+                playTTS(w.replace(/[.,'"]/g, ""));
+            };
+            c.appendChild(sp);
+        });
+    }
+
+    function startStep(step) {
+        currentMode = 'STEP' + step;
+        currentIdx = 0;
+        render();
+    }
+
+    function nextSentence() {
+        if (currentIdx < fullData.length - 1) {
+            currentIdx++;
+            render();
+        } else {
+            currentMode = 'INTRO';
+            render();
+        }
+    }
+
+    function prevSentence() {
+        if (currentIdx > 0) {
+            currentIdx--;
+            render();
+        }
+    }
+
+    function playTTS(text) {
+        synth.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        synth.speak(utterance);
+    }
+
+    function toggleView(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    window.onload = render;
+</script>
+</body>
+</html>

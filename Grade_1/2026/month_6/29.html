@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>English Master - Enduring Power of Literature</title>
+    <style>
+        :root { 
+            --lavender-light: #F3E5F5; 
+            --purple-pale: #E1BEE7; 
+            --purple-main: #9575CD; 
+            --purple-dark: #673AB7;
+            --pink-soft: #FFF0F6;
+        }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; background: #F8F7FA; display: flex; justify-content: center; min-height: 100vh; }
+        .phone-container { width: 100%; max-width: 450px; background: white; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
+        .header { padding: 12px; text-align: center; font-weight: bold; color: var(--purple-dark); border-bottom: 1px solid #eee; background: white; font-size: 0.95rem; position: sticky; top: 0; z-index: 10; }
+        #display-area { flex: 1; padding: 20px; display: flex; flex-direction: column; }
+        
+        .hidden { display: none !important; }
+        
+        .btn-intro-step { background: var(--purple-main); color: white; padding: 16px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; }
+
+        .main-title-card { width: 100%; background: linear-gradient(135deg, #B39DDB 0%, #9575CD 100%); padding: 35px 20px; border-radius: 20px; color: white; margin-bottom: 20px; box-sizing: border-box; text-align: center; }
+        .intro-summary { background: var(--lavender-light); padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 2px solid var(--purple-pale); font-size: 0.92rem; line-height: 1.6; color: #444; }
+        .intro-topic { background: var(--pink-soft); padding: 18px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #F8BBD0; text-align: center; }
+        .topic-kor { font-weight: bold; color: #D81B60; display: block; margin-bottom: 5px; }
+        .topic-eng { font-size: 0.85rem; color: #888; font-style: italic; }
+
+        .sentence-box { background: var(--lavender-light); padding: 20px; border-radius: 20px; font-size: 1.1rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 15px; border: 2px solid var(--purple-pale); text-align: center; cursor: pointer; line-height: 1.5; }
+        .kor-box { background: #FFF5F7; padding: 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; color: #D81B60; margin-bottom: 15px; border: 2px solid #F8BBD0; text-align: center; line-height: 1.6; }
+        
+        .voca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .voca-item { background: #fff; padding: 10px; border-radius: 10px; font-size: 0.82rem; border: 1px solid var(--purple-pale); cursor: pointer; text-align: center; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: #333; }
+        .voca-item.revealed { background: var(--purple-main); color: white; }
+        
+        .blank-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; padding: 10px; background: #fdfdfd; border-radius: 15px; line-height: 2.3; }
+        .word-blank { border-bottom: 2px solid var(--purple-main); min-width: 35px; text-align: center; font-size: 1rem; color: transparent; cursor: pointer; padding: 0 2px; }
+        .word-blank.revealed { color: var(--purple-dark); border-bottom-color: transparent; font-weight: bold; background: #EDE7F6; border-radius: 4px; }
+
+        .btn-check { background: #f0f0f0; padding: 12px; border-radius: 12px; border: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; width: 100%; font-size: 0.9rem; color: #555; }
+        .trans-content { display: none; padding: 15px; background: #fafafa; border-radius: 15px; border-left: 5px solid var(--purple-main); font-size: 0.9rem; margin-bottom: 10px; color: #444; }
+        
+        .nav-btns-fixed { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; margin-top: auto; position: sticky; bottom: 0; gap: 10px; align-items: center; }
+        .btn-prev { background: #EDF2F7; color: #718096; border-radius: 15px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; height: 55px; flex: 1; display: flex; align-items: center; justify-content: center; }
+        .btn-next { background: var(--purple-main); color: white; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; height: 55px; flex: 1.5; display: flex; align-items: center; justify-content: center; margin-top: 0; }
+    </style>
+</head>
+<body>
+<div class="phone-container">
+    <div class="header" id="header-title">English Master</div>
+    <div id="display-area"></div>
+    <div id="nav-area" class="nav-btns-fixed hidden">
+        <button class="btn-prev" onclick="prevSentence()">PREV</button>
+        <button class="btn-next" onclick="nextSentence()" id="main-next-btn">NEXT</button>
+    </div>
+</div>
+
+<script>
+    const fullData = [
+        { en: `Literature, in its essence, is a testament to the enduring power of human creativity and expression.`, ko: `문학은 본질적으로 인간의 창의성과 표현의 영속적인 힘에 대한 증거입니다.`, voca: ["Literature:문학", "essence:본질", "testament:증거", "enduring power:영속적인 힘", "creativity:창의성", "expression:표현", "🍎", "🍎", "🍎", "🍎"] },
+        { en: `It transcends time and space, connecting us with the thoughts and emotions of people from all walks of life, across centuries and cultures.`, ko: `그것은 시공간을 초월하여 수 세기와 여러 문화에 걸쳐 각계각층의 사람들의 생각 및 감정과 우리를 연결해 줍니다.`, voca: ["transcends:초월하다", "time and space:시공간", "connecting:~와 연결하는", "thoughts:생각들", "emotions:감정들", "all walks of life:각계각층의 사람들", "across centuries:수 세기에 걸쳐", "cultures:문화들", "🍎", "🍎"] },
+        { en: `Despite the rise of new technologies and the ever-changing landscape of media, literature has retained its relevance and significance as a timeless art form.`, ko: `새로운 기술의 부상과 미디어 환경의 끊임없는 변화에도 불구하고, 문학은 시대를 초월한 예술 형식으로서 그것의 타당성과 중요성을 유지해 왔습니다.`, voca: ["Despite:~에도 불구하고", "rise:부상/상승", "new technologies:새로운 기술들", "ever-changing:끊임없이 변화하는", "landscape of media:미디어 환경/풍경", "retained:유지했다/보유했다", "relevance:타당성/관련성", "significance:중요성", "timeless:시대를 초월한", "art form:예술 형식"] },
+        { en: `One reason for literature’s enduring power is its ability to capture and convey the complexities of the human experience.`, ko: `문학의 영속적인 힘의 한 가지 이유는 인간 경험의 복잡성을 포착하고 전달하는 능력입니다.`, voca: ["reason:이유", "enduring power:영속적인 힘", "ability:능력", "capture:포착하다", "convey:전달하다", "complexities:복잡성들", "human experience:인간의 경험", "🍎", "🍎", "🍎"] },
+        { en: `Through the written word, authors have the unique ability to explore the depths of human emotion, the nuances of relationships, and the challenges and triumphs of the human spirit.`, ko: `글로 쓰인 단어를 통해 저자들은 인간 감정의 깊이, 관계의 뉘앙스, 그리고 인간 정신의 도전과 승리를 탐구하는 독특한 능력을 갖추고 있습니다.`, voca: ["written word:글로 쓰인 단어", "authors:저자들/작가들", "unique:독특한", "explore:탐구하다", "depths:깊이들", "nuances of relationships:관계의 뉘앙스들", "challenges:도전들", "triumphs:승리들", "human spirit:인간 정신", "🍎"] },
+        { en: `Literature allows us to see ourselves reflected in the pages of a book, to empathize with characters different from ourselves, and to gain a deeper understanding of the human condition.`, ko: `문학은 우리가 책의 페이지에 투영된 우리 자신을 보고, 우리와 다른 등장인물들에게 공감하며, 인간의 조건에 대한 더 깊은 이해를 얻을 수 있게 해 줍니다.`, voca: ["allows us to:~가 ~할 수 있게 해 준다", "reflected:투영된/반사된", "pages of a book:책의 페이지들", "empathize with:~에 공감하다", "characters:등장인물들", "different from:~와 다른", "gain:얻다", "deeper understanding:더 깊은 이해", "human condition:인간의 조건", "🍎"] }
+    ];
+
+    let currentMode = 'INTRO';
+    let currentIdx = 0;
+    const synth = window.speechSynthesis;
+
+    function render() {
+        const area = document.getElementById('display-area');
+        const nav = document.getElementById('nav-area');
+        const header = document.getElementById('header-title');
+        area.innerHTML = '';
+
+        if (currentMode === 'INTRO') {
+            header.innerText = "English Master";
+            nav.classList.add('hidden');
+            area.innerHTML = `
+                <div class="main-title-card"><h1>The Enduring Power<br>of Literature</h1><p>시공간을 초월하는 문학의 가치</p></div>
+                
+                <div class="intro-summary">
+                    <p>• <b>📍 서론:</b> 문학(Literature)은 본질적으로 인간의 창의성과 표현력의 영속적인 힘(enduring power)을 증명해 주는 결실임.</p>
+                    <p>• <b>📍 본론:</b> 기술의 발전과 미디어 환경의 격변 속에서도 문학은 시대를 초월한 예술 형식으로 존재함. 문자는 각계각층의 시공간을 초월하여 타인의 생각 및 감정과 연결해 주고, 인간 경험의 복잡성(complexities)을 온전히 보존함.</p>
+                    <p>• <b>📍 결론:</b> 작가는 문학을 통해 감정의 깊이와 인간관계의 미묘한 뉘앙스를 탐구함. 독자는 책 속에 투영된 자신을 발견하고, 다른 인물들과 깊이 공감하며(empathize), 인간의 조건에 대한 진정한 이해에 도달함.</p>
+                </div>
+                <div class="intro-topic">
+                    <span class="topic-kor">주제: 시공간을 초월하여 인간 경험의 복잡성을 전달하는 문학의 영속적인 가치</span>
+                    <span class="topic-eng">Topic: The enduring value of literature that transcends time and space to convey the complexities of human experience</span>
+                </div>
+                <button class="btn-intro-step" onclick="startStep(2)">STEP 2: 문장 학습 시작 ▶</button>
+                <button class="btn-intro-step" style="background:#9C27B0;" onclick="startStep(3)">STEP 3: 전체 빈칸 연습 시작 ▶</button>
+            `;
+        } else {
+            const stepNum = currentMode === 'STEP2' ? 2 : 3;
+            header.innerText = "STEP " + stepNum + " (" + (currentIdx + 1) + "/" + fullData.length + ")";
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+            
+            const item = fullData[currentIdx];
+            if (currentMode === 'STEP2') {
+                area.innerHTML = `<div class="sentence-box" onclick="playTTS(\`${item.en}\`)">${item.en}</div><div class="voca-grid" id="voca-area"></div><button class="btn-check" onclick="toggleView('trans-area')">해석 확인</button><div id="trans-area" class="trans-content">${item.ko}</div>`;
+                fillVoca(item.voca, '🍎', "#FF3B30");
+            } else {
+                area.innerHTML = `<div class="kor-box">${item.ko}</div><div class="blank-area" id="blank-area"></div><div class="voca-grid" id="voca-area"></div><button class="btn-check" onclick="toggleView('trans-area')">정답 확인</button><div id="trans-area" class="trans-content">${item.en}</div>`;
+                fillBlanks(item.en);
+                fillVoca(item.voca, '🍇', "#9C27B0");
+            }
+        }
+    }
+
+    function fillVoca(vList, emo, col) {
+        const area = document.getElementById('voca-area');
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'voca-item';
+            if (vList[i] && vList[i].includes(':')) {
+                const [en, ko] = vList[i].split(':');
+                div.innerText = en;
+                div.onclick = function() { this.classList.toggle('revealed'); this.innerText = this.classList.contains('revealed') ? ko : en; };
+            } else {
+                div.innerText = emo; div.style.color = col; div.style.cursor = "default";
+            }
+            area.appendChild(div);
+        }
+    }
+
+    function fillBlanks(s) {
+        const area = document.getElementById('blank-area');
+        s.split(' ').forEach(w => {
+            const span = document.createElement('span');
+            span.className = 'word-blank'; 
+            span.innerText = w; 
+            span.onclick = function() { 
+                this.classList.add('revealed'); 
+                playTTS(w.replace(/[.,\'\"“”;:()?\-]/g, "")); 
+            }; 
+            area.appendChild(span);
+        });
+    }
+
+    function startStep(s) { currentMode = 'STEP' + s; currentIdx = 0; render(); }
+    function nextSentence() { if (currentIdx < fullData.length - 1) { currentIdx++; render(); } else { currentMode = 'INTRO'; render(); } }
+    function prevSentence() { if (currentIdx > 0) { currentIdx--; render(); } else { currentMode = 'INTRO'; render(); } }
+    function playTTS(t) { synth.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; synth.speak(u); }
+    function toggleView(id) { const el = document.getElementById(id); el.style.display = (el.style.display === 'block') ? 'none' : 'block'; }
+    window.onload = render;
+</script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English Master #31 - Official Version</title>
+    <style>
+        :root { 
+            --lavender-light: #F3E5F5; 
+            --purple-pale: #E1BEE7; 
+            --purple-main: #9575CD; 
+            --purple-dark: #673AB7;
+            --pink-soft: #FFF0F6;
+        }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; background: #F8F7FA; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
+        .phone-container { width: 100%; max-width: 450px; height: 100%; background: white; display: flex; flex-direction: column; position: relative; }
+        .header { padding: 12px; text-align: center; font-weight: bold; color: var(--purple-dark); border-bottom: 1px solid #eee; background: white; font-size: 0.95rem; }
+        #display-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        /* 공통 스타일 */
+        .hidden { display: none !important; }
+        .btn-next { background: var(--purple-main); color: white; padding: 16px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: auto; }
+        .btn-prev { background: #EDF2F7; color: #718096; padding: 16px; border-radius: 15px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; width: 30%; margin-right: 10px; }
+
+        /* STEP 1: 인트로 */
+        .main-title-card { width: 100%; background: linear-gradient(135deg, #B39DDB 0%, #9575CD 100%); padding: 35px 20px; border-radius: 20px; color: white; margin-bottom: 20px; box-sizing: border-box; text-align: center; box-shadow: 0 4px 10px rgba(149,117,205,0.3); }
+        .intro-summary { background: var(--lavender-light); padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 2px solid var(--purple-pale); font-size: 0.92rem; line-height: 1.6; }
+        .intro-topic { background: var(--pink-soft); padding: 18px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #F8BBD0; }
+
+        /* 학습 카드 스타일 */
+        .sentence-box { background: var(--lavender-light); padding: 20px; border-radius: 20px; font-size: 1.1rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 15px; border: 2px solid var(--purple-pale); text-align: center; cursor: pointer; line-height: 1.5; }
+        .kor-box { background: #FFF5F7; padding: 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; color: #D81B60; margin-bottom: 15px; border: 2px solid #F8BBD0; text-align: center; line-height: 1.6; }
+        
+        /* 단어 그리드 */
+        .voca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .voca-item { background: #fff; padding: 10px; border-radius: 10px; font-size: 0.82rem; border: 1px solid var(--purple-pale); cursor: pointer; text-align: center; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .voca-item.revealed { background: var(--purple-main); color: white; }
+        
+        /* STEP 3 전용: 빈칸 스타일 */
+        .blank-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; padding: 10px; background: #fdfdfd; border-radius: 15px; }
+        .word-blank { border-bottom: 2px solid var(--purple-main); min-width: 35px; text-align: center; font-size: 1rem; color: transparent; cursor: pointer; padding: 0 2px; }
+        .word-blank.revealed { color: var(--purple-dark); border-bottom-color: transparent; font-weight: bold; }
+
+        .btn-check { background: #f0f0f0; padding: 12px; border-radius: 12px; border: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; width: 100%; font-size: 0.9rem; }
+        .trans-content { display: none; padding: 15px; background: #fafafa; border-radius: 15px; border-left: 5px solid var(--purple-main); font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px; }
+        .nav-btns-fixed { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; margin-top: auto; }
+    </style>
+</head>
+<body>
+<div class="phone-container">
+    <div class="header" id="header-title">English Master #31</div>
+    <div id="display-area"></div>
+    <div id="nav-area" class="nav-btns-fixed hidden">
+        <button class="btn-prev" onclick="prevSentence()">PREV</button>
+        <button class="btn-next" onclick="nextSentence()" id="main-next-btn">NEXT</button>
+    </div>
+</div>
+
+<script>
+    const fullData = [
+        { 
+            en: "The quest for knowledge in the material world is a never‑ending pursuit, but the quest does not mean that a thoroughly schooled person is an educated person or that an educated person is a wise person.", 
+            ko: "물질 세계에서 지식에 대한 탐구는 끝없는 추구이지만, 그 탐구가 철저하게 교육받은 사람이 교양 있는 사람이라거나 교양 있는 사람이 지혜로운 사람이라는 것을 의미하지는 않는다.", 
+            voca: ["quest:탐구", "knowledge:지식", "material world:물질 세계", "never-ending:끝없는", "pursuit:추구", "thoroughly:철저하게", "schooled:교육받은", "educated:교양 있는, 교육된", "wise:지혜로운", "person:사람"] 
+        },
+        { 
+            en: "We are too often blinded by our ignorance of our ignorance, and our pursuit of knowledge is no guarantee of wisdom.", 
+            ko: "우리는 너무 자주 우리의 무지에 대한 무지 때문에 눈이 멀게 되며, 우리의 지식 추구가 지혜를 보장하지는 않는다.", 
+            voca: ["too often:너무 자주", "blinded:눈이 먼", "ignorance:무지", "of our ignorance:우리의 무지에 대한", "pursuit:추구", "no guarantee:보장하지 않음", "wisdom:지혜", "🍌", "🍌", "🍌"] 
+        },
+        { 
+            en: "Hence, we are prone to becoming the blind leading the blind because our overemphasis on competition in nearly everything makes looking good more important than being good.", 
+            ko: "따라서, 우리는 맹인이 맹인을 인도하는 꼴이 되기 쉬운데, 거의 모든 것에 대한 경쟁의 과도한 강조가 좋게 행동하는 것보다 좋게 보이는 것을 더 중요하게 만들기 때문이다.", 
+            voca: ["Hence:따라서", "prone to:~하기 쉬운", "becoming:~이 되는 것", "blind leading the blind:맹인이 맹인을 인도하는 것", "overemphasis:과도한 강조", "competition:경쟁", "nearly:거의", "looking good:좋게 보이는 것", "more important:더 중요한", "being good:좋게 행동하는 것"] 
+        },
+        { 
+            en: "The resultant fear of being thought a fool and criticized therefore is one of greatest enemies of true learning.", 
+            ko: "그 결과로 생기는 바보처럼 여겨지고 그로 인해 비판받는 것에 대한 두려움은 진정한 학습의 가장 큰 적 중 하나이다.", 
+            voca: ["resultant:그 결과로 생기는", "fear:두려움", "thought a fool:바보처럼 여겨지는 것", "criticized:비판받는 것", "therefore:그로 인해, 따라서", "greatest:가장 큰", "enemies:적들", "true:진정한", "learning:학습", "🍌"] 
+        },
+        { 
+            en: "Although our ignorance is undeniably vast, it is from the vastness of this selfsame ignorance that our sense of wonder grows.", 
+            ko: "우리의 무지가 부인할 수 없이 방대할지라도, 우리의 경이감이 자라는 것은 바로 이 똑같은 무지의 방대함으로부터이다.", 
+            voca: ["Although:비록 ~일지라도", "undeniably:부인할 수 없이", "vast:방대한", "vastness:방대함", "selfsame:똑같은, 바로 그", "sense of wonder:경이감, 호기심", "grows:자란다", "🍌", "🍌", "🍌"] 
+        },
+        { 
+            en: "But, when we do not know we are ignorant, we do not know enough to even question, let alone investigate, our ignorance.", 
+            ko: "하지만, 우리가 무지하다는 것을 알지 못할 때, 우리는 우리의 무지를 조사하기는커녕 의문을 제기할 만큼도 알지 못한다.", 
+            voca: ["when:~할 때", "ignorant:무지한", "know enough:충분히 알다", "even:조차", "question:의문을 제기하다", "let alone:~은커녕, ~은 말할 것도 없이", "investigate:조사하다", "🍌", "🍌", "🍌"] 
+        },
+        { 
+            en: "No one can teach another person anything.", 
+            ko: "아무도 다른 사람에게 어떤 것도 가르칠 수 없다.", 
+            voca: ["No one:아무도 ~않다", "can teach:가르칠 수 있다", "another person:다른 사람", "anything:어떤 것도", "🍌", "🍌", "🍌", "🍌", "🍌", "🍌"] 
+        },
+        { 
+            en: "All one can do with and for someone else is to facilitate learning by helping the person to discover the wonder of their ignorance.", 
+            ko: "우리가 다른 사람과 함께 그리고 그를 위해 할 수 있는 전부라고는 그 사람이 자신의 무지가 주는 경이함을 발견하도록 도움으로써 학습을 촉진하는 것뿐이다.", 
+            voca: ["All one can do:할 수 있는 전부", "someone else:다른 사람", "facilitate:촉진하다", "learning:학습", "by helping:도움으로써", "discover:발견하다", "wonder:경이함", "ignorance:무지", "🍌", "🍌"] 
+        }
+    ];
+
+    let currentMode = 'INTRO';
+    let currentIdx = 0;
+    const synth = window.speechSynthesis;
+
+    function render() {
+        const area = document.getElementById('display-area');
+        const nav = document.getElementById('nav-area');
+        const header = document.getElementById('header-title');
+        area.innerHTML = '';
+
+        if (currentMode === 'INTRO') {
+            header.innerText = "English Master #31";
+            nav.classList.add('hidden');
+            area.innerHTML = `
+                <div class="main-title-card"><h1>The Wonder of<br>Our Ignorance</h1><p>True Learning and Wisdom</p></div>
+                <div class="intro-summary">
+                    <h3>📋 지문 요약</h3>
+                    <p><b>[서론]</b> 지식에 대한 탐구가 고학력이나 교양, 혹은 지혜를 보장하는 것은 아니다. 우리는 종종 '자신이 무지하다는 사실조차 모르는 무지'에 빠져 눈이 멀곤 한다.</p>
+                    <p><b>[본론]</b> 우리 사회가 모든 영역에서 경쟁을 과도하게 강조하다 보니, 내실을 다지는 것보다 겉으로 똑똑해 보이는 것을 더 중요하게 여기게 된다. 그로 인해 바보 취급을 받거나 비판받을지 모른다는 두려움이 생겨나며, 이는 진정한 배움을 가로막는 가장 큰 적이 된다. 비록 우리의 무지가 방대할지라도, 진정한 경이감과 호기심은 바로 이 무지를 자각하는 것에서부터 자라난다.</p>
+                    <p><b>[결론]</b> 스스로 무지하다는 것을 모르면 질문을 던지거나 탐구할 생각조차 하지 못한다. 본질적으로 타인이 누군가를 강제로 가르칠 수는 없다. 교육자가 할 수 있는 진정한 역할은 학습자가 스스로 자신의 무지가 지닌 경이함을 발견하고 배움을 시작할 수 있도록 조력하는 것뿐이다.</p>
+                </div>
+                <div class="intro-topic">
+                    <span class="topic-label">💡 Topic Sentence</span>
+                    <p style="font-size:0.85rem; font-weight:600; margin-bottom:5px;">True learning begins when we overcome the fear of criticism and recognize our own ignorance, which serves as the ultimate catalyst for wonder and discovery.</p>
+                    <p style="font-size:0.75rem; color:#666; margin:0;">(진정한 학습은 비판에 대한 두려움을 극복하고 자신의 무지를 인식할 때 시작되며, 이는 경이감과 발견을 이끄는 궁극적인 촉매제 역할을 한다.)</p>
+                </div>
+                <button class="btn-next" onclick="startStep(2)">STEP 2: 문장 학습 시작 ▶</button>
+                <button class="btn-next" style="margin-top:10px; background:#9C27B0;" onclick="startStep(3)">STEP 3: 영작 연습 시작 ▶</button>
+            `;
+        } else if (currentMode === 'STEP2') {
+            header.innerText = `STEP 2. 문장 학습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+            
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="sentence-box" onclick="playTTS('${item.en.replace(/'/g, "\\'")}')">${item.en}</div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">해석 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.ko}</div>
+            `;
+            fillVoca(item.voca, '🍌', "#FFD600");
+        } else if (currentMode === 'STEP3') {
+            header.innerText = `STEP 3. 영작 연습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="kor-box">${item.ko}</div>
+                <div class="blank-area" id="blank-area"></div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">정답 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.en}</div>
+            `;
+            fillBlanks(item.en);
+            fillVoca(item.voca, '🍇', "#9C27B0");
+        }
+    }
+
+    function fillVoca(vocaList, emoji, emojiColor) {
+        const container = document.getElementById('voca-area');
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'voca-item';
+            if (vocaList[i] && vocaList[i] !== '🍌' && vocaList[i] !== '🍇') {
+                const [eng, kor] = vocaList[i].split(':');
+                div.innerText = eng;
+                div.onclick = function() {
+                    this.classList.toggle('revealed');
+                    this.innerText = this.classList.contains('revealed') ? kor : eng;
+                };
+            } else {
+                div.innerText = emoji;
+                div.style.color = emojiColor;
+                div.style.cursor = "default";
+            }
+            container.appendChild(div);
+        }
+    }
+
+    function fillBlanks(s) {
+        const c = document.getElementById('blank-area');
+        const prepositions = ["in", "on", "at", "by", "for", "from", "of", "with", "to", "into", "onto", "upon", "about", "above", "across", "after", "against", "along", "among", "around", "as", "before", "behind", "below", "beneath", "beside", "between", "beyond", "during", "except", "inside", "near", "off", "outside", "over", "past", "since", "through", "throughout", "under", "underneath", "until", "up", "within", "without"];
+
+        s.split(' ').forEach(w => {
+            const sp = document.createElement('span');
+            sp.className = 'word-blank';
+            sp.innerText = w;
+            
+            const pureWord = w.toLowerCase().replace(/[.,'":;?!()“”]/g, "");
+            
+            if (prepositions.includes(pureWord)) {
+                sp.classList.add('revealed');
+                sp.style.borderBottomColor = 'transparent'; 
+            }
+
+            sp.onclick = function() {
+                this.classList.add('revealed');
+                this.style.borderBottomColor = 'transparent';
+                playTTS(w.replace(/[.,'"]/g, ""));
+            };
+            c.appendChild(sp);
+        });
+    }
+
+    function startStep(step) {
+        currentMode = 'STEP' + step;
+        currentIdx = 0;
+        render();
+    }
+
+    function nextSentence() {
+        if (currentIdx < fullData.length - 1) {
+            currentIdx++;
+            render();
+        } else {
+            currentMode = 'INTRO';
+            render();
+        }
+    }
+
+    function prevSentence() {
+        if (currentIdx > 0) {
+            currentIdx--;
+            render();
+        }
+    }
+
+    function playTTS(text) {
+        synth.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        synth.speak(utterance);
+    }
+
+    function toggleView(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    window.onload = render;
+</script>
+</body>
+</html>

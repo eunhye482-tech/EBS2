@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English Master #33 - Official Version</title>
+    <style>
+        :root { 
+            --lavender-light: #F3E5F5; 
+            --purple-pale: #E1BEE7; 
+            --purple-main: #9575CD; 
+            --purple-dark: #673AB7;
+            --pink-soft: #FFF0F6;
+        }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; background: #F8F7FA; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
+        .phone-container { width: 100%; max-width: 450px; height: 100%; background: white; display: flex; flex-direction: column; position: relative; }
+        .header { padding: 12px; text-align: center; font-weight: bold; color: var(--purple-dark); border-bottom: 1px solid #eee; background: white; font-size: 0.95rem; }
+        #display-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        /* 공통 스타일 */
+        .hidden { display: none !important; }
+        .btn-next { background: var(--purple-main); color: white; padding: 16px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: auto; }
+        .btn-prev { background: #EDF2F7; color: #718096; padding: 16px; border-radius: 15px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; width: 30%; margin-right: 10px; }
+
+        /* STEP 1: 인트로 */
+        .main-title-card { width: 100%; background: linear-gradient(135deg, #B39DDB 0%, #9575CD 100%); padding: 35px 20px; border-radius: 20px; color: white; margin-bottom: 20px; box-sizing: border-box; text-align: center; box-shadow: 0 4px 10px rgba(149,117,205,0.3); }
+        .intro-summary { background: var(--lavender-light); padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 2px solid var(--purple-pale); font-size: 0.92rem; line-height: 1.6; }
+        .intro-topic { background: var(--pink-soft); padding: 18px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #F8BBD0; }
+
+        /* 학습 카드 스타일 */
+        .sentence-box { background: var(--lavender-light); padding: 20px; border-radius: 20px; font-size: 1.1rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 15px; border: 2px solid var(--purple-pale); text-align: center; cursor: pointer; line-height: 1.5; }
+        .kor-box { background: #FFF5F7; padding: 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; color: #D81B60; margin-bottom: 15px; border: 2px solid #F8BBD0; text-align: center; line-height: 1.6; }
+        
+        /* 단어 그리드 */
+        .voca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .voca-item { background: #fff; padding: 10px; border-radius: 10px; font-size: 0.82rem; border: 1px solid var(--purple-pale); cursor: pointer; text-align: center; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .voca-item.revealed { background: var(--purple-main); color: white; }
+        
+        /* STEP 3 전용: 빈칸 스타일 */
+        .blank-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; padding: 10px; background: #fdfdfd; border-radius: 15px; }
+        .word-blank { border-bottom: 2px solid var(--purple-main); min-width: 35px; text-align: center; font-size: 1rem; color: transparent; cursor: pointer; padding: 0 2px; }
+        .word-blank.revealed { color: var(--purple-dark); border-bottom-color: transparent; font-weight: bold; }
+
+        .btn-check { background: #f0f0f0; padding: 12px; border-radius: 12px; border: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; width: 100%; font-size: 0.9rem; }
+        .trans-content { display: none; padding: 15px; background: #fafafa; border-radius: 15px; border-left: 5px solid var(--purple-main); font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px; }
+        .nav-btns-fixed { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; margin-top: auto; }
+    </style>
+</head>
+<body>
+<div class="phone-container">
+    <div class="header" id="header-title">English Master #33</div>
+    <div id="display-area"></div>
+    <div id="nav-area" class="nav-btns-fixed hidden">
+        <button class="btn-prev" onclick="prevSentence()">PREV</button>
+        <button class="btn-next" onclick="nextSentence()" id="main-next-btn">NEXT</button>
+    </div>
+</div>
+
+<script>
+    const fullData = [
+        { 
+            en: "The empiricist philosopher John Locke argued that when the human being was first born, the mind was simply a blank slate—a tabula rasa—waiting to be written on by experience.", 
+            ko: "경험주의 철학자 John Locke는 인간이 처음 태어났을 때 정신은 단지 빈 석판—타불라 라사—이며 경험에 의해 기록되기를 기다리고 있다고 주장했다.", 
+            voca: ["empiricist:경험주의의", "philosopher:철학자", "argued:주장했다", "human being:인간", "first born:처음 태어난", "mind:정신, 마음", "simply:단지, 간단히", "blank slate:빈 석판", "waiting:기다리는", "experience:경험"] 
+        },
+        { 
+            en: "Locke believed that our experience shapes who we are and who we become—and therefore he also believed that, given different experiences, human beings would have different characters.", 
+            ko: "Locke는 우리의 경험이 우리가 누구인지, 우리가 어떤 사람이 되는지를 형성한다고 믿었고, 따라서 다른 경험이 주어진다면 인간은 다른 인격을 가지게 될 것이라고 믿었다.", 
+            voca: ["believed:믿었다", "shapes:형성하다", "who we are:우리의 현재 모습", "become:되다", "therefore:따라서", "given:주어진다면", "different:다른", "human beings:인간들", "characters:인격, 성격", "🍌"] 
+        },
+        { 
+            en: "The influence of these ideas was profound, particularly for the new colonies in America, for example, because these were conscious attempts to make a new start and to form a new society.", 
+            ko: "예를 들어, 이러한 아이디어들의 영향은 미국의 새로운 식민지들에 특히 깊었는데, 왜냐하면 이것들은 새로운 시작을 하고 새로운 사회를 형성하려는 의식적인 시도였기 때문이다.", 
+            voca: ["influence:영향", "ideas:아이디어들, 생각들", "profound:깊은, 심오한", "particularly:특히", "new colonies:새로운 식민지들", "for example:예를 들어", "conscious:의식적인", "attempts:시도들", "make a start:시작을 하다", "form:형성하다"] 
+        },
+        { 
+            en: "The new society was to operate on a different basis from that of European culture, which was based on the feudal system in which people’s place in society was almost entirely determined by birth, and which therefore tended to emphasize innate characteristics.", 
+            ko: "새로운 사회는 유럽 문화의 그것과는 다른 기반 위에서 작동할 예정이었는데, 유럽 문화는 사회적 지위가 거의 전적으로 출생에 의해 결정되고 따라서 선천적인 특성을 강조하는 경향이 있는 봉건 제도에 기초하고 있었다.", 
+            voca: ["operate:작동하다, 운영되다", "basis:기반, 기초", "culture:문화", "based on:~에 기초한", "feudal system:봉건 제도", "place:지위, 장소", "entirely:전적으로", "determined:결정된", "tended to:~하는 경향이 있었다", "innate:선천적인, 타고난"] 
+        },
+        { 
+            en: "Locke’s emphasis on the importance of experience in forming the human being provided an optimistic framework for those trying to form a different society.", 
+            ko: "인간을 형성하는 데 있어서 경험의 중요성에 대한 Locke의 강조는 다른 사회를 형성하려고 노력하는 사람들에게 낙관적인 틀을 제공했다.", 
+            voca: ["emphasis:강조", "importance:중요성", "experience:경험", "forming:형성하는 것", "provided:제공했다", "optimistic:낙관적인", "framework:틀, 체계", "trying:노력하는", "different:다른", "society:사회"] 
+        }
+    ];
+
+    let currentMode = 'INTRO';
+    let currentIdx = 0;
+    const synth = window.speechSynthesis;
+
+    function render() {
+        const area = document.getElementById('display-area');
+        const nav = document.getElementById('nav-area');
+        const header = document.getElementById('header-title');
+        area.innerHTML = '';
+
+        if (currentMode === 'INTRO') {
+            header.innerText = "English Master #33";
+            nav.classList.add('hidden');
+            area.innerHTML = `
+                <div class="main-title-card"><h1>John Locke's Blank Slate<br>and a New Society</h1><p>Experience and Social Formation</p></div>
+                <div class="intro-summary">
+                    <h3>📋 지문 요약</h3>
+                    <p><b>[서론]</b> 경험주의 철학자 존 로크는 인간의 정신이 태어날 때 아무것도 적혀있지 않은 빈 석판(타불라 라사) 상태이며, 이후의 경험을 통해 채워지는 것이라고 주장했다. 그는 인간이 겪는 경험에 따라 완전히 다른 인격이 형성될 수 있다고 믿었다.</p>
+                    <p><b>[본론]</b> 이러한 로크의 사상은 새로운 시작을 선언하며 새로운 사회를 형성하고자 했던 미국의 초기 식민지 사회에 매우 심오한 영향을 미쳤다. 이 새로운 사회는 출생에 의해 신분과 지위가 거의 전적으로 결정되고 선천적 특성만을 강조하던 유럽의 구습인 봉건 제도와는 철저히 다른 기반 위에서 운영되고자 했다.</p>
+                    <p><b>[결론]</b> 인간 형성 과정에서 경험이 지닌 결정적인 힘을 역설한 로크의 사상은, 출신 성분의 굴레에서 벗어나 완전히 차별화된 유토피아적 사회를 직접 건설하고자 분투하던 이들에게 사회를 개혁할 수 있다는 거대한 '낙관적인 사상적 틀'을 제공해 주었다.</p>
+                </div>
+                <div class="intro-topic">
+                    <span class="topic-label">💡 Topic Sentence</span>
+                    <p style="font-size:0.85rem; font-weight:600; margin-bottom:5px;">John Locke's empiricist concept of the mind as a blank slate shaped by experience provided an optimistic philosophical foundation for building a new American society free from the European feudal system.</p>
+                    <p style="font-size:0.75rem; color:#666; margin:0;">(정신을 경험에 의해 형성되는 빈 석판으로 바라본 존 로크의 경험주의적 개념은 유럽의 봉건 제도에서 벗어난 새로운 미국 사회를 건설하려는 이들에게 낙관적인 철학적 토대를 제공했다.)</p>
+                </div>
+                <button class="btn-next" onclick="startStep(2)">STEP 2: 문장 학습 시작 ▶</button>
+                <button class="btn-next" style="margin-top:10px; background:#9C27B0;" onclick="startStep(3)">STEP 3: 영작 연습 시작 ▶</button>
+            `;
+        } else if (currentMode === 'STEP2') {
+            header.innerText = `STEP 2. 문장 학습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+            
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="sentence-box" onclick="playTTS('${item.en.replace(/'/g, "\\'")}')">${item.en}</div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">해석 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.ko}</div>
+            `;
+            fillVoca(item.voca, '🍌', "#FFD600");
+        } else if (currentMode === 'STEP3') {
+            header.innerText = `STEP 3. 영작 연습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="kor-box">${item.ko}</div>
+                <div class="blank-area" id="blank-area"></div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">정답 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.en}</div>
+            `;
+            fillBlanks(item.en);
+            fillVoca(item.voca, '🍇', "#9C27B0");
+        }
+    }
+
+    function fillVoca(vocaList, emoji, emojiColor) {
+        const container = document.getElementById('voca-area');
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'voca-item';
+            if (vocaList[i] && vocaList[i] !== '🍌' && vocaList[i] !== '🍇') {
+                const [eng, kor] = vocaList[i].split(':');
+                div.innerText = eng;
+                div.onclick = function() {
+                    this.classList.toggle('revealed');
+                    this.innerText = this.classList.contains('revealed') ? kor : eng;
+                };
+            } else {
+                div.innerText = emoji;
+                div.style.color = emojiColor;
+                div.style.cursor = "default";
+            }
+            container.appendChild(div);
+        }
+    }
+
+    function fillBlanks(s) {
+        const c = document.getElementById('blank-area');
+        const prepositions = ["in", "on", "at", "by", "for", "from", "of", "with", "to", "into", "onto", "upon", "about", "above", "across", "after", "against", "along", "among", "around", "as", "before", "behind", "below", "beneath", "beside", "between", "beyond", "during", "except", "inside", "near", "off", "outside", "over", "past", "since", "through", "throughout", "under", "underneath", "until", "up", "within", "without"];
+
+        s.split(' ').forEach(w => {
+            const sp = document.createElement('span');
+            sp.className = 'word-blank';
+            sp.innerText = w;
+            
+            const pureWord = w.toLowerCase().replace(/[.,'":;?!()“”]/g, "");
+            
+            if (prepositions.includes(pureWord)) {
+                sp.classList.add('revealed');
+                sp.style.borderBottomColor = 'transparent'; 
+            }
+
+            sp.onclick = function() {
+                this.classList.add('revealed');
+                this.style.borderBottomColor = 'transparent';
+                playTTS(w.replace(/[.,'"]/g, ""));
+            };
+            c.appendChild(sp);
+        });
+    }
+
+    function startStep(step) {
+        currentMode = 'STEP' + step;
+        currentIdx = 0;
+        render();
+    }
+
+    function nextSentence() {
+        if (currentIdx < fullData.length - 1) {
+            currentIdx++;
+            render();
+        } else {
+            currentMode = 'INTRO';
+            render();
+        }
+    }
+
+    function prevSentence() {
+        if (currentIdx > 0) {
+            currentIdx--;
+            render();
+        }
+    }
+
+    function playTTS(text) {
+        synth.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        synth.speak(utterance);
+    }
+
+    function toggleView(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    window.onload = render;
+</script>
+</body>
+</html>

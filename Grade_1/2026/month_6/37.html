@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>English Master - Working and Long-Term Memory</title>
+    <style>
+        :root { 
+            --lavender-light: #F3E5F5; 
+            --purple-pale: #E1BEE7; 
+            --purple-main: #9575CD; 
+            --purple-dark: #673AB7;
+            --pink-soft: #FFF0F6;
+        }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; background: #F8F7FA; display: flex; justify-content: center; min-height: 100vh; }
+        .phone-container { width: 100%; max-width: 450px; background: white; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
+        .header { padding: 12px; text-align: center; font-weight: bold; color: var(--purple-dark); border-bottom: 1px solid #eee; background: white; font-size: 0.95rem; position: sticky; top: 0; z-index: 10; }
+        #display-area { flex: 1; padding: 20px; display: flex; flex-direction: column; }
+        
+        .hidden { display: none !important; }
+        
+        .btn-intro-step { background: var(--purple-main); color: white; padding: 16px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; }
+
+        .main-title-card { width: 100%; background: linear-gradient(135deg, #B39DDB 0%, #9575CD 100%); padding: 35px 20px; border-radius: 20px; color: white; margin-bottom: 20px; box-sizing: border-box; text-align: center; }
+        .intro-summary { background: var(--lavender-light); padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 2px solid var(--purple-pale); font-size: 0.92rem; line-height: 1.6; color: #444; }
+        .intro-topic { background: var(--pink-soft); padding: 18px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #F8BBD0; text-align: center; }
+        .topic-kor { font-weight: bold; color: #D81B60; display: block; margin-bottom: 5px; }
+        .topic-eng { font-size: 0.85rem; color: #888; font-style: italic; }
+
+        .sentence-box { background: var(--lavender-light); padding: 20px; border-radius: 20px; font-size: 1.1rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 15px; border: 2px solid var(--purple-pale); text-align: center; cursor: pointer; line-height: 1.5; }
+        .kor-box { background: #FFF5F7; padding: 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; color: #D81B60; margin-bottom: 15px; border: 2px solid #F8BBD0; text-align: center; line-height: 1.6; }
+        
+        .voca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .voca-item { background: #fff; padding: 10px; border-radius: 10px; font-size: 0.82rem; border: 1px solid var(--purple-pale); cursor: pointer; text-align: center; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: #333; }
+        .voca-item.revealed { background: var(--purple-main); color: white; }
+        
+        .blank-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; padding: 10px; background: #fdfdfd; border-radius: 15px; line-height: 2.3; }
+        .word-blank { border-bottom: 2px solid var(--purple-main); min-width: 35px; text-align: center; font-size: 1rem; color: transparent; cursor: pointer; padding: 0 2px; }
+        .word-blank.revealed { color: var(--purple-dark); border-bottom-color: transparent; font-weight: bold; background: #EDE7F6; border-radius: 4px; }
+
+        .btn-check { background: #f0f0f0; padding: 12px; border-radius: 12px; border: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; width: 100%; font-size: 0.9rem; color: #555; }
+        .trans-content { display: none; padding: 15px; background: #fafafa; border-radius: 15px; border-left: 5px solid var(--purple-main); font-size: 0.9rem; margin-bottom: 10px; color: #444; }
+        
+        .nav-btns-fixed { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; margin-top: auto; position: sticky; bottom: 0; gap: 10px; align-items: center; }
+        .btn-prev { background: #EDF2F7; color: #718096; border-radius: 15px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; height: 55px; flex: 1; display: flex; align-items: center; justify-content: center; }
+        .btn-next { background: var(--purple-main); color: white; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; height: 55px; flex: 1.5; display: flex; align-items: center; justify-content: center; margin-top: 0; }
+    </style>
+</head>
+<body>
+<div class="phone-container">
+    <div class="header" id="header-title">English Master</div>
+    <div id="display-area"></div>
+    <div id="nav-area" class="nav-btns-fixed hidden">
+        <button class="btn-prev" onclick="prevSentence()">PREV</button>
+        <button class="btn-next" onclick="nextSentence()" id="main-next-btn">NEXT</button>
+    </div>
+</div>
+
+<script>
+    const fullData = [
+        { en: `The big difference between working and long-term memory is that we are explicitly aware of the information in working memory, but we are not able to directly access the information in our long-term memory.`, ko: `작업 기억과 장기 기억의 큰 차이점은 우리가 작업 기억 속의 정보는 명시적으로 의식하지만, 장기 기억 속의 정보에는 직접 접근할 수 없다는 것입니다.`, voca: ["big difference:큰 차이점", "working memory:작업 기억", "long-term memory:장기 기억", "explicitly aware:명시적으로 의식하는", "information:정보", "not able to:~할 수 없는", "directly access:직접 접근하다", "🍎", "🍎", "🍎"] },
+        { en: `We access long-term memory by bringing the information into working memory.`, ko: `우리는 그 정보를 작업 기억으로 가져옴으로써 장기 기억에 접근합니다.`, voca: ["access:접근하다", "by bringing:~을 가져옴으로써", "information:정보", "into:~ 안으로", "working memory:작업 기억", "🍎", "🍎", "🍎", "🍎", "🍎"] },
+        { en: `For example, right now you are not aware of all the actors you have ever seen.`, ko: `예를 들어, 지금 당장 여러분은 여러분이 지금까지 보았던 모든 배우들을 의식하지는 못합니다.`, voca: ["For example:예를 들어", "right now:지금 당장", "not aware of:~을 의식하지 못하는", "all the actors:모든 배우들", "ever seen:지금까지 보았던", "🍎", "🍎", "🍎", "🍎", "🍎"] },
+        { en: `They are stored in your long-term memory outside your consciousness.`, ko: `그것들은 여러분의 의식 밖의 장기 기억에 저장되어 있습니다.`, voca: ["stored:저장된", "outside:~ 밖에", "consciousness:의식", "long-term memory:장기 기억", "🍎", "🍎", "🍎", "🍎", "🍎", "🍎"] },
+        { en: `However, if I asked you to list all the actors, you would use your working memory to retrieve them one by one and reel them off.`, ko: `하지만, 만약 내가 여러분에게 모든 배우의 목록을 대보라고 요청한다면, 여러분은 그것들을 하나씩 회수하여 줄줄이 읊기 위해 작업 기억을 사용할 것입니다.`, voca: ["asked you to 요청하다", "list:목록을 대다/나열하다", "retrieve:회수하다/되찾아오다", "one by one:하나씩", "reel off:줄줄이 읊다", "would use:사용할 것이다", "🍎", "🍎", "🍎", "🍎"] },
+        { en: `Your working memory can access your long-term memory and bring those memories to awareness.`, ko: `여러분의 작업 기억은 장기 기억에 접근하여 그러한 기억들을 의식으로 가져올 수 있습니다.`, voca: ["working memory:작업 기억", "access:접근하다", "long-term memory:장기 기억", "bring A to awareness:A를 의식으로 가져오다", "memories:기억들", "🍎", "🍎", "🍎", "🍎", "🍎"] },
+        { en: `But remember it has a limit of seven items or chunks.`, ko: `하지만 그것이 7개의 항목이나 덩어리라는 한계를 가지고 있다는 것을 기억하십시오.`, voca: ["remember:기억하다", "limit:한계/제한", "seven items:7개의 항목들", "chunks:덩어리들", "🍎", "🍎", "🍎", "🍎", "🍎", "🍎"] },
+        { en: `Each actor would be an item.`, ko: `각 배우가 하나의 항목이 될 것입니다.`, voca: ["Each actor:각 배우", "would be:~이 될 것이다", "item:항목", "🍎", "🍎", "🍎", "🍎", "🍎", "🍎", "🍎"] },
+        { en: `Try and hold all the actors you know in your explicit awareness.`, ko: `여러분이 알고 있는 모든 배우를 명시적 의식 속에 담아두려고 노력해 보십시오.`, voca: ["Try and hold:담아두려고 노력하다", "all the actors:모든 배우들", "you know:여러분이 알고 있는", "explicit awareness:명시적 의식", "🍎", "🍎", "🍎", "🍎", "🍎", "🍎"] },
+        { en: `You might try to visualize a large group of them.`, ko: `여러분은 그들의 큰 집단을 마음속에 시각화하려고 노력할지도 모릅니다.`, voca: ["try to visualize:시각화하려고 노력하다", "large group:큰 집단", "them:그들", "🍎", "🍎", "🍎", "🍎", "🍎", "🍎", "🍎"] },
+        { en: `But you still would only be aware of a few actors at any one time.`, ko: `하지만 여러분은 여전히 어느 한 번에 오직 몇 명의 배우만을 의식할 수 있을 것입니다.`, voca: ["still:여전히", "only be aware of:오직 ~만을 의식하다", "a few actors:몇 명의 배우들", "at any one time:어느 한 번에/동시에", "🍎", "🍎", "🍎", "🍎", "🍎", "🍎"] }
+    ];
+
+    let currentMode = 'INTRO';
+    let currentIdx = 0;
+    const synth = window.speechSynthesis;
+
+    function render() {
+        const area = document.getElementById('display-area');
+        const nav = document.getElementById('nav-area');
+        const header = document.getElementById('header-title');
+        area.innerHTML = '';
+
+        if (currentMode === 'INTRO') {
+            header.innerText = "English Master";
+            nav.classList.add('hidden');
+            area.innerHTML = `
+                <div class="main-title-card"><h1>Working vs. Long-Term<br>Memory Mechanisms</h1><p>작업 기억과 장기 기억의 소통과 용량 한계</p></div>
+                
+                <div class="intro-summary">
+                    <p>• <b>📍 서론:</b> 작업 기억(Working memory)과 장기 기억(Long-term memory)의 결정적 차이는 정보에 대한 명시적 의식(explicit awareness) 여부임.</p>
+                    <p>• <b>📍 본론:</b> 의식 밖에 저장된 장기 기억에 직접 접근하는 것은 불가능하며, 정보를 작업 기억 영역으로 소환(retrieve)해야만 활용할 수 있음. 배우의 이름을 떠올려 줄줄이 읊는(reel off) 행위가 이 상호작용의 예시임.</p>
+                    <p>• <b>📍 결론:</b> 그러나 작업 기억은 한 번에 '7개의 항목이나 덩어리(seven items or chunks)'만 처리할 수 있는 병목 한계를 가짐. 아무리 수많은 배우를 동시에 시각화하려 노력해도 한 순간에는 극소수의 배우만 의식 속에 붙잡아둘 수 있음.</p>
+                </div>
+                <div class="intro-topic">
+                    <span class="topic-kor">주제: 작업 기억과 장기 기억의 기능적 차이 및 작업 기억이 가진 정보 처리의 한계</span>
+                    <span class="topic-eng">Topic: The functional differences between working and long-term memory, and the capacity limitations of working memory</span>
+                </div>
+                <button class="btn-intro-step" onclick="startStep(2)">STEP 2: 문장 학습 시작 ▶</button>
+                <button class="btn-intro-step" style="background:#9C27B0;" onclick="startStep(3)">STEP 3: 전체 빈칸 연습 시작 ▶</button>
+            `;
+        } else {
+            const stepNum = currentMode === 'STEP2' ? 2 : 3;
+            header.innerText = "STEP " + stepNum + " (" + (currentIdx + 1) + "/" + fullData.length + ")";
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+            
+            const item = fullData[currentIdx];
+            if (currentMode === 'STEP2') {
+                area.innerHTML = `<div class="sentence-box" onclick="playTTS(\`${item.en}\`)">${item.en}</div><div class="voca-grid" id="voca-area"></div><button class="btn-check" onclick="toggleView('trans-area')">해석 확인</button><div id="trans-area" class="trans-content">${item.ko}</div>`;
+                fillVoca(item.voca, '🍎', "#FF3B30");
+            } else {
+                area.innerHTML = `<div class="kor-box">${item.ko}</div><div class="blank-area" id="blank-area"></div><div class="voca-grid" id="voca-area"></div><button class="btn-check" onclick="toggleView('trans-area')">정답 확인</button><div id="trans-area" class="trans-content">${item.en}</div>`;
+                fillBlanks(item.en);
+                fillVoca(item.voca, '🍇', "#9C27B0");
+            }
+        }
+    }
+
+    function fillVoca(vList, emo, col) {
+        const area = document.getElementById('voca-area');
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'voca-item';
+            if (vList[i] && vList[i].includes(':')) {
+                const [en, ko] = vList[i].split(':');
+                div.innerText = en;
+                div.onclick = function() { this.classList.toggle('revealed'); this.innerText = this.classList.contains('revealed') ? ko : en; };
+            } else {
+                div.innerText = emo; div.style.color = col; div.style.cursor = "default";
+            }
+            area.appendChild(div);
+        }
+    }
+
+    function fillBlanks(s) {
+        const area = document.getElementById('blank-area');
+        s.split(' ').forEach(w => {
+            const span = document.createElement('span');
+            span.className = 'word-blank'; 
+            span.innerText = w; 
+            span.onclick = function() { 
+                this.classList.add('revealed'); 
+                playTTS(w.replace(/[.,\'\"“”;:()?\-]/g, "")); 
+            }; 
+            area.appendChild(span);
+        });
+    }
+
+    function startStep(s) { currentMode = 'STEP' + s; currentIdx = 0; render(); }
+    function nextSentence() { if (currentIdx < fullData.length - 1) { currentIdx++; render(); } else { currentMode = 'INTRO'; render(); } }
+    function prevSentence() { if (currentIdx > 0) { currentIdx--; render(); } else { currentMode = 'INTRO'; render(); } }
+    function playTTS(t) { synth.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; synth.speak(u); }
+    function toggleView(id) { const el = document.getElementById(id); el.style.display = (el.style.display === 'block') ? 'none' : 'block'; }
+    window.onload = render;
+</script>
+</body>
+</html>

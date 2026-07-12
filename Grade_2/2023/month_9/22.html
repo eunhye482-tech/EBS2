@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>English Master #22 - 23년 9월 고2</title>
+    <style>
+        :root { 
+            --lavender-light: #F3E5F5; 
+            --purple-pale: #E1BEE7; 
+            --purple-main: #9575CD; 
+            --purple-dark: #673AB7;
+            --pink-soft: #FFF0F6;
+        }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; background: #F8F7FA; display: flex; justify-content: center; min-height: 100vh; }
+        .phone-container { width: 100%; max-width: 450px; background: white; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
+        .header { padding: 12px; text-align: center; font-weight: bold; color: var(--purple-dark); border-bottom: 1px solid #eee; background: white; font-size: 0.95rem; position: sticky; top: 0; z-index: 10; }
+        #display-area { flex: 1; padding: 20px; display: flex; flex-direction: column; }
+        
+        .hidden { display: none !important; }
+        
+        .btn-intro-step { background: var(--purple-main); color: white; padding: 16px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; }
+
+        .main-title-card { width: 100%; background: linear-gradient(135deg, #B39DDB 0%, #9575CD 100%); padding: 35px 20px; border-radius: 20px; color: white; margin-bottom: 20px; box-sizing: border-box; text-align: center; }
+        .intro-summary { background: var(--lavender-light); padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 2px solid var(--purple-pale); font-size: 0.92rem; line-height: 1.6; color: #444; }
+        .intro-topic { background: var(--pink-soft); padding: 18px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #F8BBD0; text-align: center; }
+        .topic-kor { font-weight: bold; color: #D81B60; display: block; margin-bottom: 5px; }
+        .topic-eng { font-size: 0.85rem; color: #888; font-style: italic; }
+
+        .sentence-box { background: var(--lavender-light); padding: 20px; border-radius: 20px; font-size: 1.1rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 15px; border: 2px solid var(--purple-pale); text-align: center; cursor: pointer; line-height: 1.5; }
+        .kor-box { background: #FFF5F7; padding: 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; color: #D81B60; margin-bottom: 15px; border: 2px solid #F8BBD0; text-align: center; line-height: 1.6; }
+        
+        .voca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .voca-item { background: #fff; padding: 10px; border-radius: 10px; font-size: 0.82rem; border: 1px solid var(--purple-pale); cursor: pointer; text-align: center; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: #333; }
+        .voca-item.revealed { background: var(--purple-main); color: white; }
+        
+        .blank-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; padding: 10px; background: #fdfdfd; border-radius: 15px; }
+        .word-blank { border-bottom: 2px solid var(--purple-main); min-width: 35px; text-align: center; font-size: 1rem; color: transparent; cursor: pointer; padding: 0 2px; }
+        .word-blank.revealed { color: var(--purple-dark); border-bottom-color: transparent; font-weight: bold; }
+
+        .btn-check { background: #f0f0f0; padding: 12px; border-radius: 12px; border: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; width: 100%; font-size: 0.9rem; color: #555; }
+        .trans-content { display: none; padding: 15px; background: #fafafa; border-radius: 15px; border-left: 5px solid var(--purple-main); font-size: 0.9rem; margin-bottom: 10px; color: #444; }
+        
+        .nav-btns-fixed { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; margin-top: auto; position: sticky; bottom: 0; gap: 10px; align-items: center; }
+        .btn-prev { background: #EDF2F7; color: #718096; border-radius: 15px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; height: 55px; flex: 1; display: flex; align-items: center; justify-content: center; }
+        .btn-next { background: var(--purple-main); color: white; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; height: 55px; flex: 1.5; display: flex; align-items: center; justify-content: center; margin-top: 0; }
+    </style>
+</head>
+<body>
+<div class="phone-container">
+    <div class="header" id="header-title">English Master #22</div>
+    <div id="display-area"></div>
+    <div id="nav-area" class="nav-btns-fixed hidden">
+        <button class="btn-prev" onclick="prevSentence()">PREV</button>
+        <button class="btn-next" onclick="nextSentence()" id="main-next-btn">NEXT</button>
+    </div>
+</div>
+
+<script>
+    // 노출 타겟: 전치사, 접속사, 관사 등 (일관된 시스템 규칙)
+    const visibleWords = ["it’s", "that", "help", "us", "to", "such", "an", "extent", "in", "if", "you", "can", "some", "or", "for", "but", "also", "simply", "about", "future", "outcome", "might", "when", "your", "is", "make", "a", "the", "last", "thing", "want", "be", "enough", "off", "those", "find", "study", "motivated", "even", "does", "not", "hold", "true", "now", "know", "why", "need", "put", "into"];
+
+    const fullData = [
+        { en: "It’s remarkable that positive fantasies help us relax to such an extent that it shows up in physiological tests.", ko: "긍정적인 환상이 생리적 검사에서 나타날 정도로 우리가 휴식하는 데 도움이 된다는 것은 주목할 만합니다.", voca: ["remarkable:주목할 만한", "positive fantasies:긍정적인 환상", "relax:휴식하다/완화되다", "such an extent:그러한 정도", "shows up:나타나다/드러나다", "physiological tests:생리적 검사", "🍎", "🍎", "🍎", "🍎"] },
+        { en: "If you want to unwind, you can take some deep breaths, get a massage, or go for a walk—but you can also try simply closing your eyes and fantasizing about some future outcome that you might enjoy.", ko: "만약 여러분이 긴장을 풀고 싶다면, 깊은 숨을 쉬거나, 마사지를 받거나, 산책을 갈 수도 있지만, 단순히 눈을 감고 여러분이 즐길지도 모르는 어떤 미래의 결과에 대해 상상해 볼 수도 있습니다.", voca: ["unwind:긴장을 풀다", "deep breaths:깊은 숨", "fantasizing about:~에 대해 상상/공상하는 것", "future outcome:미래의 결과", "enjoy:즐기다", "🍎", "🍎", "🍎", "🍎", "🍎"] },
+        { en: "But what about when your objective is to make your wish a reality? The last thing you want to be is relaxed.", ko: "하지만 여러분의 목표가 소원을 현실로 만드는 것일 때는 어떨까요? 여러분이 가장 피해야 할 상태는 이완된(편안한) 상태입니다.", voca: ["objective:목표/객관적인", "make A a reality:A를 현실로 만들다", "wish:소원", "the last thing:가장 ~할 것 같지 않은 것/가장 피해야 할 것", "relaxed:이완된/긴장을 푼", "🍎", "🍎", "🍎", "🍎", "🍎"] },
+        { en: "You want to be energized enough to get off the couch and lose those pounds or find that job or study for that test, and you want to be motivated enough to stay engaged even when the inevitable obstacles or challenges arise.", ko: "여러분은 소파에서 일어나 살을 빼거나 직장을 구하거나 시험 공부를 할 수 있을 만큼 충분히 에너지를 얻고 싶어 하고, 불가피한 장애물이나 도전 과제가 발생할 때도 계속 전념할 수 있도록 충분히 동기 부여를 받고 싶어 합니다.", voca: ["energized:에너지가 넘치는", "get off:일어나다/내리다", "lose pounds:살을 빼다", "motivated:동기 부여된", "stay engaged:계속 전념/참여하다", "inevitable:불가피한", "obstacles:장애물", "challenges:도전 과제", "arise:발생하다/일어나다", "🍎"] },
+        { en: "The principle of “Dream it. Wish it. Do it.” does not hold true, and now we know why: in dreaming it, you undercut the energy you need to do it.", ko: "“그것을 꿈꿔라. 그것을 소망하라. 그것을 실행하라.”라는 원칙은 사실이 아니며, 우리는 이제 그 이유를 압니다. 그것을 꿈꾸는 과정에서, 여러분은 그것을 실행하는 데 필요한 에너지를 약화시키기 때문입니다.", voca: ["principle:원칙/원리", "hold true:사실이다/유효하다", "undercut:약화시키다/밑을 잘라내다", "energy:에너지", "🍎", "🍎", "🍎", "🍎", "🍎", "🍎"] },
+        { en: "You put yourself in a temporary state of complete happiness, calmness—and inactivity.", ko: "여러분은 자신을 완전한 행복과 평온, 그리고 '비활동'의 일시적인 상태에 빠뜨리는 것입니다.", voca: ["temporary state:일시적인 상태", "complete happiness:완전한 행복", "calmness:평온/차분함", "inactivity:비활동/비활성화", "🍎", "🍎", "🍎", "🍎", "🍎", "🍎"] }
+    ];
+
+    let currentMode = 'INTRO';
+    let currentIdx = 0;
+    const synth = window.speechSynthesis;
+
+    function render() {
+        const area = document.getElementById('display-area');
+        const nav = document.getElementById('nav-area');
+        const header = document.getElementById('header-title');
+        area.innerHTML = '';
+
+        if (currentMode === 'INTRO') {
+            header.innerText = "English Master #22";
+            nav.classList.add('hidden');
+            area.innerHTML = `
+                <div class="main-title-card"><h1>The Paradox of<br>Positive Fantasy</h1><p>2023년 9월 고2 22번</p></div>
+                
+                <div class="intro-summary">
+                    <p>• <b>📍 서론:</b> 미래에 대한 긍정적 환상은 생리적 검사에서 입증될 만큼 신체적 이완과 휴식에 큰 도움을 줌.</p>
+                    <p>• <b>📍 본론:</b> 하지만 목표를 달성하려 할 때 편안한 상태는 최악임. 장애물을 극복하고 소파에서 일어나 행동하려면 에너지가 넘치고 동기 부여되어야 함.</p>
+                    <p>• <b>📍 결론:</b> 상상하는 것만으로 뇌는 이미 목표를 이뤘다고 착각해 에너지를 약화(undercut)시키며, 결국 일시적 평온과 비활동(inactivity) 상태에 머물게 만듦.</p>
+                </div>
+                <div class="intro-topic">
+                    <span class="topic-kor">주제: 긍정적 환상이 실행에 필요한 에너지를 약화시켜 소망 성취에 방해가 되는 역설</span>
+                    <span class="topic-eng">Topic: The paradox where positive fantasies interfere with wish fulfillment by undercutting the energy needed for action</span>
+                </div>
+                <button class="btn-intro-step" onclick="startStep(2)">STEP 2: 문장 학습 시작 ▶</button>
+                <button class="btn-intro-step" style="background:#9C27B0;" onclick="startStep(3)">STEP 3: 영작 연습 시작 ▶</button>
+            `;
+        } else {
+            const stepNum = currentMode === 'STEP2' ? 2 : 3;
+            header.innerText = `STEP ${stepNum} (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+            
+            const item = fullData[currentIdx];
+            if (currentMode === 'STEP2') {
+                area.innerHTML = `<div class="sentence-box" onclick="playTTS('${item.en.replace(/'/g, "\\'")}')">${item.en}</div><div class="voca-grid" id="voca-area"></div><button class="btn-check" onclick="toggleView('trans-area')">해석 확인</button><div id="trans-area" class="trans-content">${item.ko}</div>`;
+                fillVoca(item.voca, '🍎', "#FF3B30");
+            } else {
+                area.innerHTML = `<div class="kor-box">${item.ko}</div><div class="blank-area" id="blank-area"></div><div class="voca-grid" id="voca-area"></div><button class="btn-check" onclick="toggleView('trans-area')">정답 확인</button><div id="trans-area" class="trans-content">${item.en}</div>`;
+                fillBlanks(item.en);
+                fillVoca(item.voca, '🍇', "#9C27B0");
+            }
+        }
+    }
+
+    function fillVoca(vList, emo, col) {
+        const area = document.getElementById('voca-area');
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'voca-item';
+            if (vList[i] && vList[i].includes(':')) {
+                const [en, ko] = vList[i].split(':');
+                div.innerText = en;
+                div.onclick = function() { this.classList.toggle('revealed'); this.innerText = this.classList.contains('revealed') ? ko : en; };
+            } else {
+                div.innerText = emo; div.style.color = col; div.style.cursor = "default";
+            }
+            area.appendChild(div);
+        }
+    }
+
+// 모든 단어를 예외 없이 100% 빈칸 처리하도록 변경된 로직
+function fillBlanks(s) {
+    const area = document.getElementById('blank-area');
+    s.split(' ').forEach(w => {
+        const span = document.createElement('span');
+        // 기존의 prepositions(전치사) 필터링 조건을 완전히 제거
+        span.className = 'word-blank'; 
+        span.innerText = w; 
+        span.onclick = function() { 
+            this.classList.add('revealed'); 
+            playTTS(w.replace(/[.,\'\"“”;:()?\-]/g, "")); 
+        };
+        area.appendChild(span);
+    });
+}
+
+    function startStep(s) { currentMode = 'STEP' + s; currentIdx = 0; render(); }
+    function nextSentence() { if (currentIdx < fullData.length - 1) { currentIdx++; render(); } else { currentMode = 'INTRO'; render(); } }
+    function prevSentence() { if (currentIdx > 0) { currentIdx--; render(); } else { currentMode = 'INTRO'; render(); } }
+    function playTTS(t) { synth.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; synth.speak(u); }
+    function toggleView(id) { const el = document.getElementById(id); el.style.display = (el.style.display === 'block') ? 'none' : 'block'; }
+    window.onload = render;
+</script>
+</body>
+</html>

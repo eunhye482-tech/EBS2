@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English Master #22 - Official Version</title>
+    <style>
+        :root { 
+            --lavender-light: #F3E5F5; 
+            --purple-pale: #E1BEE7; 
+            --purple-main: #9575CD; 
+            --purple-dark: #673AB7;
+            --pink-soft: #FFF0F6;
+        }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; background: #F8F7FA; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
+        .phone-container { width: 100%; max-width: 450px; height: 100%; background: white; display: flex; flex-direction: column; position: relative; }
+        .header { padding: 12px; text-align: center; font-weight: bold; color: var(--purple-dark); border-bottom: 1px solid #eee; background: white; font-size: 0.95rem; }
+        #display-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        /* 공통 스타일 */
+        .hidden { display: none !important; }
+        .btn-next { background: var(--purple-main); color: white; padding: 16px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: auto; }
+        .btn-prev { background: #EDF2F7; color: #718096; padding: 16px; border-radius: 15px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; width: 30%; margin-right: 10px; }
+
+        /* STEP 1: 인트로 */
+        .main-title-card { width: 100%; background: linear-gradient(135deg, #B39DDB 0%, #9575CD 100%); padding: 35px 20px; border-radius: 20px; color: white; margin-bottom: 20px; box-sizing: border-box; text-align: center; box-shadow: 0 4px 10px rgba(149,117,205,0.3); }
+        .intro-summary { background: var(--lavender-light); padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 2px solid var(--purple-pale); font-size: 0.92rem; line-height: 1.6; }
+        .intro-topic { background: var(--pink-soft); padding: 18px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #F8BBD0; }
+
+        /* 학습 카드 스타일 */
+        .sentence-box { background: var(--lavender-light); padding: 20px; border-radius: 20px; font-size: 1.1rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 15px; border: 2px solid var(--purple-pale); text-align: center; cursor: pointer; line-height: 1.5; }
+        .kor-box { background: #FFF5F7; padding: 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; color: #D81B60; margin-bottom: 15px; border: 2px solid #F8BBD0; text-align: center; line-height: 1.6; }
+        
+        /* 단어 그리드 */
+        .voca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .voca-item { background: #fff; padding: 10px; border-radius: 10px; font-size: 0.82rem; border: 1px solid var(--purple-pale); cursor: pointer; text-align: center; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .voca-item.revealed { background: var(--purple-main); color: white; }
+        
+        /* STEP 3 전용: 빈칸 스타일 */
+        .blank-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; padding: 10px; background: #fdfdfd; border-radius: 15px; }
+        .word-blank { border-bottom: 2px solid var(--purple-main); min-width: 35px; text-align: center; font-size: 1rem; color: transparent; cursor: pointer; padding: 0 2px; }
+        .word-blank.revealed { color: var(--purple-dark); border-bottom-color: transparent; font-weight: bold; }
+
+        .btn-check { background: #f0f0f0; padding: 12px; border-radius: 12px; border: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; width: 100%; font-size: 0.9rem; }
+        .trans-content { display: none; padding: 15px; background: #fafafa; border-radius: 15px; border-left: 5px solid var(--purple-main); font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px; }
+        .nav-btns-fixed { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; margin-top: auto; }
+    </style>
+</head>
+<body>
+<div class="phone-container">
+    <div class="header" id="header-title">English Master #22</div>
+    <div id="display-area"></div>
+    <div id="nav-area" class="nav-btns-fixed hidden">
+        <button class="btn-prev" onclick="prevSentence()">PREV</button>
+        <button class="btn-next" onclick="nextSentence()" id="main-next-btn">NEXT</button>
+    </div>
+</div>
+
+<script>
+    const fullData = [
+        { 
+            en: "When you experience affect without knowing the cause, you are more likely to treat affect as information about the world, rather than your experience of the world.", 
+            ko: "원인을 알지 못한 채 정동(감정)을 경험할 때, 여러분은 정동을 세상에 대한 여러분의 경험이라기보다 세상에 대한 정보로 취급하기 쉽다.", 
+            voca: ["experience:경험하다", "affect:정동(감정, 정서)", "cause:원인", "more likely to:~하기 더 쉽다", "treat:취급하다, 대하다", "information:정보", "about:~에 대한", "world:세상", "rather than:~라기보다는", "🍌"] 
+        },
+        { 
+            en: "The psychologist Gerald L. Clore has spent decades performing clever experiments to better understand how people make decisions every day based on gut feelings.", 
+            ko: "심리학자 Gerald L. Clore는 사람들이 직감에 기반하여 매일 어떻게 결정을 내리는지 더 잘 이해하기 위해 영리한 실험들을 수행하며 수십 년을 보냈다.", 
+            voca: ["psychologist:심리학자", "spent:보냈다", "decades:수십 년", "performing:수행하는 것", "clever:영리한", "experiments:실험들", "understand:이해하다", "make decisions:결정을 내리다", "based on:~에 기반하여", "gut feelings:직감, 본능적 감정"] 
+        },
+        { 
+            en: "This phenomenon is called affective realism, because we experience supposed facts about the world that are created in part by our feelings.", 
+            ko: "이러한 현상은 '정동 실재론'이라고 불리는데, 왜냐하면 우리가 부분적으로는 우리의 감정에 의해 창조된 세상에 대한 소위 '사실들'을 경험하기 때문이다.", 
+            voca: ["phenomenon:현상", "called:불리는", "affective realism:정동 실재론", "experience:경험하다", "supposed:소위, 가정된", "facts:사실들", "created:창조된", "in part:부분적으로", "feelings:감정들", "🍌"] 
+        },
+        { 
+            en: "For example, people report more happiness and life satisfaction on sunny days, but only when they are not explicitly asked about the weather.", 
+            ko: "예를 들어, 사람들은 화창한 날에 더 많은 행복과 삶의 만족도를 보고하지만, 오직 그들이 날씨에 대해 명시적으로 질문을 받지 않았을 때만 그러하다.", 
+            voca: ["For example:예를 들어", "report:보고하다, 말하다", "happiness:행복", "satisfaction:만족도", "sunny days:화창한 날들", "only when:오직 ~할 때만", "explicitly:명시적으로", "asked:질문받은", "weather:날씨", "🍌"] 
+        },
+        { 
+            en: "When you apply for a job or college or medical school, make sure you interview on a sunny day, because interviewers tend to rate applicants more negatively when it is rainy.", 
+            ko: "취업이나 대학, 혹은 의과대학에 지원할 때, 반드시 화창한 날에 면접을 보도록 하라. 왜냐하면 면접관들은 비가 올 때 지원자들을 더 부정적으로 평가하는 경향이 있기 때문이다.", 
+            voca: ["apply for:~에 지원하다", "medical school:의과대학", "make sure:반드시 ~하다", "interview:면접을 보다", "interviewers:면접관들", "tend to:~하는 경향이 있다", "rate:평가하다", "applicants:지원자들", "negatively:부정적으로", "rainy:비가 오는"] 
+        },
+        { 
+            en: "And the next time a good friend snaps at you, remember affective realism.", 
+            ko: "그리고 다음 번에 좋은 친구가 여러분에게 쌀쌀맞게 대할 때, 정동 실재론을 기억하라.", 
+            voca: ["the next time:다음 번에", "friend:친구", "snaps at:~에게 쌀쌀맞게 대하다", "remember:기억하다", "affective realism:정동 실재론", "🍌", "🍌", "🍌", "🍌", "🍌"] 
+        },
+        { 
+            en: "Maybe your friend is irritated with you, but perhaps she didn’t sleep well last night, or maybe it’s just lunchtime.", 
+            ko: "어쩌면 여러분의 친구가 여러분에게 짜증이 났을 수도 있지만, 아마도 그녀가 어젯밤에 잠을 잘 자지 못했거나, 어쩌면 단지 점심시간이기 때문일 수도 있다.", 
+            voca: ["Maybe:어쩌면, 아마도", "irritated:짜증이 난", "perhaps:아마도", "sleep well:잠을 잘 자다", "last night:어젯밤", "just:단지", "lunchtime:점심시간", "🍌", "🍌", "🍌"] 
+        },
+        { 
+            en: "The change in her body budget, which she’s experiencing as affect, might not have anything to do with you.", 
+            ko: "그녀가 정동으로 경험하고 있는 신체 예산의 변화는 여러분과 아무런 관련이 없을지도 모른다.", 
+            voca: ["change:변화", "body budget:신체 예산", "experiencing:경험하고 있는", "as affect:정동으로서", "might not:~하지 않을지도 모른다", "have to do with:~와 관련이 있다", "anything:아무것, 어떤 것", "🍌", "🍌", "🍌"] 
+        }
+    ];
+
+    let currentMode = 'INTRO';
+    let currentIdx = 0;
+    const synth = window.speechSynthesis;
+
+    function render() {
+        const area = document.getElementById('display-area');
+        const nav = document.getElementById('nav-area');
+        const header = document.getElementById('header-title');
+        area.innerHTML = '';
+
+        if (currentMode === 'INTRO') {
+            header.innerText = "English Master #22";
+            nav.classList.add('hidden');
+            area.innerHTML = `
+                <div class="main-title-card"><h1>The Illusion of<br>Affective Realism</h1><p>How Emotions Shape Our Reality</p></div>
+                <div class="intro-summary">
+                    <h3>📋 지문 요약</h3>
+                    <p><b>[서론]</b> 인간은 정동(감정)이 일어난 진짜 원인을 모를 때, 그 감정을 주관적 경험이 아니라 세상의 객관적인 사실이나 정보로 오인하는 경향이 있다.</p>
+                    <p><b>[본론]</b> 심리학에서는 이를 '정동 실재론(Affective Realism)'이라 부른다. 날씨가 화창하면 명시적으로 의식하지 못하는 사이에 삶의 만족도가 높다고 느끼고, 반대로 비가 오면 면접관들이 면접자들을 더 부정적으로 평가하게 되는 것이 대표적인 사례다.</p>
+                    <p><b>[결론]</b> 따라서 타인의 태도나 반응을 무조건 나 자신과 연결 지어 해석해서는 안 된다. 친구가 쌀쌀맞게 굴 때, 그것은 나에게 화가 난 것이 아니라 단지 수면 부족이나 배고픔으로 인한 그 사람 내부의 '신체 예산 변화(정동)' 때문일 확률이 높다.</p>
+                </div>
+                <div class="intro-topic">
+                    <span class="topic-label">💡 Topic Sentence</span>
+                    <p style="font-size:0.85rem; font-weight:600; margin-bottom:5px;">Affective realism causes us to mistake our internal emotional states for objective facts about the world, influencing daily decisions and social interactions.</p>
+                    <p style="font-size:0.75rem; color:#666; margin:0;">(정동 실재론은 우리가 내면의 감정 상태를 세상에 대한 객관적 사실로 오해하게 만들며, 일상의 의사결정과 사회적 상호작용에 영향을 미친다.)</p>
+                </div>
+                <button class="btn-next" onclick="startStep(2)">STEP 2: 문장 학습 시작 ▶</button>
+                <button class="btn-next" style="margin-top:10px; background:#9C27B0;" onclick="startStep(3)">STEP 3: 영작 연습 시작 ▶</button>
+            `;
+        } else if (currentMode === 'STEP2') {
+            header.innerText = `STEP 2. 문장 학습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+            
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="sentence-box" onclick="playTTS('${item.en.replace(/'/g, "\\'")}')">${item.en}</div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">해석 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.ko}</div>
+            `;
+            fillVoca(item.voca, '🍌', "#FFD600");
+        } else if (currentMode === 'STEP3') {
+            header.innerText = `STEP 3. 영작 연습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="kor-box">${item.ko}</div>
+                <div class="blank-area" id="blank-area"></div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">정답 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.en}</div>
+            `;
+            fillBlanks(item.en);
+            fillVoca(item.voca, '🍇', "#9C27B0");
+        }
+    }
+
+    function fillVoca(vocaList, emoji, emojiColor) {
+        const container = document.getElementById('voca-area');
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'voca-item';
+            if (vocaList[i] && vocaList[i] !== '🍌' && vocaList[i] !== '🍇') {
+                const [eng, kor] = vocaList[i].split(':');
+                div.innerText = eng;
+                div.onclick = function() {
+                    this.classList.toggle('revealed');
+                    this.innerText = this.classList.contains('revealed') ? kor : eng;
+                };
+            } else {
+                div.innerText = emoji;
+                div.style.color = emojiColor;
+                div.style.cursor = "default";
+            }
+            container.appendChild(div);
+        }
+    }
+
+    function fillBlanks(s) {
+        const c = document.getElementById('blank-area');
+        const prepositions = ["in", "on", "at", "by", "for", "from", "of", "with", "to", "into", "onto", "upon", "about", "above", "across", "after", "against", "along", "among", "around", "as", "before", "behind", "below", "beneath", "beside", "between", "beyond", "during", "except", "inside", "near", "off", "outside", "over", "past", "since", "through", "throughout", "under", "underneath", "until", "up", "within", "without"];
+
+        s.split(' ').forEach(w => {
+            const sp = document.createElement('span');
+            sp.className = 'word-blank';
+            sp.innerText = w;
+            
+            const pureWord = w.toLowerCase().replace(/[.,'":;?!()“”]/g, "");
+            
+            if (prepositions.includes(pureWord)) {
+                sp.classList.add('revealed');
+                sp.style.borderBottomColor = 'transparent'; 
+            }
+
+            sp.onclick = function() {
+                this.classList.add('revealed');
+                this.style.borderBottomColor = 'transparent';
+                playTTS(w.replace(/[.,'"]/g, ""));
+            };
+            c.appendChild(sp);
+        });
+    }
+
+    function startStep(step) {
+        currentMode = 'STEP' + step;
+        currentIdx = 0;
+        render();
+    }
+
+    function nextSentence() {
+        if (currentIdx < fullData.length - 1) {
+            currentIdx++;
+            render();
+        } else {
+            currentMode = 'INTRO';
+            render();
+        }
+    }
+
+    function prevSentence() {
+        if (currentIdx > 0) {
+            currentIdx--;
+            render();
+        }
+    }
+
+    function playTTS(text) {
+        synth.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        synth.speak(utterance);
+    }
+
+    function toggleView(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    window.onload = render;
+</script>
+</body>
+</html>

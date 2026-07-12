@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English Master #35 - Official Version</title>
+    <style>
+        :root { 
+            --lavender-light: #F3E5F5; 
+            --purple-pale: #E1BEE7; 
+            --purple-main: #9575CD; 
+            --purple-dark: #673AB7;
+            --pink-soft: #FFF0F6;
+        }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; background: #F8F7FA; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
+        .phone-container { width: 100%; max-width: 450px; height: 100%; background: white; display: flex; flex-direction: column; position: relative; }
+        .header { padding: 12px; text-align: center; font-weight: bold; color: var(--purple-dark); border-bottom: 1px solid #eee; background: white; font-size: 0.95rem; }
+        #display-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        /* 공통 스타일 */
+        .hidden { display: none !important; }
+        .btn-next { background: var(--purple-main); color: white; padding: 16px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: auto; }
+        .btn-prev { background: #EDF2F7; color: #718096; padding: 16px; border-radius: 15px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; width: 30%; margin-right: 10px; }
+
+        /* STEP 1: 인트로 */
+        .main-title-card { width: 100%; background: linear-gradient(135deg, #B39DDB 0%, #9575CD 100%); padding: 35px 20px; border-radius: 20px; color: white; margin-bottom: 20px; box-sizing: border-box; text-align: center; box-shadow: 0 4px 10px rgba(149,117,205,0.3); }
+        .intro-summary { background: var(--lavender-light); padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 2px solid var(--purple-pale); font-size: 0.92rem; line-height: 1.6; }
+        .intro-topic { background: var(--pink-soft); padding: 18px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #F8BBD0; }
+
+        /* 학습 카드 스타일 */
+        .sentence-box { background: var(--lavender-light); padding: 20px; border-radius: 20px; font-size: 1.1rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 15px; border: 2px solid var(--purple-pale); text-align: center; cursor: pointer; line-height: 1.5; }
+        .kor-box { background: #FFF5F7; padding: 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; color: #D81B60; margin-bottom: 15px; border: 2px solid #F8BBD0; text-align: center; line-height: 1.6; }
+        
+        /* 단어 그리드 */
+        .voca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .voca-item { background: #fff; padding: 10px; border-radius: 10px; font-size: 0.82rem; border: 1px solid var(--purple-pale); cursor: pointer; text-align: center; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .voca-item.revealed { background: var(--purple-main); color: white; }
+        
+        /* STEP 3 전용: 빈칸 스타일 */
+        .blank-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; padding: 10px; background: #fdfdfd; border-radius: 15px; }
+        .word-blank { border-bottom: 2px solid var(--purple-main); min-width: 35px; text-align: center; font-size: 1rem; color: transparent; cursor: pointer; padding: 0 2px; }
+        .word-blank.revealed { color: var(--purple-dark); border-bottom-color: transparent; font-weight: bold; }
+
+        .btn-check { background: #f0f0f0; padding: 12px; border-radius: 12px; border: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; width: 100%; font-size: 0.9rem; }
+        .trans-content { display: none; padding: 15px; background: #fafafa; border-radius: 15px; border-left: 5px solid var(--purple-main); font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px; }
+        .nav-btns-fixed { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; margin-top: auto; }
+    </style>
+</head>
+<body>
+<div class="phone-container">
+    <div class="header" id="header-title">English Master #35</div>
+    <div id="display-area"></div>
+    <div id="nav-area" class="nav-btns-fixed hidden">
+        <button class="btn-prev" onclick="prevSentence()">PREV</button>
+        <button class="btn-next" onclick="nextSentence()" id="main-next-btn">NEXT</button>
+    </div>
+</div>
+
+<script>
+    const fullData = [
+        { 
+            en: "According to the principle of social proof, one way individuals determine appropriate behavior for themselves in a situation is to examine the behavior of others there—especially similar others.", 
+            ko: "사회적 증거의 원칙에 따르면, 개인이 한 상황에서 자신에게 적절한 행동을 결정하는 한 가지 방법은 그곳에 있는 다른 사람들, 특히 유사한 타인의 행동을 조사하는 것이다.", 
+            voca: ["According to:~에 따르면", "principle:원칙", "social proof:사회적 증거", "determine:결정하다", "appropriate:적절한", "behavior:행동", "examine:조사하다, 살피다", "especially:특히", "similar:유사한", "individuals:개인들"] 
+        },
+        { 
+            en: "It is through social comparison with these referent others that people validate the correctness of their opinions and decisions.", 
+            ko: "사람들이 자신의 의견과 결정의 옳음을 입증하는 것은 바로 이러한 준거 타인들과의 사회적 비교를 통해서이다.", 
+            voca: ["social comparison:사회적 비교", "referent others:준거 타인(기준이 되는 타인)", "validate:입증하다, 확인하다", "correctness:옳음, 정확성", "opinions:의견들", "decisions:결정들", "through:~을 통해", "🍌", "🍌", "🍌"] 
+        },
+        { 
+            en: "Consequently, people tend to behave as their friends and peers have behaved.", 
+            ko: "결과적으로, 사람들은 그들의 친구들과 동료들이 행동했던 것처럼 행동하는 경향이 있다.", 
+            voca: ["Consequently:결과적으로", "tend to:~하는 경향이 있다", "behave:행동하다", "friends:친구들", "peers:동료들", "🍌", "🍌", "🍌", "🍌", "🍌"] 
+        },
+        { 
+            en: "Because the critical source of information within the principle of social proof is the responses of referent others, compliance tactics that employ this information should be especially effective in collectivistically oriented nations and persons.", 
+            ko: "사회적 증거의 원칙 내에서 중요한 정보원(정보의 원천)은 준거 타인들의 반응이기 때문에, 이 정보를 이용하는 순종 전략은 집단주의 성향의 국가와 사람들에게 특히 효과적일 것이다.", 
+            voca: ["critical:중요한, 비판적인", "source:원천, 소스", "information:정보", "responses:반응들", "compliance:순종, 따름", "tactics:전략, 전술", "employ:이용하다, 고용하다", "effective:효과적인", "collectivistically:집단주의적으로", "oriented:성향의, 지향적인"] 
+        },
+        { 
+            en: "Some evidence in this regard comes from a study showing that advertisements that promoted group benefits were more persuasive in Korea (a collectivistic society) than in the United States (an individualistic society).", 
+            ko: "이러한 점과 관련한 몇 가지 증거는 집단 이익을 홍보하는 광고가 미국(개인주의 사회)에서보다 한국(집단주의 사회)에서 더 설득력이 있었다는 것을 보여주는 연구에서 나온다.", 
+            voca: ["evidence:증거", "in this regard:이러한 점에서", "showing:보여주는", "advertisements:광고들", "promoted:홍보했다, 증진했다", "group benefits:집단 이익", "persuasive:설득력 있는", "collectivistic:집단주의적인", "society:사회", "individualistic:개인주의적인"] 
+        }
+    ];
+
+    let currentMode = 'INTRO';
+    let currentIdx = 0;
+    const synth = window.speechSynthesis;
+
+    function render() {
+        const area = document.getElementById('display-area');
+        const nav = document.getElementById('nav-area');
+        const header = document.getElementById('header-title');
+        area.innerHTML = '';
+
+        if (currentMode === 'INTRO') {
+            header.innerText = "English Master #35";
+            nav.classList.add('hidden');
+            area.innerHTML = `
+                <div class="main-title-card"><h1>Social Proof and<br>Collectivism</h1><p>Persuasion Across Cultures</p></div>
+                <div class="intro-summary">
+                    <h3>📋 지문 요약</h3>
+                    <p><b>[서론]</b> '사회적 증거의 원칙(Principle of Social Proof)'에 의하면, 인간은 특정 상황에서 어떻게 행동해야 할지 모를 때 주변 사람들(특히 자신과 처지가 비슷한 타인)의 행동을 관찰하며 올바른 행동 방침을 결정한다.</p>
+                    <p><b>[본론]</b> 사람들은 이러한 기준점(준거 타인)과의 끊임없는 사회적 비교를 통하여 본인의 주관적 의견이나 판단이 옳은지 그른지를 확인한다. 결과적으로 인간은 친구나 동료 집단의 행동 양식을 고스란히 모방하려는 강한 경향성을 지닌다. 이 원칙의 핵심이 '타인의 반응'인 만큼, 이를 활용한 타인 설득 및 순종 유도 전술은 개인주의적 성향보다 집단주의 성향을 띠는 국가나 개인에게 훨씬 강력한 위력을 발휘한다.</p>
+                    <p><b>[결론]</b> 이를 뒷받침하는 실제 학술적 증거로서, 개인의 이익보다 집단의 이익과 조화를 강조하는 홍보성 광고물이 대표적인 개인주의 사회인 미국에 비해, 뿌리 깊은 집단주의 사회적 전통을 지닌 한국에서 훨씬 더 높은 설득력과 반응율을 보였다는 연구 결과가 존재한다.</p>
+                </div>
+                <div class="intro-topic">
+                    <span class="topic-label">💡 Topic Sentence</span>
+                    <p style="font-size:0.85rem; font-weight:600; margin-bottom:5px;">Based on the principle of social proof, people validate their choices by looking at peers, making peer-based persuasion tactics particularly effective in collectivistic societies.</p>
+                    <p style="font-size:0.75rem; color:#666; margin:0;">(사회적 증거의 원칙에 근거하여, 사람들은 동료들을 관찰함으로써 자신의 선택을 입증하며, 이는 동료 기반의 설득 전략이 집단주의 사회에서 특히 효과적이게 만든다.)</p>
+                </div>
+                <button class="btn-next" onclick="startStep(2)">STEP 2: 문장 학습 시작 ▶</button>
+                <button class="btn-next" style="margin-top:10px; background:#9C27B0;" onclick="startStep(3)">STEP 3: 영작 연습 시작 ▶</button>
+            `;
+        } else if (currentMode === 'STEP2') {
+            header.innerText = `STEP 2. 문장 학습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+            
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="sentence-box" onclick="playTTS('${item.en.replace(/'/g, "\\'")}')">${item.en}</div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">해석 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.ko}</div>
+            `;
+            fillVoca(item.voca, '🍌', "#FFD600");
+        } else if (currentMode === 'STEP3') {
+            header.innerText = `STEP 3. 영작 연습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="kor-box">${item.ko}</div>
+                <div class="blank-area" id="blank-area"></div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">정답 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.en}</div>
+            `;
+            fillBlanks(item.en);
+            fillVoca(item.voca, '🍇', "#9C27B0");
+        }
+    }
+
+    function fillVoca(vocaList, emoji, emojiColor) {
+        const container = document.getElementById('voca-area');
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'voca-item';
+            if (vocaList[i] && vocaList[i] !== '🍌' && vocaList[i] !== '🍇') {
+                const [eng, kor] = vocaList[i].split(':');
+                div.innerText = eng;
+                div.onclick = function() {
+                    this.classList.toggle('revealed');
+                    this.innerText = this.classList.contains('revealed') ? kor : eng;
+                };
+            } else {
+                div.innerText = emoji;
+                div.style.color = emojiColor;
+                div.style.cursor = "default";
+            }
+            container.appendChild(div);
+        }
+    }
+
+    function fillBlanks(s) {
+        const c = document.getElementById('blank-area');
+        const prepositions = ["in", "on", "at", "by", "for", "from", "of", "with", "to", "into", "onto", "upon", "about", "above", "across", "after", "against", "along", "among", "around", "as", "before", "behind", "below", "beneath", "beside", "between", "beyond", "during", "except", "inside", "near", "off", "outside", "over", "past", "since", "through", "throughout", "under", "underneath", "until", "up", "within", "without"];
+
+        s.split(' ').forEach(w => {
+            const sp = document.createElement('span');
+            sp.className = 'word-blank';
+            sp.innerText = w;
+            
+            const pureWord = w.toLowerCase().replace(/[.,'":;?!()“”]/g, "");
+            
+            if (prepositions.includes(pureWord)) {
+                sp.classList.add('revealed');
+                sp.style.borderBottomColor = 'transparent'; 
+            }
+
+            sp.onclick = function() {
+                this.classList.add('revealed');
+                this.style.borderBottomColor = 'transparent';
+                playTTS(w.replace(/[.,'"]/g, ""));
+            };
+            c.appendChild(sp);
+        });
+    }
+
+    function startStep(step) {
+        currentMode = 'STEP' + step;
+        currentIdx = 0;
+        render();
+    }
+
+    function nextSentence() {
+        if (currentIdx < fullData.length - 1) {
+            currentIdx++;
+            render();
+        } else {
+            currentMode = 'INTRO';
+            render();
+        }
+    }
+
+    function prevSentence() {
+        if (currentIdx > 0) {
+            currentIdx--;
+            render();
+        }
+    }
+
+    function playTTS(text) {
+        synth.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        synth.speak(utterance);
+    }
+
+    function toggleView(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    window.onload = render;
+</script>
+</body>
+</html>

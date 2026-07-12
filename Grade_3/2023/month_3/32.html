@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English Master #32 - Official Version</title>
+    <style>
+        :root { 
+            --lavender-light: #F3E5F5; 
+            --purple-pale: #E1BEE7; 
+            --purple-main: #9575CD; 
+            --purple-dark: #673AB7;
+            --pink-soft: #FFF0F6;
+        }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; background: #F8F7FA; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
+        .phone-container { width: 100%; max-width: 450px; height: 100%; background: white; display: flex; flex-direction: column; position: relative; }
+        .header { padding: 12px; text-align: center; font-weight: bold; color: var(--purple-dark); border-bottom: 1px solid #eee; background: white; font-size: 0.95rem; }
+        #display-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        /* 공통 스타일 */
+        .hidden { display: none !important; }
+        .btn-next { background: var(--purple-main); color: white; padding: 16px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: auto; }
+        .btn-prev { background: #EDF2F7; color: #718096; padding: 16px; border-radius: 15px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; width: 30%; margin-right: 10px; }
+
+        /* STEP 1: 인트로 */
+        .main-title-card { width: 100%; background: linear-gradient(135deg, #B39DDB 0%, #9575CD 100%); padding: 35px 20px; border-radius: 20px; color: white; margin-bottom: 20px; box-sizing: border-box; text-align: center; box-shadow: 0 4px 10px rgba(149,117,205,0.3); }
+        .intro-summary { background: var(--lavender-light); padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 2px solid var(--purple-pale); font-size: 0.92rem; line-height: 1.6; }
+        .intro-topic { background: var(--pink-soft); padding: 18px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #F8BBD0; }
+
+        /* 학습 카드 스타일 */
+        .sentence-box { background: var(--lavender-light); padding: 20px; border-radius: 20px; font-size: 1.1rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 15px; border: 2px solid var(--purple-pale); text-align: center; cursor: pointer; line-height: 1.5; }
+        .kor-box { background: #FFF5F7; padding: 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; color: #D81B60; margin-bottom: 15px; border: 2px solid #F8BBD0; text-align: center; line-height: 1.6; }
+        
+        /* 단어 그리드 */
+        .voca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .voca-item { background: #fff; padding: 10px; border-radius: 10px; font-size: 0.82rem; border: 1px solid var(--purple-pale); cursor: pointer; text-align: center; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .voca-item.revealed { background: var(--purple-main); color: white; }
+        
+        /* STEP 3 전용: 빈칸 스타일 */
+        .blank-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; padding: 10px; background: #fdfdfd; border-radius: 15px; }
+        .word-blank { border-bottom: 2px solid var(--purple-main); min-width: 35px; text-align: center; font-size: 1rem; color: transparent; cursor: pointer; padding: 0 2px; }
+        .word-blank.revealed { color: var(--purple-dark); border-bottom-color: transparent; font-weight: bold; }
+
+        .btn-check { background: #f0f0f0; padding: 12px; border-radius: 12px; border: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; width: 100%; font-size: 0.9rem; }
+        .trans-content { display: none; padding: 15px; background: #fafafa; border-radius: 15px; border-left: 5px solid var(--purple-main); font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px; }
+        .nav-btns-fixed { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; margin-top: auto; }
+    </style>
+</head>
+<body>
+<div class="phone-container">
+    <div class="header" id="header-title">English Master #32</div>
+    <div id="display-area"></div>
+    <div id="nav-area" class="nav-btns-fixed hidden">
+        <button class="btn-prev" onclick="prevSentence()">PREV</button>
+        <button class="btn-next" onclick="nextSentence()" id="main-next-btn">NEXT</button>
+    </div>
+</div>
+
+<script>
+    const fullData = [
+        { 
+            en: "Lewis‑Williams believes that the religious view of hunter groups was a contract between the hunter and the hunted.", 
+            ko: "Lewis-Williams는 수렵 집단의 종교적 관점은 사냥꾼과 사냥감 사이의 계약이었다고 믿는다.", 
+            voca: ["believes:믿는다", "religious view:종교적 관점", "hunter groups:수렵 집단", "contract:계약", "between:~ 사이의", "hunter:사냥꾼", "hunted:사냥감", "🍌", "🍌", "🍌"] 
+        },
+        { 
+            en: "‘The powers of the underworld allowed people to kill animals, provided people responded in certain ritual ways, such as taking fragments of animals into the caves and inserting them into the “membrane”.’", 
+            ko: "'지하 세계의 권능은 사람들이 동물의 파편을 동굴로 가져가 '막' 속에 끼워 넣는 것과 같은 어떤 의례적인 방식으로 반응한다면 동물을 죽이는 것을 허용했다.'", 
+            voca: ["underworld:지하 세계", "allowed:허용했다", "kill:죽이다", "provided:한다면, 조건으로", "responded:반응했다", "certain:어떤, 특정한", "ritual ways:의례적인 방식", "fragments:파편, 조각", "inserting:끼워 넣는 것", "membrane:막"] 
+        },
+        { 
+            en: "This is borne out in the San.", 
+            ko: "이것은 산족(San)에게서 확인된다(뒷받침된다).", 
+            voca: ["borne out:확인되는, 뒷받침되는", "San:산족(아프리카 부족)", "🍌", "🍌", "🍌", "🍌", "🍌", "🍌", "🍌", "🍌"] 
+        },
+        { 
+            en: "Like other shamanistic societies, they have admiring practices between human hunters and their prey, suffused with taboos derived from extensive natural knowledge.", 
+            ko: "다른 샤머니즘 사회와 마찬가지로, 그들은 인간 사냥꾼과 사냥감 사이에 감탄(경의)하는 관행을 가지고 있으며, 이는 광범위한 자연 지식에서 유래한 금기 사항으로 가득 차 있다.", 
+            voca: ["shamanistic:샤머니즘의", "societies:사회들", "admiring:감탄하는, 경의를 표하는", "practices:관행들", "prey:사냥감, 먹이", "suffused with:~로 가득 차 있는", "taboos:금기 사항들", "derived from:~에서 유래한", "extensive:광범위한", "knowledge:지식"] 
+        },
+        { 
+            en: "These practices suggest that honouring may be one method of softening the disquiet of killing.", 
+            ko: "이러한 관행은 예우하는 것(경의를 표하는 것)이 죽임의 불안감을 완화하는 한 가지 방법일 수 있음을 시사한다.", 
+            voca: ["suggest:시사하다, 제안하다", "honouring:예우하는 것, 경의를 표하는 것", "method:방법", "softening:완화하는 것", "disquiet:불안감, 동요", "killing:죽임", "🍌", "🍌", "🍌", "🍌"] 
+        },
+        { 
+            en: "It should be said that this disquiet needn’t arise because there is something fundamentally wrong with a human killing another animal, but simply because we are aware of doing the killing.", 
+            ko: "이러한 불안감은 인간이 다른 동물을 죽이는 것에 근본적으로 잘못된 무언가가 있어서가 아니라, 단순히 우리가 그 죽이는 행위를 의식하고 있기 때문에 발생한다는 점이 언급되어야 한다.", 
+            voca: ["needn't:~할 필요가 없다", "arise:발생하다, 일어나다", "because:~하기 때문에", "fundamentally:근본적으로", "wrong:잘못된", "another:다른", "simply:단순히", "aware of:~을 의식하는", "doing the killing:죽이는 행위를 하는 것", "should be said:언급되어야 한다"] 
+        },
+        { 
+            en: "And perhaps, too, because in some sense we ‘know’ what we are killing.", 
+            ko: "그리고 아마도 어떤 의미에서는 우리가 무엇을 죽이고 있는지 '알기' 때문이기도 할 것이다.", 
+            voca: ["perhaps:아마도", "too:또한", "in some sense:어떤 의미에서는", "know:알다", "what we are killing:우리가 무엇을 죽이고 있는지", "🍌", "🍌", "🍌", "🍌", "🍌"] 
+        },
+        { 
+            en: "We make sound guesses that the pain and desire for life we feel—our worlds of experience—have a counterpart in the animal we kill.", 
+            ko: "우리가 느끼는 고통과 삶에 대한 욕구—우리의 경험 세계—가 우리가 죽이는 동물에게도 상응하는 것을 가지고 있다고 우리는 타당한 추측을 한다.", 
+            voca: ["make sound guesses:타당한 추측을 하다", "pain:고통", "desire:욕구, 열망", "for life:삶에 대한", "feel:느끼다", "worlds of experience:경험 세계", "counterpart:상응하는 것, 상대방", "animal:동물", "kill:죽이다", "🍌"] 
+        },
+        { 
+            en: "As predators, this can create problems for us.", 
+            ko: "포식자로서, 이것은 우리에게 문제를 일으킬 수 있다.", 
+            voca: ["predators:포식자들", "create:일으키다, 창조하다", "problems:문제들", "for us:우리에게", "🍌", "🍌", "🍌", "🍌", "🍌", "🍌"] 
+        },
+        { 
+            en: "One way to smooth those edges, then, is to view that prey with respect.", 
+            ko: "그렇다면, 그러한 날카로운 모서리를 부드럽게 하는(불편함을 완화하는) 한 가지 방법은 그 사냥감을 존중심을 가지고 바라보는 것이다.", 
+            voca: ["one way:한 가지 방법", "smooth:부드럽게 하다, 매끄럽게 하다", "edges:모서리, 날카로움", "then:그렇다면, 그러면", "view:바라보다, 간주하다", "prey:사냥감", "with respect:존중심을 가지고", "🍌", "🍌", "🍌"] 
+        }
+    ];
+
+    let currentMode = 'INTRO';
+    let currentIdx = 0;
+    const synth = window.speechSynthesis;
+
+    function render() {
+        const area = document.getElementById('display-area');
+        const nav = document.getElementById('nav-area');
+        const header = document.getElementById('header-title');
+        area.innerHTML = '';
+
+        if (currentMode === 'INTRO') {
+            header.innerText = "English Master #32";
+            nav.classList.add('hidden');
+            area.innerHTML = `
+                <div class="main-title-card"><h1>The Hunter's Contract<br>and Mutual Respect</h1><p>Soften the Disquiet of Killing</p></div>
+                <div class="intro-summary">
+                    <h3>📋 지문 요약</h3>
+                    <p><b>[서론]</b> 수렵 집단의 종교적 세계관은 사냥꾼과 사냥감 간의 영적 '계약'으로 해석된다. 산족과 같은 샤머니즘 사회에서는 동물의 파편을 동굴 막에 끼워 넣는 등의 특정 의례와 금기를 통해 사냥의 권능을 허락받았다고 믿었다.</p>
+                    <p><b>[본론]</b> 이러한 주술적 관행은 사냥감이 되는 동물을 예우함으로써 생명을 죽이는 행위에서 비롯되는 심리적 '불안감'을 완화하려는 목적을 지닌다. 이 불안감은 생명을 죽이는 행위 자체가 도덕적으로 절대 악이라서가 아니라, 인간이 살생의 과정을 명확히 '의식'하고 있기 때문에 발생한다.</p>
+                    <p><b>[결론]</b> 나아가 인간은 자신이 느끼는 고통이나 살고자 하는 열망이 죽어가는 동물에게도 똑같이 존재한다는 점을 타당하게 추측(지각)한다. 포식자로서 마주하는 이 인지적·감정적 모순(불편함)을 해결하기 위해, 인간은 사냥감을 하찮은 고깃덩이가 아니라 깊은 존중과 경의의 대상으로 바라보는 문화를 발전시켰다.</p>
+                </div>
+                <div class="intro-topic">
+                    <span class="topic-label">💡 Topic Sentence</span>
+                    <p style="font-size:0.85rem; font-weight:600; margin-bottom:5px;">To ease the psychological disquiet of consciously taking a life, shamanistic hunter groups viewed their prey with deep respect and ritual honor.</p>
+                    <p style="font-size:0.75rem; color:#666; margin:0;">(의식적으로 생명을 앗아가는 것에 대한 심리적 불안감을 완화하기 위해, 샤머니즘 수렵 집단들은 그들의 사냥감을 깊은 존중과 의례적 경의를 담아 바라보았다.)</p>
+                </div>
+                <button class="btn-next" onclick="startStep(2)">STEP 2: 문장 학습 시작 ▶</button>
+                <button class="btn-next" style="margin-top:10px; background:#9C27B0;" onclick="startStep(3)">STEP 3: 영작 연습 시작 ▶</button>
+            `;
+        } else if (currentMode === 'STEP2') {
+            header.innerText = `STEP 2. 문장 학습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+            
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="sentence-box" onclick="playTTS('${item.en.replace(/'/g, "\\'")}')">${item.en}</div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">해석 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.ko}</div>
+            `;
+            fillVoca(item.voca, '🍌', "#FFD600");
+        } else if (currentMode === 'STEP3') {
+            header.innerText = `STEP 3. 영작 연습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="kor-box">${item.ko}</div>
+                <div class="blank-area" id="blank-area"></div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">정답 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.en}</div>
+            `;
+            fillBlanks(item.en);
+            fillVoca(item.voca, '🍇', "#9C27B0");
+        }
+    }
+
+    function fillVoca(vocaList, emoji, emojiColor) {
+        const container = document.getElementById('voca-area');
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'voca-item';
+            if (vocaList[i] && vocaList[i] !== '🍌' && vocaList[i] !== '🍇') {
+                const [eng, kor] = vocaList[i].split(':');
+                div.innerText = eng;
+                div.onclick = function() {
+                    this.classList.toggle('revealed');
+                    this.innerText = this.classList.contains('revealed') ? kor : eng;
+                };
+            } else {
+                div.innerText = emoji;
+                div.style.color = emojiColor;
+                div.style.cursor = "default";
+            }
+            container.appendChild(div);
+        }
+    }
+
+    function fillBlanks(s) {
+        const c = document.getElementById('blank-area');
+        const prepositions = ["in", "on", "at", "by", "for", "from", "of", "with", "to", "into", "onto", "upon", "about", "above", "across", "after", "against", "along", "among", "around", "as", "before", "behind", "below", "beneath", "beside", "between", "beyond", "during", "except", "inside", "near", "off", "outside", "over", "past", "since", "through", "throughout", "under", "underneath", "until", "up", "within", "without"];
+
+        s.split(' ').forEach(w => {
+            const sp = document.createElement('span');
+            sp.className = 'word-blank';
+            sp.innerText = w;
+            
+            const pureWord = w.toLowerCase().replace(/[.,'":;?!()“”]/g, "");
+            
+            if (prepositions.includes(pureWord)) {
+                sp.classList.add('revealed');
+                sp.style.borderBottomColor = 'transparent'; 
+            }
+
+            sp.onclick = function() {
+                this.classList.add('revealed');
+                this.style.borderBottomColor = 'transparent';
+                playTTS(w.replace(/[.,'"]/g, ""));
+            };
+            c.appendChild(sp);
+        });
+    }
+
+    function startStep(step) {
+        currentMode = 'STEP' + step;
+        currentIdx = 0;
+        render();
+    }
+
+    function nextSentence() {
+        if (currentIdx < fullData.length - 1) {
+            currentIdx++;
+            render();
+        } else {
+            currentMode = 'INTRO';
+            render();
+        }
+    }
+
+    function prevSentence() {
+        if (currentIdx > 0) {
+            currentIdx--;
+            render();
+        }
+    }
+
+    function playTTS(text) {
+        synth.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        synth.speak(utterance);
+    }
+
+    function toggleView(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    window.onload = render;
+</script>
+</body>
+</html>

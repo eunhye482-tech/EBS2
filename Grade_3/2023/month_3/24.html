@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English Master #24 - Official Version</title>
+    <style>
+        :root { 
+            --lavender-light: #F3E5F5; 
+            --purple-pale: #E1BEE7; 
+            --purple-main: #9575CD; 
+            --purple-dark: #673AB7;
+            --pink-soft: #FFF0F6;
+        }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; background: #F8F7FA; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
+        .phone-container { width: 100%; max-width: 450px; height: 100%; background: white; display: flex; flex-direction: column; position: relative; }
+        .header { padding: 12px; text-align: center; font-weight: bold; color: var(--purple-dark); border-bottom: 1px solid #eee; background: white; font-size: 0.95rem; }
+        #display-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        /* 공통 스타일 */
+        .hidden { display: none !important; }
+        .btn-next { background: var(--purple-main); color: white; padding: 16px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: auto; }
+        .btn-prev { background: #EDF2F7; color: #718096; padding: 16px; border-radius: 15px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; width: 30%; margin-right: 10px; }
+
+        /* STEP 1: 인트로 */
+        .main-title-card { width: 100%; background: linear-gradient(135deg, #B39DDB 0%, #9575CD 100%); padding: 35px 20px; border-radius: 20px; color: white; margin-bottom: 20px; box-sizing: border-box; text-align: center; box-shadow: 0 4px 10px rgba(149,117,205,0.3); }
+        .intro-summary { background: var(--lavender-light); padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 2px solid var(--purple-pale); font-size: 0.92rem; line-height: 1.6; }
+        .intro-topic { background: var(--pink-soft); padding: 18px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #F8BBD0; }
+
+        /* 학습 카드 스타일 */
+        .sentence-box { background: var(--lavender-light); padding: 20px; border-radius: 20px; font-size: 1.1rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 15px; border: 2px solid var(--purple-pale); text-align: center; cursor: pointer; line-height: 1.5; }
+        .kor-box { background: #FFF5F7; padding: 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; color: #D81B60; margin-bottom: 15px; border: 2px solid #F8BBD0; text-align: center; line-height: 1.6; }
+        
+        /* 단어 그리드 */
+        .voca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .voca-item { background: #fff; padding: 10px; border-radius: 10px; font-size: 0.82rem; border: 1px solid var(--purple-pale); cursor: pointer; text-align: center; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .voca-item.revealed { background: var(--purple-main); color: white; }
+        
+        /* STEP 3 전용: 빈칸 스타일 */
+        .blank-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; padding: 10px; background: #fdfdfd; border-radius: 15px; }
+        .word-blank { border-bottom: 2px solid var(--purple-main); min-width: 35px; text-align: center; font-size: 1rem; color: transparent; cursor: pointer; padding: 0 2px; }
+        .word-blank.revealed { color: var(--purple-dark); border-bottom-color: transparent; font-weight: bold; }
+
+        .btn-check { background: #f0f0f0; padding: 12px; border-radius: 12px; border: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; width: 100%; font-size: 0.9rem; }
+        .trans-content { display: none; padding: 15px; background: #fafafa; border-radius: 15px; border-left: 5px solid var(--purple-main); font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px; }
+        .nav-btns-fixed { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; margin-top: auto; }
+    </style>
+</head>
+<body>
+<div class="phone-container">
+    <div class="header" id="header-title">English Master #24</div>
+    <div id="display-area"></div>
+    <div id="nav-area" class="nav-btns-fixed hidden">
+        <button class="btn-prev" onclick="prevSentence()">PREV</button>
+        <button class="btn-next" onclick="nextSentence()" id="main-next-btn">NEXT</button>
+    </div>
+</div>
+
+<script>
+    const fullData = [
+        { 
+            en: "Every day an enormous amount of energy is created by the movement of people and animals, and by interactions of people with their immediate surroundings.", 
+            ko: "매일 사람과 동물의 움직임, 그리고 사람들과 그들의 인접한 주변 환경과의 상호작용에 의해 엄청난 양의 에너지가 생성된다.", 
+            voca: ["enormous:엄청난", "amount:양", "energy:에너지", "created:생성된", "movement:움직임", "animals:동물들", "interactions:상호작용들", "immediate:인접한, 즉각적인", "surroundings:주변 환경", "every day:매일"] 
+        },
+        { 
+            en: "This is usually in very small amounts or in very dispersed environments.", 
+            ko: "이것은 대개 매우 적은 양이거나 매우 분산된 환경에 있다.", 
+            voca: ["usually:대개, 보통", "very:매우", "small:적은, 작은", "amounts:양", "dispersed:분산된", "environments:환경들", "🍌", "🍌", "🍌", "🍌"] 
+        },
+        { 
+            en: "Virtually all of that energy is lost to the local environment, and historically there have been no efforts to gather it.", 
+            ko: "사실상 그 에너지의 전부는 지역 환경으로 손실되며, 역사적으로 그것을 모으려는 노력이 없었다.", 
+            voca: ["Virtually:사실상", "all of:~의 전부", "lost:손실된, 잃어버린", "local:지역의, 현지의", "environment:환경", "historically:역사적으로", "efforts:노력들", "gather:모으다", "it:그것을", "🍌"] 
+        },
+        { 
+            en: "It may seem odd to consider finding ways to “collect” energy that is given off all around us—by people simply walking or by walking upstairs and downstairs or by riding stationary/exercise bicycles, for example—but that is the general idea and nature of energy harvesting.", 
+            ko: "예를 들어, 단순히 걷는 사람들에 의해, 혹은 계단을 오르내림으로써, 또는 고정된/운동용 자전거를 탐으로써 우리 주변 모든 곳에서 방출되는 에너지를 '수집'하는 방법을 찾는 것을 고려하는 것이 이상하게 보일 수도 있지만, 그것이 에너지 수확의 일반적인 아이디어이자 본질이다.", 
+            voca: ["seem odd:이상하게 보이다", "consider:고려하다", "collect:수집하다", "given off:방출되는", "all around:모든 곳에서", "simply:단순히", "upstairs:위층으로", "downstairs:아래층으로", "stationary:고정된", "nature:본질, 자연"] 
+        },
+        { 
+            en: "The broad idea of energy harvesting is that there are many places at which small amounts of energy are generated—and often wasted—and when collected, this can be put to some practical use.", 
+            ko: "에너지 수확의 개괄적인 아이디어는 적은 양의 에너지가 생성되고 흔히 버려지는 많은 장소가 있다는 것이며, 수집되었을 때 이것이 어떤 실용적인 용도에 쓰일 수 있다는 것이다.", 
+            voca: ["broad:개괄적인, 넓은", "places:장소들", "generated:생성된", "often:흔히, 자주", "wasted:버려지는, 낭비되는", "collected:수집되었을 때", "put to use:~에 쓰이다", "practical:실용적인", "use:용도, 사용", "🍌"] 
+        },
+        { 
+            en: "Current efforts have begun, aimed at collecting such energy in smaller devices which can store it, such as portable batteries.", 
+            ko: "휴대용 배터리와 같이 그것을 저장할 수 있는 더 작은 장치에 그러한 에너지를 수집하는 것을 목표로 하는 현재의 노력이 시작되었다.", 
+            voca: ["Current:현재의", "efforts:노력들", "began:시작되었다", "aimed at:~을 목표로 하는", "collecting:수집하는 것", "such:그러한", "smaller:더 작은", "devices:장치들", "store:저장하다", "portable:휴대용의"] 
+        }
+    ];
+
+    let currentMode = 'INTRO';
+    let currentIdx = 0;
+    const synth = window.speechSynthesis;
+
+    function render() {
+        const area = document.getElementById('display-area');
+        const nav = document.getElementById('nav-area');
+        const header = document.getElementById('header-title');
+        area.innerHTML = '';
+
+        if (currentMode === 'INTRO') {
+            header.innerText = "English Master #24";
+            nav.classList.add('hidden');
+            area.innerHTML = `
+                <div class="main-title-card"><h1>The Concept of<br>Energy Harvesting</h1><p>2023년 3월 고3 모의고사 24번</p></div>
+                <div class="intro-summary">
+                    <h3>📋 지문 요약</h3>
+                    <p><b>[서론]</b> 일상생활 속에서 인간과 동물의 활동적인 움직임, 그리고 주변 환경과의 상호작용을 통해 매일 엄청난 양의 운동 에너지가 생성되고 있다.</p>
+                    <p><b>[본론]</b> 그러나 이 에너지들은 대개 아주 미미한 양이거나 넓은 환경으로 조각조각 분산되어 있어, 그동안은 모두 주변 환경으로 유실되었고 수집하려는 역사적 시도도 없었다. 걷기, 계단 오르내리기, 운동용 자전거 타기 등 일상에서 방출되는 에너지를 모으는 것이 생소해 보일 수 있으나, 이것이 바로 '에너지 수확(Energy Harvesting)'의 핵심 본질이다.</p>
+                    <p><b>[결론]</b> 에너지 수확의 거시적 목표는 일상 곳곳에서 무의미하게 버려지는 미량의 에너지를 축적하여 실용적인 용도로 전환하는 것이다. 현재는 이 에너지를 포착하여 휴대용 배터리와 같은 소형 저장 장치에 효과적으로 담아내기 위한 구체적인 기술적 노력이 본격화되고 있다.</p>
+                </div>
+                <div class="intro-topic">
+                    <span class="topic-label">💡 Topic Sentence</span>
+                    <p style="font-size:0.85rem; font-weight:600; margin-bottom:5px;">Energy harvesting aims to collect small, scattered amounts of energy generated from daily human and animal movements and store it in small devices for practical use.</p>
+                    <p style="font-size:0.75rem; color:#666; margin:0;">(에너지 수확은 인간과 동물의 일상적인 움직임에서 생성되는 작고 분산된 양의 에너지를 수집하여 실용적인 용도로 소형 장치에 저장하는 것을 목표로 한다.)</p>
+                </div>
+                <button class="btn-next" onclick="startStep(2)">STEP 2: 문장 학습 시작 ▶</button>
+                <button class="btn-next" style="margin-top:10px; background:#9C27B0;" onclick="startStep(3)">STEP 3: 영작 연습 시작 ▶</button>
+            `;
+        } else if (currentMode === 'STEP2') {
+            header.innerText = `STEP 2. 문장 학습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+            
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="sentence-box" onclick="playTTS('${item.en.replace(/'/g, "\\'")}')">${item.en}</div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">해석 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.ko}</div>
+            `;
+            fillVoca(item.voca, '🍌', "#FFD600");
+        } else if (currentMode === 'STEP3') {
+            header.innerText = `STEP 3. 영작 연습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="kor-box">${item.ko}</div>
+                <div class="blank-area" id="blank-area"></div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">정답 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.en}</div>
+            `;
+            fillBlanks(item.en);
+            fillVoca(item.voca, '🍇', "#9C27B0");
+        }
+    }
+
+    function fillVoca(vocaList, emoji, emojiColor) {
+        const container = document.getElementById('voca-area');
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'voca-item';
+            if (vocaList[i] && vocaList[i] !== '🍌' && vocaList[i] !== '🍇') {
+                const [eng, kor] = vocaList[i].split(':');
+                div.innerText = eng;
+                div.onclick = function() {
+                    this.classList.toggle('revealed');
+                    this.innerText = this.classList.contains('revealed') ? kor : eng;
+                };
+            } else {
+                div.innerText = emoji;
+                div.style.color = emojiColor;
+                div.style.cursor = "default";
+            }
+            container.appendChild(div);
+        }
+    }
+
+    function fillBlanks(s) {
+        const c = document.getElementById('blank-area');
+        const prepositions = ["in", "on", "at", "by", "for", "from", "of", "with", "to", "into", "onto", "upon", "about", "above", "across", "after", "against", "along", "among", "around", "as", "before", "behind", "below", "beneath", "beside", "between", "beyond", "during", "except", "inside", "near", "off", "outside", "over", "past", "since", "through", "throughout", "under", "underneath", "until", "up", "within", "without"];
+
+        s.split(' ').forEach(w => {
+            const sp = document.createElement('span');
+            sp.className = 'word-blank';
+            sp.innerText = w;
+            
+            const pureWord = w.toLowerCase().replace(/[.,'":;?!()“”]/g, "");
+            
+            if (prepositions.includes(pureWord)) {
+                sp.classList.add('revealed');
+                sp.style.borderBottomColor = 'transparent'; 
+            }
+
+            sp.onclick = function() {
+                this.classList.add('revealed');
+                this.style.borderBottomColor = 'transparent';
+                playTTS(w.replace(/[.,'"]/g, ""));
+            };
+            c.appendChild(sp);
+        });
+    }
+
+    function startStep(step) {
+        currentMode = 'STEP' + step;
+        currentIdx = 0;
+        render();
+    }
+
+    function nextSentence() {
+        if (currentIdx < fullData.length - 1) {
+            currentIdx++;
+            render();
+        } else {
+            currentMode = 'INTRO';
+            render();
+        }
+    }
+
+    function prevSentence() {
+        if (currentIdx > 0) {
+            currentIdx--;
+            render();
+        }
+    }
+
+    function playTTS(text) {
+        synth.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        synth.speak(utterance);
+    }
+
+    function toggleView(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    window.onload = render;
+</script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English Master #39 - Official Version</title>
+    <style>
+        :root { 
+            --lavender-light: #F3E5F5; 
+            --purple-pale: #E1BEE7; 
+            --purple-main: #9575CD; 
+            --purple-dark: #673AB7;
+            --pink-soft: #FFF0F6;
+        }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; background: #F8F7FA; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
+        .phone-container { width: 100%; max-width: 450px; height: 100%; background: white; display: flex; flex-direction: column; position: relative; }
+        .header { padding: 12px; text-align: center; font-weight: bold; color: var(--purple-dark); border-bottom: 1px solid #eee; background: white; font-size: 0.95rem; }
+        #display-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        /* 공통 스타일 */
+        .hidden { display: none !important; }
+        .btn-next { background: var(--purple-main); color: white; padding: 16px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: auto; }
+        .btn-prev { background: #EDF2F7; color: #718096; padding: 16px; border-radius: 15px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; width: 30%; margin-right: 10px; }
+
+        /* STEP 1: 인트로 */
+        .main-title-card { width: 100%; background: linear-gradient(135deg, #B39DDB 0%, #9575CD 100%); padding: 35px 20px; border-radius: 20px; color: white; margin-bottom: 20px; box-sizing: border-box; text-align: center; box-shadow: 0 4px 10px rgba(149,117,205,0.3); }
+        .intro-summary { background: var(--lavender-light); padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 2px solid var(--purple-pale); font-size: 0.92rem; line-height: 1.6; }
+        .intro-topic { background: var(--pink-soft); padding: 18px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #F8BBD0; }
+
+        /* 학습 카드 스타일 */
+        .sentence-box { background: var(--lavender-light); padding: 20px; border-radius: 20px; font-size: 1.1rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 15px; border: 2px solid var(--purple-pale); text-align: center; cursor: pointer; line-height: 1.5; }
+        .kor-box { background: #FFF5F7; padding: 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; color: #D81B60; margin-bottom: 15px; border: 2px solid #F8BBD0; text-align: center; line-height: 1.6; }
+        
+        /* 단어 그리드 */
+        .voca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .voca-item { background: #fff; padding: 10px; border-radius: 10px; font-size: 0.82rem; border: 1px solid var(--purple-pale); cursor: pointer; text-align: center; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .voca-item.revealed { background: var(--purple-main); color: white; }
+        
+        /* STEP 3 전용: 빈칸 스타일 */
+        .blank-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; padding: 10px; background: #fdfdfd; border-radius: 15px; }
+        .word-blank { border-bottom: 2px solid var(--purple-main); min-width: 35px; text-align: center; font-size: 1rem; color: transparent; cursor: pointer; padding: 0 2px; }
+        .word-blank.revealed { color: var(--purple-dark); border-bottom-color: transparent; font-weight: bold; }
+
+        .btn-check { background: #f0f0f0; padding: 12px; border-radius: 12px; border: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; width: 100%; font-size: 0.9rem; }
+        .trans-content { display: none; padding: 15px; background: #fafafa; border-radius: 15px; border-left: 5px solid var(--purple-main); font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px; }
+        .nav-btns-fixed { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; margin-top: auto; }
+    </style>
+</head>
+<body>
+<div class="phone-container">
+    <div class="header" id="header-title">English Master #39</div>
+    <div id="display-area"></div>
+    <div id="nav-area" class="nav-btns-fixed hidden">
+        <button class="btn-prev" onclick="prevSentence()">PREV</button>
+        <button class="btn-next" onclick="nextSentence()" id="main-next-btn">NEXT</button>
+    </div>
+</div>
+
+<script>
+    const fullData = [
+        { 
+            en: "Going beyond very simple algorithms, some AI‑based tools hold out the promise of supporting better causal and probabilistic reasoning in complex domains.", 
+            ko: "매우 단순한 알고리즘을 넘어, 일부 AI 기반 도구들은 복잡한 영역에서 더 나은 인과적 및 확률적 추론을 지원할 가능성을 보여준다.", 
+            voca: ["Going beyond:~을 넘어", "simple:단순한", "algorithms:알고리즘들", "AI-based:AI 기반의", "tools:도구들", "hold out:보여주다, 제시하다", "promise:가능성, 약속", "causal:인과적인", "probabilistic:확률적인", "reasoning:추론"] 
+        },
+        { 
+            en: "Humans have a natural ability to build causal models of the world—that is, to explain why things happen—that AI systems still largely lack.", 
+            ko: "인간은 세상의 인과 관계 모델을 구축하는, 즉 왜 일이 일어나는지 설명하는 타고난 능력을 가지고 있으며, 이는 AI 시스템에 여전히 크게 결여되어 있다.", 
+            voca: ["natural ability:타고난 능력", "build:구축하다", "causal models:인과 모델들", "that is:즉, 다시 말해서", "explain:설명하다", "happen:일어나다, 발생하다", "AI systems:AI 시스템들", "still:여전히", "largely:크게, 대체로", "lack:결여되어 있다, 부족하다"] 
+        },
+        { 
+            en: "For example, while a doctor can explain to a patient why a treatment works, referring to the changes it causes in the body, a modern machine‑learning system could only tell you that patients who are given this treatment tend, on average, to get better.", 
+            ko: "예를 들어, 의사는 치료가 유발하는 신체 변화를 언급하며 환자에게 치료가 왜 효과가 있는지 설명할 수 있는 반면, 현대의 머신러닝 시스템은 이 치료를 받은 환자들이 평균적으로 호전되는 경향이 있다는 것만 말해줄 수 있을 뿐이다.", 
+            voca: ["For example:예를 들어", "doctor:의사", "patient:환자", "treatment:치료", "works:효과가 있다, 작동하다", "referring to:~을 언급하며", "causes:유발하다, 원인이 되다", "machine-learning:머신러닝", "tend to:~하는 경향이 있다", "on average:평균적으로"] 
+        },
+        { 
+            en: "However, human reasoning is still notoriously prone to confusion and error when causal questions become sufficiently complex, such as when it comes to assessing the impact of policy interventions across society.", 
+            ko: "그러나 사회 전반에 걸친 정책 개입의 영향을 평가하는 것과 같이 인과 관계 문제가 충분히 복잡해질 때, 인간의 추론은 여전히 혼동과 오류에 빠지기 쉬운 것으로 악명이 높다.", 
+            voca: ["However:그러나", "notoriously:악명 높게도", "prone to:~하기 쉬운", "confusion:혼동", "error:오류", "sufficiently:충분히", "complex:복잡한", "assessing:평가하는 것", "impact:영향", "policy interventions:정책 개입들"] 
+        },
+        { 
+            en: "In these cases, supporting human reasoning with more structured AI‑based tools may be helpful.", 
+            ko: "이러한 경우에, 더 구조화된 AI 기반 도구로 인간의 추론을 지원하는 것이 도움이 될 수 있다.", 
+            voca: ["In these cases:이러한 경우에", "supporting:지원하는 것", "human reasoning:인간의 추론", "structured:구조화된", "AI-based:AI 기반의", "tools:도구들", "may:~일지도 모른다", "helpful:도움이 되는", "🍌", "🍌"] 
+        },
+        { 
+            en: "Researchers have been exploring the use of Bayesian Networks—an AI technology that can be used to map out the causal relationships between events, and to represent degrees of uncertainty around different areas—for decision support, such as to enable more accurate risk assessment.", 
+            ko: "연구자들은 더 정확한 위험 평가를 가능하게 하는 등 의사 결정을 지원하기 위해 사건 간의 인과 관계를 계획하고 여러 영역 주변의 불확실성 수준을 표현하는 데 사용될 수 있는 AI 기술인 '베이지안 네트워크'의 활용을 탐구해 왔다.", 
+            voca: ["Researchers:연구자들", "exploring:탐구하는 것", "Bayesian Networks:베이지안 네트워크", "technology:기술", "map out:계획하다, 상세히 묘사하다", "causal relationships:인과 관계들", "events:사건들", "represent:표현하다, 나타내다", "uncertainty:불확실성", "risk assessment:위험 평가"] 
+        },
+        { 
+            en: "These may be particularly useful for assessing the threat of novel or rare threats, where little historical data is available, such as the risk of terrorist attacks and new ecological disasters.", 
+            ko: "이것들은 테러 공격의 위험이나 새로운 생태학적 재난과 같이 역사적 데이터가 거의 존재하지 않는, 새로운 혹은 드문 위협들의 발생 가능성을 평가하는 데 특히 유용할 수 있다.", 
+            voca: ["particularly:특히", "useful:유용한", "assessing:평가하는 것", "threat:위협", "novel:새로운", "rare:드문", "historical data:역사적 데이터", "available:이용 가능한", "terrorist attacks:테러 공격들", "ecological disasters:생태학적 재난들"] 
+        }
+    ];
+
+    let currentMode = 'INTRO';
+    let currentIdx = 0;
+    const synth = window.speechSynthesis;
+
+    function render() {
+        const area = document.getElementById('display-area');
+        const nav = document.getElementById('nav-area');
+        const header = document.getElementById('header-title');
+        area.innerHTML = '';
+
+        if (currentMode === 'INTRO') {
+            header.innerText = "English Master #39";
+            nav.classList.add('hidden');
+            area.innerHTML = `
+                <div class="main-title-card"><h1>AI Support for<br>Causal Reasoning</h1><p>Bayesian Networks and Complex Decisions</p></div>
+                <div class="intro-summary">
+                    <h3>📋 지문 요약</h3>
+                    <p><b>[서론]</b> 최신 AI 기반 도구들은 인간 고유의 영역으로 여겨지던 복잡한 인과 관계 및 확률 추론 능력을 대폭 보완해 줄 수 있는 잠재력을 지니고 있다.</p>
+                    <p><b>[본론]</b> 기본적으로 인간은 사물이 왜 작동하는지 설명하는 탁월한 '인과적 모델 구축 능력'을 지녔다. 의사가 치료 기전을 환자에게 명확히 설명할 수 있는 반면 머신러닝은 통계적 확률만 제시하는 한계가 이를 보여준다. 그러나 사회적 정책 개입처럼 인과 관계가 극도로 복잡해지면 인간의 이성은 쉽게 혼돈과 오류에 직면한다. 바로 이 순간 구조화된 AI 도구의 협력이 필요하다.</p>
+                    <p><b>[결론]</b> 연구자들은 사건 간의 인과 지도를 그리고 불확실성의 수준을 정밀하게 표현해 내는 AI 기술인 '베이지안 네트워크(Bayesian Networks)'를 의사 결정 지원 도구로 주목하고 있다. 이 기술은 과거 통계 데이터가 턱없이 부족한 예측 불허의 테러 감지나 새로운 생태학적 기후 재난 같은 희귀한 위협의 리스크를 정확히 평가하는 데 결정적인 기여를 할 수 있다.</p>
+                </div>
+                <div class="intro-topic">
+                    <span class="topic-label">💡 Topic Sentence</span>
+                    <p style="font-size:0.85rem; font-weight:600; margin-bottom:5px;">To overcome human cognitive errors in complex domains, advanced AI tools like Bayesian Networks are utilized to model causal relationships and evaluate rare risks accurately.</p>
+                    <p style="font-size:0.75rem; color:#666; margin:0;">(복잡한 영역에서 인간의 인지적 오류를 극복하기 위해, 인과 관계를 모델링하고 드문 위험을 정확하게 평가할 수 있도록 베이지안 네트워크와 같은 고급 AI 도구가 활용된다.)</p>
+                </div>
+                <button class="btn-next" onclick="startStep(2)">STEP 2: 문장 학습 시작 ▶</button>
+                <button class="btn-next" style="margin-top:10px; background:#9C27B0;" onclick="startStep(3)">STEP 3: 영작 연습 시작 ▶</button>
+            `;
+        } else if (currentMode === 'STEP2') {
+            header.innerText = `STEP 2. 문장 학습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+            
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="sentence-box" onclick="playTTS('${item.en.replace(/'/g, "\\'")}')">${item.en}</div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">해석 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.ko}</div>
+            `;
+            fillVoca(item.voca, '🍌', "#FFD600");
+        } else if (currentMode === 'STEP3') {
+            header.innerText = `STEP 3. 영작 연습 (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+
+            const item = fullData[currentIdx];
+            area.innerHTML = `
+                <div class="kor-box">${item.ko}</div>
+                <div class="blank-area" id="blank-area"></div>
+                <div class="voca-grid" id="voca-area"></div>
+                <button class="btn-check" onclick="toggleView('trans-area')">정답 확인하기</button>
+                <div id="trans-area" class="trans-content">${item.en}</div>
+            `;
+            fillBlanks(item.en);
+            fillVoca(item.voca, '🍇', "#9C27B0");
+        }
+    }
+
+    function fillVoca(vocaList, emoji, emojiColor) {
+        const container = document.getElementById('voca-area');
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'voca-item';
+            if (vocaList[i] && vocaList[i] !== '🍌' && vocaList[i] !== '🍇') {
+                const [eng, kor] = vocaList[i].split(':');
+                div.innerText = eng;
+                div.onclick = function() {
+                    this.classList.toggle('revealed');
+                    this.innerText = this.classList.contains('revealed') ? kor : eng;
+                };
+            } else {
+                div.innerText = emoji;
+                div.style.color = emojiColor;
+                div.style.cursor = "default";
+            }
+            container.appendChild(div);
+        }
+    }
+
+    function fillBlanks(s) {
+        const c = document.getElementById('blank-area');
+        const prepositions = ["in", "on", "at", "by", "for", "from", "of", "with", "to", "into", "onto", "upon", "about", "above", "across", "after", "against", "along", "among", "around", "as", "before", "behind", "below", "beneath", "beside", "between", "beyond", "during", "except", "inside", "near", "off", "outside", "over", "past", "since", "through", "throughout", "under", "underneath", "until", "up", "within", "without"];
+
+        s.split(' ').forEach(w => {
+            const sp = document.createElement('span');
+            sp.className = 'word-blank';
+            sp.innerText = w;
+            
+            const pureWord = w.toLowerCase().replace(/[.,'":;?!() Balkan“”]/g, "");
+            
+            if (prepositions.includes(pureWord)) {
+                sp.classList.add('revealed');
+                sp.style.borderBottomColor = 'transparent'; 
+            }
+
+            sp.onclick = function() {
+                this.classList.add('revealed');
+                this.style.borderBottomColor = 'transparent';
+                playTTS(w.replace(/[.,'"]/g, ""));
+            };
+            c.appendChild(sp);
+        });
+    }
+
+    function startStep(step) {
+        currentMode = 'STEP' + step;
+        currentIdx = 0;
+        render();
+    }
+
+    function nextSentence() {
+        if (currentIdx < fullData.length - 1) {
+            currentIdx++;
+            render();
+        } else {
+            currentMode = 'INTRO';
+            render();
+        }
+    }
+
+    function prevSentence() {
+        if (currentIdx > 0) {
+            currentIdx--;
+            render();
+        }
+    }
+
+    function playTTS(text) {
+        synth.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        synth.speak(utterance);
+    }
+
+    function toggleView(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    window.onload = render;
+</script>
+</body>
+</html>

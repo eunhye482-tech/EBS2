@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>English Master #31 - 23년 9월 고2</title>
+    <style>
+        :root { 
+            --lavender-light: #F3E5F5; 
+            --purple-pale: #E1BEE7; 
+            --purple-main: #9575CD; 
+            --purple-dark: #673AB7;
+            --pink-soft: #FFF0F6;
+        }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; background: #F8F7FA; display: flex; justify-content: center; min-height: 100vh; }
+        .phone-container { width: 100%; max-width: 450px; background: white; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
+        .header { padding: 12px; text-align: center; font-weight: bold; color: var(--purple-dark); border-bottom: 1px solid #eee; background: white; font-size: 0.95rem; position: sticky; top: 0; z-index: 10; }
+        #display-area { flex: 1; padding: 20px; display: flex; flex-direction: column; }
+        
+        .hidden { display: none !important; }
+        
+        .btn-intro-step { background: var(--purple-main); color: white; padding: 16px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; }
+
+        .main-title-card { width: 100%; background: linear-gradient(135deg, #B39DDB 0%, #9575CD 100%); padding: 35px 20px; border-radius: 20px; color: white; margin-bottom: 20px; box-sizing: border-box; text-align: center; }
+        .intro-summary { background: var(--lavender-light); padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 2px solid var(--purple-pale); font-size: 0.92rem; line-height: 1.6; color: #444; }
+        .intro-topic { background: var(--pink-soft); padding: 18px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #F8BBD0; text-align: center; }
+        .topic-kor { font-weight: bold; color: #D81B60; display: block; margin-bottom: 5px; }
+        .topic-eng { font-size: 0.85rem; color: #888; font-style: italic; }
+
+        .sentence-box { background: var(--lavender-light); padding: 20px; border-radius: 20px; font-size: 1.1rem; font-weight: 700; color: var(--purple-dark); margin-bottom: 15px; border: 2px solid var(--purple-pale); text-align: center; cursor: pointer; line-height: 1.5; }
+        .kor-box { background: #FFF5F7; padding: 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; color: #D81B60; margin-bottom: 15px; border: 2px solid #F8BBD0; text-align: center; line-height: 1.6; }
+        
+        .voca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .voca-item { background: #fff; padding: 10px; border-radius: 10px; font-size: 0.82rem; border: 1px solid var(--purple-pale); cursor: pointer; text-align: center; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: #333; }
+        .voca-item.revealed { background: var(--purple-main); color: white; }
+        
+        .blank-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px; padding: 10px; background: #fdfdfd; border-radius: 15px; }
+        .word-blank { border-bottom: 2px solid var(--purple-main); min-width: 35px; text-align: center; font-size: 1rem; color: transparent; cursor: pointer; padding: 0 2px; }
+        .word-blank.revealed { color: var(--purple-dark); border-bottom-color: transparent; font-weight: bold; }
+
+        .btn-check { background: #f0f0f0; padding: 12px; border-radius: 12px; border: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; width: 100%; font-size: 0.9rem; color: #555; }
+        .trans-content { display: none; padding: 15px; background: #fafafa; border-radius: 15px; border-left: 5px solid var(--purple-main); font-size: 0.9rem; margin-bottom: 10px; color: #444; }
+        
+        .nav-btns-fixed { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; margin-top: auto; position: sticky; bottom: 0; gap: 10px; align-items: center; }
+        .btn-prev { background: #EDF2F7; color: #718096; border-radius: 15px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; height: 55px; flex: 1; display: flex; align-items: center; justify-content: center; }
+        .btn-next { background: var(--purple-main); color: white; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; height: 55px; flex: 1.5; display: flex; align-items: center; justify-content: center; margin-top: 0; }
+    </style>
+</head>
+<body>
+<div class="phone-container">
+    <div class="header" id="header-title">English Master #31</div>
+    <div id="display-area"></div>
+    <div id="nav-area" class="nav-btns-fixed hidden">
+        <button class="btn-prev" onclick="prevSentence()">PREV</button>
+        <button class="btn-next" onclick="nextSentence()" id="main-next-btn">NEXT</button>
+    </div>
+</div>
+
+<script>
+    // 노출 타겟: 전치사, 접속사, 관사 등 (일관된 시스템 규칙)
+    const visibleWords = ["may", "they’re", "but", "them", "just", "like", "the", "rest", "of", "us", "from", "an", "these", "will", "for", "which", "if", "can", "be", "exactly", "what", "a", "or", "wants", "you", "to", "and", "know", "in", "favor", "your", "i", "would", "the", "first", "my", "actual", "when", "we", "try", "this", "make", "an", "suits", "their", "towards", "as", "has", "even"];
+
+    const fullData = [
+        { en: "Rebels may think they’re rebels, but clever marketers influence them just like the rest of us.", ko: "반항아들은 자신들이 반항아라고 생각할지도 모르지만, 영리한 마케터들은 우리 중 나머지 사람들과 마찬가지로 그들에게 영향을 미칩니다.", voca: ["Rebels:반항아들", "think:생각하다", "clever:영리한", "marketers:마케터들", "influence:영향을 미치다", "rest of us:우리 중 나머지 사람들", "🍎", "🍎", "🍎", "🍎"] },
+        { en: "Saying, “Everyone is doing it” may turn some people off from an idea.", ko: "“모든 사람이 그것을 하고 있다”고 말하는 것은 어떤 사람들로 하여금 어떠한 생각에 흥미를 잃게 만들지도 모릅니다.", voca: ["Saying:말하는 것", "Everyone:모든 사람", "turn off:흥미를 잃게 하다/끄다", "idea:생각/아이디어", "🍎", "🍎", "🍎", "🍎", "🍎", "🍎"] },
+        { en: "These people will look for alternatives, which (if cleverly planned) can be exactly what a marketer or persuader wants you to believe.", ko: "이러한 사람들은 대안을 찾을 것이고, 그것은 (영리하게 계획된다면) 정확히 마케터나 설득가가 여러분이 믿기를 원하는 것일 수 있습니다.", voca: ["look for:~을 찾다", "alternatives:대안들", "cleverly:영리하게", "planned:계획된", "exactly:정확히", "persuader:설득가", "believe:믿다", "🍎", "🍎", "🍎"] },
+        { en: "If I want you to consider an idea, and know you strongly reject popular opinion in favor of maintaining your independence and uniqueness, I would present the majority option first, which you would reject in favor of my actual preference.", ko: "만약 내가 여러분이 어떤 생각을 고려하기를 바라고, 여러분의 독립성과 독특성을 유지하기 위해 대중적인 의견을 강력히 거부한다는 것을 안다면, 나는 다수의 선택권을 먼저 제시할 것이고, 여러분은 내가 실제로 선호하는 것에 맞추어 그것을 거부할 것입니다.", voca: ["consider:고려하다", "strongly:강력히", "reject:거부하다", "popular opinion:대중적인 의견", "in favor of:~을 위해/~에 찬성하여", "maintaining:유지하는 것", "independence:독립성", "uniqueness:독특성", "present:제시하다", "majority option:다수의 선택권"] },
+        { en: "We are often tricked when we try to maintain a position of defiance.", ko: "우리가 반항적인 입장을 유지하려고 노력할 때 우리는 종종 속아 넘어갑니다.", voca: ["often:종종", "tricked:속아 넘어가는", "maintain:유지하다", "position:입장/위치", "defiance:반항/반대", "🍎", "🍎", "🍎", "🍎", "🍎"] },
+        { en: "People use this reversal to make us “independently” choose an option which suits their purposes.", ko: "사람들은 우리가 그들의 목적에 부합하는 선택권을 ‘독립적으로’ 택하도록 만들기 위해 이러한 역전을 이용합니다.", voca: ["reversal:역전/반전", "independently:독립적으로", "choose:택하다/고르다", "option:선택권", "suits:부합하다/알맞다", "purposes:목적들", "🍎", "🍎", "🍎", "🍎"] },
+        { en: "Some brands have taken full effect of our defiance towards the mainstream and positioned themselves as rebels; which has created even stronger brand loyalty.", ko: "일부 브랜드들은 주류에 대한 우리의 반항을 완전히 활용하여 스스로를 반항아로 포지셔닝해 왔으며, 이는 훨씬 더 강력한 브랜드 충성도를 만들어 냈습니다.", voca: ["brands:브랜드들", "taken full effect:완전히 활용하다/효과를 보다", "towards:~에 대한/~을 향해", "mainstream:주류", "positioned:포지셔닝한/위치시킨", "created:만들어 낸", "stronger:더 강력한", "brand loyalty:브랜드 충성도", "🍎", "🍎"] }
+    ];
+
+    let currentMode = 'INTRO';
+    let currentIdx = 0;
+    const synth = window.speechSynthesis;
+
+    function render() {
+        const area = document.getElementById('display-area');
+        const nav = document.getElementById('nav-area');
+        const header = document.getElementById('header-title');
+        area.innerHTML = '';
+
+        if (currentMode === 'INTRO') {
+            header.innerText = "English Master #31";
+            nav.classList.add('hidden');
+            area.innerHTML = `
+                <div class="main-title-card"><h1>The Illusion of<br>Rebel Choice</h1><p>2023년 9월 고2 31번</p></div>
+                
+                <div class="intro-summary">
+                    <p>• <b>📍 서론:</b> 반항아들은 스스로 독창적이라 믿지만, 영리한 마케터들은 이 성향마저 계산하여 통제함.</p>
+                    <p>• <b>📍 본론:</b> 대중적 유행을 제시하면 주체성을 지키려는 이들은 이를 거부하고 대안(alternatives)을 찾는데, 이 대안이 바로 마케터가 의도한 진짜 선택지임.</p>
+                    <p>• <b>📍 결론:</b> 마케터들은 이러한 반항적 역전(reversal) 심리를 활용해 소비자가 스스로 '독립적으로' 선택했다고 착각하게 만들며, 주류에 반대하는 포지셔닝으로 더 강한 브랜드 충성도를 유도함.</p>
+                </div>
+                <div class="intro-topic">
+                    <span class="topic-kor">주제: 반항적 소비자의 독립성 욕구를 역이용하는 마케터들의 전략과 역반응 심리</span>
+                    <span class="topic-eng">Topic: Marketers' strategies and reversal psychology that exploit rebellious consumers' desire for independence</span>
+                </div>
+                <button class="btn-intro-step" onclick="startStep(2)">STEP 2: 문장 학습 시작 ▶</button>
+                <button class="btn-intro-step" style="background:#9C27B0;" onclick="startStep(3)">STEP 3: 영작 연습 시작 ▶</button>
+            `;
+        } else {
+            const stepNum = currentMode === 'STEP2' ? 2 : 3;
+            header.innerText = `STEP ${stepNum} (${currentIdx + 1}/${fullData.length})`;
+            nav.classList.remove('hidden');
+            document.getElementById('main-next-btn').innerText = (currentIdx === fullData.length - 1) ? "FINISH" : "NEXT";
+            
+            const item = fullData[currentIdx];
+            if (currentMode === 'STEP2') {
+                area.innerHTML = `<div class="sentence-box" onclick="playTTS('${item.en.replace(/'/g, "\\'")}')">${item.en}</div><div class="voca-grid" id="voca-area"></div><button class="btn-check" onclick="toggleView('trans-area')">해석 확인</button><div id="trans-area" class="trans-content">${item.ko}</div>`;
+                fillVoca(item.voca, '🍎', "#FF3B30");
+            } else {
+                area.innerHTML = `<div class="kor-box">${item.ko}</div><div class="blank-area" id="blank-area"></div><div class="voca-grid" id="voca-area"></div><button class="btn-check" onclick="toggleView('trans-area')">정답 확인</button><div id="trans-area" class="trans-content">${item.en}</div>`;
+                fillBlanks(item.en);
+                fillVoca(item.voca, '🍇', "#9C27B0");
+            }
+        }
+    }
+
+    function fillVoca(vList, emo, col) {
+        const area = document.getElementById('voca-area');
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'voca-item';
+            if (vList[i] && vList[i].includes(':')) {
+                const [en, ko] = vList[i].split(':');
+                div.innerText = en;
+                div.onclick = function() { this.classList.toggle('revealed'); this.innerText = this.classList.contains('revealed') ? ko : en; };
+            } else {
+                div.innerText = emo; div.style.color = col; div.style.cursor = "default";
+            }
+            area.appendChild(div);
+        }
+    }
+
+// 모든 단어를 예외 없이 100% 빈칸 처리하도록 변경된 로직
+function fillBlanks(s) {
+    const area = document.getElementById('blank-area');
+    s.split(' ').forEach(w => {
+        const span = document.createElement('span');
+        // 기존의 prepositions(전치사) 필터링 조건을 완전히 제거
+        span.className = 'word-blank'; 
+        span.innerText = w; 
+        span.onclick = function() { 
+            this.classList.add('revealed'); 
+            playTTS(w.replace(/[.,\'\"“”;:()?\-]/g, "")); 
+        };
+        area.appendChild(span);
+    });
+}
+
+    function startStep(s) { currentMode = 'STEP' + s; currentIdx = 0; render(); }
+    function nextSentence() { if (currentIdx < fullData.length - 1) { currentIdx++; render(); } else { currentMode = 'INTRO'; render(); } }
+    function prevSentence() { if (currentIdx > 0) { currentIdx--; render(); } else { currentMode = 'INTRO'; render(); } }
+    function playTTS(t) { synth.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; synth.speak(u); }
+    function toggleView(id) { const el = document.getElementById(id); el.style.display = (el.style.display === 'block') ? 'none' : 'block'; }
+    window.onload = render;
+</script>
+</body>
+</html>
